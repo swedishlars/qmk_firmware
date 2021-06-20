@@ -1,11 +1,10 @@
 // default rgb mode
 #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR
 
-// TODO test suspend rgb. Does not work unfortunately
+// TODO test suspend rgb. Does not work unfortunately.
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true
 
 //  Diasble rgb after 10 minutes of inactivity. Configured in milliseconds
-//  TODO increase to 20 mins?
 #define RGB_DISABLE_TIMEOUT 600000
 
 // Disable unwanted RGB effects
@@ -58,7 +57,8 @@
 /* #define MOUSEKEY_INTERVAL 20 */
 /* #define MOUSEKEY_WHEEL_INTERVAL 50 */
 
-// Use test Kinetic mode
+// Use test Kinetic mode, not working well yet. There seem to be some issues
+// awaiting code fixes.
 // TODO make inital movements slower
 #define MK_KINETIC_SPEED
 #define MOUSEKEY_MOVE_DELTA 4
