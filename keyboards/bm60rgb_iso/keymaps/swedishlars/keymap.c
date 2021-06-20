@@ -25,8 +25,8 @@ enum my_keycodes {
 };
 
 // TAPDANCE - definitions
-// TODO not sure double triple tap is comfortable?
-// prhaps better use simpler enable layer 2-3 from layer 1?
+// TODO not sure double / triple tap is comfortable?
+// Probably remove...
 typedef enum {
     TD_NONE,
     TD_UNKNOWN,
@@ -120,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     // FN LAYER
-    // TODO add mouse additionaljbutton keys
+    // TODO add additional mouse button keys, if there's support for it.
     [1] = LAYOUT_60_iso_arrow(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         TO(0),    TD(TF1),  TD(TF2),  TD(TF3),  TD(TF4),  TD(TF5),  TD(TF6),  TD(TF7),  TD(TF8),  TD(TF9),  TD(TF10), TD(TF11), TD(TF12), KC_DEL,
@@ -135,7 +135,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     // RGB LAYER
-    // TODO add default effect key!
     [2] = LAYOUT_60_iso_arrow(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         TO(0),    RGB_M_P,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RGB_VAD,  RGB_VAI,  _______,
@@ -198,7 +197,7 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
         L_BRED,             L_BRED,                       L_BRED,             L_BRED,                       L_BRED,             L_BRED
     },
 
-    // RGB LAYER  TODO change colors to greenish range
+    // RGB LAYER  TODO change colors to greenish range?
     [2] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         L_BGRE,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_BCYA,   L__OFF,
@@ -249,7 +248,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-// TODO testing rgb suspend. No diff unfortunately
+// TODO testing rgb suspend, based on usb suspend I assume? No diff unfortunately.
 void suspend_power_down_user(void) {
     rgb_matrix_set_suspend_state(true);
 }
