@@ -25,8 +25,6 @@ enum my_keycodes {
 };
 
 // TAPDANCE - definitions
-// TODO not sure double / triple tap is comfortable?
-// Probably remove...
 typedef enum {
     TD_NONE,
     TD_UNKNOWN,
@@ -42,27 +40,38 @@ typedef struct {
 } td_tap_t;
 
 // TAPDANCE KEYCODES
+// TODO rename LR1, LR2 etc
 // LYR enables layers
 // F1-12 will send Alt+FX on hold
 enum {
     LYR,
     SLYR,
     CLYR,
+    LR2,
+    LR3,
     TF1, TF2, TF3, TF4, TF5, TF6, TF7, TF8, TF9, TF10, TF11, TF12
 };
 
 //  TAPDANCE - Function associated with all tap dances
 td_state_t cur_dance(qk_tap_dance_state_t *state);
 
-//  TAPDANCE - switch layer functions
+//  TAPDANCE - activate layer 1 functions
 void td_lyr_finished(qk_tap_dance_state_t *state, void *user_data);
 void td_lyr_reset(qk_tap_dance_state_t *state, void *user_data);
 
-//  TAPDANCE - switch layer on hold functions
+//  TAPDANCE - activate layer 1 on hold functions
 void td_lyrhold_finished(qk_tap_dance_state_t *state, void *user_data);
 void td_lyrhold_reset(qk_tap_dance_state_t *state, void *user_data);
 
-// TAPDANCE - alt functions
+//  TAPDANCE - activate layer 2 on hold functions
+void td_lyr2_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lyr2_reset(qk_tap_dance_state_t *state, void *user_data);
+
+//  TAPDANCE - activate layer 3 on hold functions
+void td_lyr3_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lyr3_reset(qk_tap_dance_state_t *state, void *user_data);
+
+// TAPDANCE - alt+FX on hold functions
 void td_alt_finished(qk_tap_dance_state_t *state, void *user_data);
 void td_alt_reset(qk_tap_dance_state_t *state, void *user_data);
 
@@ -121,6 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     // FN LAYER
     // TODO add additional mouse button keys, if there's support for it.
+    // TODO add volume/mute keys?
     [1] = LAYOUT_60_iso_arrow(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         TO(0),    TD(TF1),  TD(TF2),  TD(TF3),  TD(TF4),  TD(TF5),  TD(TF6),  TD(TF7),  TD(TF8),  TD(TF9),  TD(TF10), TD(TF11), TD(TF12), KC_DEL,
@@ -131,10 +141,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
         _______,  _______,  _______,  _______,  _______,  _______,  KC_BTN2,  KC_WH_D,  _______,  _______,  _______,  _______,  KC_PGUP,  _______,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-        _______,  _______,  TO(2),                                  KC_BTN1,                      TO(3),    _______,  KC_HOME,  KC_PGDN,  KC_END
+        _______,  _______,  TD(LR2),                                KC_BTN1,                      TD(LR3),    _______,  KC_HOME,  KC_PGDN,  KC_END
     ),
 
     // RGB LAYER
+    // TODO test KC_NO
     [2] = LAYOUT_60_iso_arrow(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         TO(0),    RGB_M_P,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RGB_VAD,  RGB_VAI,  _______,
@@ -181,7 +192,7 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
         L__OFF,             L__OFF,                       L__OFF,             L__OFF,                       L__OFF,             L__OFF
     },
 
-    // FN LAYER   
+    // FN LAYER
     [1] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         L_BRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DYEL,
@@ -192,7 +203,7 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DRED,   L_DMAG,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_LYEL,   L__OFF,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN        LEFT      DOWN      RIGHT
-        L__OFF,   L__OFF,   L_DGRE,                                 L_DRED,                       L__OFF,   L__OFF,   L_LYEL,   L_LYEL,   L_LYEL,
+        L__OFF,   L_BRED,   L_DGRE,                                 L_DRED,                       L__OFF,   L__OFF,   L_LYEL,   L_LYEL,   L_LYEL,
     //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
         L_BRED,             L_BRED,                       L_BRED,             L_BRED,                       L_BRED,             L_BRED
     },
@@ -243,6 +254,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return 160;
         case TD(CLYR):
             return 140;
+        case TD(LR2):
+            return 400;
+        case TD(LR3):
+            return 600;
         default:
             return TAPPING_TERM;
     }
@@ -297,7 +312,6 @@ void set_layer_color( uint8_t layer) {
 
 
 // CUSTOM KEYCODES & MACROS
-// TODO make super hold == fn
 /* bool process_record_user(uint16_t keycode, keyrecord_t *record) { */
 /*     switch (keycode) { */
 /*         case KC_X: { */
@@ -347,10 +361,12 @@ void rgb_matrix_indicators_user(void) {
 
 
 // TAPDANCE - Common. Determine the current tap dance state
+// Double and triple tap is handled to make tapping more stable
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
-        // Key has not been interrupted, but the key is still held. Means you want to send a 'HOLD'.
+        // Key has not been interrupted, but the key is still held.
+        // Means you want to send a 'HOLD'.
         else return TD_SINGLE_HOLD;
     } 
     else if (state->count == 2) return TD_DOUBLE_TAP;
@@ -359,7 +375,7 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
 }
 
 
-// TAPDANCE - layers. Tap to enable layers
+// TAPDANCE - Tap to toggle layer 1. Hold to momentarily activate layer 1.
 static td_tap_t td_lyr_tap_state = {.is_press_action = true, .state = TD_NONE};
 
 void td_lyr_finished(qk_tap_dance_state_t *state, void *user_data) {
@@ -373,16 +389,8 @@ void td_lyr_finished(qk_tap_dance_state_t *state, void *user_data) {
             break;
         // Momentarily turn on layer 1
         case TD_SINGLE_HOLD: layer_on(1); break;
-        // Toggle layer 2
-        case TD_DOUBLE_TAP:
-            if (layer_state_is(2)) layer_off(2);
-            else layer_on(2);
-            break;
-        // Toggle layer 3
-        case TD_TRIPLE_TAP:
-            if (layer_state_is(3)) layer_off(3);
-            else layer_on(3);
-            break;
+        case TD_DOUBLE_TAP: break;
+        case TD_TRIPLE_TAP: break;
         case TD_NONE: break;
         case TD_UNKNOWN: break;
     }
@@ -397,7 +405,7 @@ void td_lyr_reset(qk_tap_dance_state_t *state, void *user_data) {
 }
 
 
-// TAPDANCE - Tap for normal KC_X, hold to enable layers
+// TAPDANCE - Tap for normal KC_X, hold to enable layer 1
 // Func retreives current keycode from user_data in custom tapdance action.
 static td_tap_t td_lyrhold_tap_state = {.is_press_action = true, .state = TD_NONE};
 
@@ -429,6 +437,51 @@ void td_lyrhold_reset(qk_tap_dance_state_t *state, void *user_data) {
         case TD_NONE: break; 
     }
     td_lyrhold_tap_state.state = TD_NONE;
+}
+
+
+
+// TAPDANCE - Tap does nothing. Hold to activate layer 2.
+// TODO change to tap send original key, see above
+static td_tap_t td_lyr2_tap_state = {.is_press_action = true, .state = TD_NONE};
+
+void td_lyr2_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lyr2_tap_state.state = cur_dance(state);
+
+    switch (td_lyr2_tap_state.state) {
+        case TD_SINGLE_TAP: break;
+        case TD_SINGLE_HOLD: layer_move(2); break;
+        case TD_DOUBLE_TAP: break;
+        case TD_TRIPLE_TAP: break;
+        case TD_NONE: break;
+        case TD_UNKNOWN: break;
+    }
+}
+
+void td_lyr2_reset(qk_tap_dance_state_t *state, void *user_data) {
+    td_lyr2_tap_state.state = TD_NONE;
+}
+
+
+// TAPDANCE - Tap does nothing. Hold to activate layer 3.
+// TODO change to tap send original key, see above
+static td_tap_t td_lyr3_tap_state = {.is_press_action = true, .state = TD_NONE};
+
+void td_lyr3_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lyr3_tap_state.state = cur_dance(state);
+
+    switch (td_lyr3_tap_state.state) {
+        case TD_SINGLE_TAP: break;
+        case TD_SINGLE_HOLD: layer_move(3); break;
+        case TD_DOUBLE_TAP: break;
+        case TD_TRIPLE_TAP: break;
+        case TD_NONE: break;
+        case TD_UNKNOWN: break;
+    }
+}
+
+void td_lyr3_reset(qk_tap_dance_state_t *state, void *user_data) {
+    td_lyr3_tap_state.state = TD_NONE;
 }
 
 
@@ -471,12 +524,18 @@ void td_alt_reset(qk_tap_dance_state_t *state, void *user_data) {
 
 // Associate our tap dance key with its functionality
 qk_tap_dance_action_t tap_dance_actions[] = {
-    // Layer tapdance for right FN
+    // Layer 1 activation for right FN
     [LYR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lyr_finished, td_lyr_reset),
-    // Layer change on right Super hold
+    // Layer 1 activation on right Super hold
     [SLYR] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_lyrhold_finished, td_lyrhold_reset, KC_LGUI),
-    // Layer change on Caps hold
+    // Layer 1 activation on Caps hold
     [CLYR] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_lyrhold_finished, td_lyrhold_reset, KC_CAPS),
+    // Layer 2 activation on left Alt hold
+    // TODO Use ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE
+    [LR2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lyr2_finished, td_lyr2_reset),
+    // Layer 3 activation on right Alt hold
+    // TODO Use ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE
+    [LR3] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lyr3_finished, td_lyr3_reset),
     // Hold to send ALT+KC_X
     [TF1] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F1),
     [TF2] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F2),
