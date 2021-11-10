@@ -44,29 +44,49 @@
 #define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
 
-// custom tapdance definition, adds user_data so I can pass on keycode to tapdance function.
-#define ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc) { \
-    .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
-    .user_data = (void *)&((qk_tap_dance_pair_t) { kc, 0 }) \
-}
-
 //Sets the delay between register_code and unregister_code, default is 100 ms
 /* #define TAP_CODE_DELAY 20 */
 
 // Mouse keys
-/* #define MOUSEKEY_INTERVAL 20 */
-/* #define MOUSEKEY_WHEEL_INTERVAL 50 */
+// Accelerated mode settings
+#define MOUSEKEY_DELAY 0                            // Delay between pressing a movement key and cursor movement, default 300.
+#define MOUSEKEY_INTERVAL 1                         // Time between cursor movements in milliseconds, default 50 for accelerated mode, 8 for kinetic.
+#define MOUSEKEY_MOVE_DELTA 1                       // Step size for accelerating from initial to base speed, default 25.
+#define MOUSEKEY_MAX_SPEED 80
+#define MOUSEKEY_TIME_TO_MAX 140
 
-// Use test Kinetic mode, not working well yet. There seem to be some issues
-// awaiting code fixes.
-// TODO make inital movements slower
-#define MK_KINETIC_SPEED
-#define MOUSEKEY_MOVE_DELTA 4
-#define MOUSEKEY_INITIAL_SPEED 1
-#define MOUSEKEY_BASE_SPEED 6000
-#define MOUSEKEY_DECELERATED_SPEED 1000
-#define MOUSEKEY_ACCELERATED_SPEED 8000
+#define MOUSEKEY_WHEEL_DELAY 0                      // Delay between pressing a wheel key and wheel movement, default 300.
+#define MOUSEKEY_WHEEL_INTERVAL 1                   // Time between wheel movements, default 100.
+#define MOUSEKEY_WHEEL_MAX_SPEED 8
+#define MOUSEKEY_WHEEL_TIME_TO_MAX 250
 
-#define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 8
-#define MOUSEKEY_WHEEL_BASE_MOVEMENTS 300
-#define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 400
+// Kinetic mode settings
+// TODO does not seem to work well
+/* #define MK_KINETIC_SPEED */
+/* #define MOUSEKEY_DELAY 0                         // Delay between pressing a movement key and cursor movement, default 300. */
+/* #define MOUSEKEY_INTERVAL 1                      // Time between cursor movements in milliseconds, default 50 for accelerated mode, 8 for kinetic. */
+/* #define MOUSEKEY_MOVE_DELTA 2                    // Step size for accelerating from initial to base speed, default 25 */
+/* #define MOUSEKEY_INITIAL_SPEED 1                 // Initial speed of the cursor in pixel per second, default 100 */
+/* #define MOUSEKEY_BASE_SPEED 100                  // Maximum cursor speed at which acceleration stops, default 1000 */
+/* #define MOUSEKEY_DECELERATED_SPEED 40            // Decelerated cursor speed, default 400 */
+/* #define MOUSEKEY_ACCELERATED_SPEED 100           // Accelerated cursor speed, default 3000. */
+
+/* #define MOUSEKEY_WHEEL_DELAY 0                   // Delay between pressing a wheel key and wheel movement, default 300. */
+/* #define MOUSEKEY_WHEEL_INTERVAL 2                // Time between wheel movements, default 100. */
+/* #define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 1       // Initial number of movements of the mouse wheel, default 16. */ 
+/* #define MOUSEKEY_WHEEL_BASE_MOVEMENTS 300        // Maximum number of movements at which acceleration stops, default 32 */
+/* #define MOUSEKEY_WHEEL_DECELERATED_MOVEMENTS 1   //Decelerated wheel movements, default 8 */
+/* #define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 300 // Accelerated wheel movements, default 48 */
+
+
+// Custom tapdance advanced action. Pass keycode in user_data
+#define ACTION_TAP_DANCE_FN_KEY(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc) { \
+    .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
+    .user_data = (void *)&((qk_tap_dance_pair_t) { kc, 0 }) \
+}
+
+// Custom tapdance advanced action. Pass keycode and layer in user_data.
+#define ACTION_TAP_DANCE_FN_KEY_LAYER(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc, layer) { \
+    .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
+    .user_data = (void *)&((qk_tap_dance_dual_role_t) {kc, layer, NULL}) \
+}
