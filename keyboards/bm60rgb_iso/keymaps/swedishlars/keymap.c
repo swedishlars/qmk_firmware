@@ -40,38 +40,33 @@ typedef struct {
 } td_tap_t;
 
 // TAPDANCE KEYCODES
-// TODO rename LR1, LR2 etc
-// LYR enables layers
-// F1-12 will send Alt+FX on hold
+// LR enables layers
+// TF1-12 will send Alt+FX on hold
 enum {
-    LYR,
-    SLYR,
-    CLYR,
+    LR1,
+    LR1S,
+    LR1C,
     LR2,
     LR3,
-    TF1, TF2, TF3, TF4, TF5, TF6, TF7, TF8, TF9, TF10, TF11, TF12
+    AF1, AF2, AF3, AF4, AF5, AF6, AF7, AF8, AF9, AF10, AF11, AF12
 };
 
 //  TAPDANCE - Function associated with all tap dances
 td_state_t cur_dance(qk_tap_dance_state_t *state);
 
-//  TAPDANCE - activate layer 1 functions
-void td_lyr_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lyr_reset(qk_tap_dance_state_t *state, void *user_data);
+//  TAPDANCE - activate layer 1. Tap to toggle, hold to activate momentarily.
+void td_lr1_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lr1_reset(qk_tap_dance_state_t *state, void *user_data);
 
-//  TAPDANCE - activate layer 1 on hold functions
-void td_lyrhold_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lyrhold_reset(qk_tap_dance_state_t *state, void *user_data);
+// TAPDANCE - Tap to send normal KC_X, hold to momentarily enable layer
+void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data);
 
-//  TAPDANCE - activate layer 2 on hold functions
-void td_lyr2_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lyr2_reset(qk_tap_dance_state_t *state, void *user_data);
+// TAPDANCE - Tap sends kc. Hold to activate layer.
+void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data);
 
-//  TAPDANCE - activate layer 3 on hold functions
-void td_lyr3_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lyr3_reset(qk_tap_dance_state_t *state, void *user_data);
-
-// TAPDANCE - alt+FX on hold functions
+// TAPDANCE - Alt+KC_X on hold functions
 void td_alt_finished(qk_tap_dance_state_t *state, void *user_data);
 void td_alt_reset(qk_tap_dance_state_t *state, void *user_data);
 
@@ -121,11 +116,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,
     //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #
-        TD(CLYR), KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,
+        TD(LR1C), KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
         KC_LSFT,  KC_NUBS,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_RSFT,  KC_UP,    KC_SLSH,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-        KC_LCTL,  TD(LYR),  KC_LALT,                                KC_SPC,                       KC_RALT,  TD(SLYR), KC_LEFT,  KC_DOWN,  KC_RGHT
+        KC_LCTL,  TD(LR1),  KC_LALT,                                KC_SPC,                       KC_RALT,  TD(LR1S), KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
 
     // FN LAYER
@@ -133,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // TODO add volume/mute keys?
     [1] = LAYOUT_60_iso_arrow(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-        TO(0),    TD(TF1),  TD(TF2),  TD(TF3),  TD(TF4),  TD(TF5),  TD(TF6),  TD(TF7),  TD(TF8),  TD(TF9),  TD(TF10), TD(TF11), TD(TF12), KC_DEL,
+        TO(0),    TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), KC_DEL,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
         _______,  _______,  _______,  _______,  _______,  LCA(KC_T),_______,  KC_WH_U,  _______,  _______,  _______,  _______,  _______,
     //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #
@@ -145,7 +140,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     // RGB LAYER
-    // TODO test KC_NO
     [2] = LAYOUT_60_iso_arrow(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         TO(0),    RGB_M_P,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RGB_VAD,  RGB_VAI,  _______,
@@ -249,10 +243,10 @@ HSV get_hsv_color(uint8_t colorcode[]) {
 // TAPPING TERM PER KEY - determines timeout for what is a tap and what is a hold 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case TD(LYR):
-        case TD(SLYR):
+        case TD(LR1):
+        case TD(LR1S):
             return 160;
-        case TD(CLYR):
+        case TD(LR1C):
             return 140;
         case TD(LR2):
             return 400;
@@ -376,12 +370,13 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
 
 
 // TAPDANCE - Tap to toggle layer 1. Hold to momentarily activate layer 1.
-static td_tap_t td_lyr_tap_state = {.is_press_action = true, .state = TD_NONE};
+static td_tap_t td_lr1_tapstate = {.is_press_action = true, .state = TD_NONE};
 
-void td_lyr_finished(qk_tap_dance_state_t *state, void *user_data) {
-    td_lyr_tap_state.state = cur_dance(state);
+// TODO use generic func that passes layer in user_data?
+void td_lr1_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lr1_tapstate.state = cur_dance(state);
 
-    switch (td_lyr_tap_state.state) {
+    switch (td_lr1_tapstate.state) {
         // Toggle layer 1
         case TD_SINGLE_TAP:
             if (layer_state_is(1)) layer_off(1);
@@ -396,92 +391,79 @@ void td_lyr_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void td_lyr_reset(qk_tap_dance_state_t *state, void *user_data) {
+void td_lr1_reset(qk_tap_dance_state_t *state, void *user_data) {
     // If the key was held down and now is released then switch off the layer
-    if (td_lyr_tap_state.state == TD_SINGLE_HOLD) {
+    if (td_lr1_tapstate.state == TD_SINGLE_HOLD) {
         layer_off(1);
     }
-    td_lyr_tap_state.state = TD_NONE;
+    td_lr1_tapstate.state = TD_NONE;
 }
 
 
-// TAPDANCE - Tap for normal KC_X, hold to enable layer 1
-// Func retreives current keycode from user_data in custom tapdance action.
-static td_tap_t td_lyrhold_tap_state = {.is_press_action = true, .state = TD_NONE};
+// TAPDANCE - Tap to send normal KC_X, hold to momentarily enable layer
+// Func retreives current keycode and desired layer from user_data in custom tapdance action.
+// See: https://github.com/qmk/qmk_firmware/blob/master/quantum/process_keycode/process_tap_dance.c
+static td_tap_t td_lr_holdmo_tapstate = {.is_press_action = true, .state = TD_NONE};
 
-void td_lyrhold_finished(qk_tap_dance_state_t *state, void *user_data) {
-    td_lyrhold_tap_state.state = cur_dance(state);
-    qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
-    uint16_t keycode = pair->kc1;
+void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lr_holdmo_tapstate.state = cur_dance(state);
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
 
-    switch (td_lyrhold_tap_state.state) {
-        case TD_SINGLE_TAP: register_code(keycode); break;
-        case TD_SINGLE_HOLD: layer_on(1); break;
-        case TD_DOUBLE_TAP: register_code(keycode); break;
-        case TD_TRIPLE_TAP: register_code(keycode); break;
+    switch (td_lr_holdmo_tapstate.state) {
+        case TD_SINGLE_TAP: register_code(pair->kc); break;
+        case TD_SINGLE_HOLD: layer_on(pair->layer); break;
+        case TD_DOUBLE_TAP: register_code(pair->kc); break;
+        case TD_TRIPLE_TAP: register_code(pair->kc); break;
         case TD_NONE: break;
         case TD_UNKNOWN: break;
     }
 }
 
-void td_lyrhold_reset(qk_tap_dance_state_t *state, void *user_data) {
-    qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
-    uint16_t keycode = pair->kc1;
+void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data) {
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
 
-    switch (td_lyrhold_tap_state.state) {
-        case TD_SINGLE_TAP: unregister_code(keycode); break;
-        case TD_SINGLE_HOLD: layer_off(1); break;
-        case TD_DOUBLE_TAP: unregister_code(keycode); break;
-        case TD_TRIPLE_TAP: unregister_code(keycode); break;
+    switch (td_lr_holdmo_tapstate.state) {
+        case TD_SINGLE_TAP: unregister_code(pair->kc); break;
+        case TD_SINGLE_HOLD: layer_off(pair->layer); break;
+        case TD_DOUBLE_TAP: unregister_code(pair->kc); break;
+        case TD_TRIPLE_TAP: unregister_code(pair->kc); break;
         case TD_UNKNOWN: break;
         case TD_NONE: break; 
     }
-    td_lyrhold_tap_state.state = TD_NONE;
+    td_lr_holdmo_tapstate.state = TD_NONE;
 }
 
 
+// TAPDANCE - Tap sends kc. Hold to activate layer.
+static td_tap_t td_lr_holdon_tapstate = {.is_press_action = true, .state = TD_NONE};
 
-// TAPDANCE - Tap does nothing. Hold to activate layer 2.
-// TODO change to tap send original key, see above
-static td_tap_t td_lyr2_tap_state = {.is_press_action = true, .state = TD_NONE};
+void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lr_holdon_tapstate.state = cur_dance(state);
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
 
-void td_lyr2_finished(qk_tap_dance_state_t *state, void *user_data) {
-    td_lyr2_tap_state.state = cur_dance(state);
-
-    switch (td_lyr2_tap_state.state) {
-        case TD_SINGLE_TAP: break;
-        case TD_SINGLE_HOLD: layer_move(2); break;
-        case TD_DOUBLE_TAP: break;
-        case TD_TRIPLE_TAP: break;
+    switch (td_lr_holdon_tapstate.state) {
+        case TD_SINGLE_TAP: register_code(pair->kc); break;
+        case TD_SINGLE_HOLD: layer_on(pair->layer); break;
+        /* case TD_SINGLE_HOLD: layer_move(pair->layer); break; */
+        case TD_DOUBLE_TAP: register_code(pair->kc); break;
+        case TD_TRIPLE_TAP: register_code(pair->kc); break;
         case TD_NONE: break;
         case TD_UNKNOWN: break;
     }
 }
 
-void td_lyr2_reset(qk_tap_dance_state_t *state, void *user_data) {
-    td_lyr2_tap_state.state = TD_NONE;
-}
+void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data) {
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
 
-
-// TAPDANCE - Tap does nothing. Hold to activate layer 3.
-// TODO change to tap send original key, see above
-static td_tap_t td_lyr3_tap_state = {.is_press_action = true, .state = TD_NONE};
-
-void td_lyr3_finished(qk_tap_dance_state_t *state, void *user_data) {
-    td_lyr3_tap_state.state = cur_dance(state);
-
-    switch (td_lyr3_tap_state.state) {
-        case TD_SINGLE_TAP: break;
-        case TD_SINGLE_HOLD: layer_move(3); break;
-        case TD_DOUBLE_TAP: break;
-        case TD_TRIPLE_TAP: break;
-        case TD_NONE: break;
+    switch (td_lr_holdmo_tapstate.state) {
+        case TD_SINGLE_TAP: unregister_code(pair->kc); break;
+        case TD_SINGLE_HOLD: break;
+        case TD_DOUBLE_TAP: unregister_code(pair->kc); break;
+        case TD_TRIPLE_TAP: unregister_code(pair->kc); break;
         case TD_UNKNOWN: break;
+        case TD_NONE: break; 
     }
-}
-
-void td_lyr3_reset(qk_tap_dance_state_t *state, void *user_data) {
-    td_lyr3_tap_state.state = TD_NONE;
+    td_lr_holdon_tapstate.state = TD_NONE;
 }
 
 
@@ -525,28 +507,26 @@ void td_alt_reset(qk_tap_dance_state_t *state, void *user_data) {
 // Associate our tap dance key with its functionality
 qk_tap_dance_action_t tap_dance_actions[] = {
     // Layer 1 activation for right FN
-    [LYR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lyr_finished, td_lyr_reset),
-    // Layer 1 activation on right Super hold
-    [SLYR] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_lyrhold_finished, td_lyrhold_reset, KC_LGUI),
+    [LR1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lr1_finished, td_lr1_reset),
+    // Layer 1 activation on left Super hold
+    [LR1S] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_LGUI, 1),
     // Layer 1 activation on Caps hold
-    [CLYR] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_lyrhold_finished, td_lyrhold_reset, KC_CAPS),
+    [LR1C] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_CAPS, 1),
     // Layer 2 activation on left Alt hold
-    // TODO Use ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE
-    [LR2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lyr2_finished, td_lyr2_reset),
+    [LR2] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_LALT, 2),
     // Layer 3 activation on right Alt hold
-    // TODO Use ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE
-    [LR3] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lyr3_finished, td_lyr3_reset),
-    // Hold to send ALT+KC_X
-    [TF1] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F1),
-    [TF2] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F2),
-    [TF3] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F3),
-    [TF4] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F4),
-    [TF5] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F5),
-    [TF6] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F6),
-    [TF7] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F7),
-    [TF8] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F8),
-    [TF9] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F9),
-    [TF10] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F10),
-    [TF11] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F11),
-    [TF12] = ACTION_TAP_DANCE_FN_ADVANCED_KEYCODE(NULL, td_alt_finished, td_alt_reset, KC_F12)
+    [LR3] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_RALT, 3),
+    // Hold to send ALT+KC_F1-12
+    [AF1] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F1),
+    [AF2] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F2),
+    [AF3] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F3),
+    [AF4] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F4),
+    [AF5] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F5),
+    [AF6] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F6),
+    [AF7] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F7),
+    [AF8] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F8),
+    [AF9] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F9),
+    [AF10] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F10),
+    [AF11] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F11),
+    [AF12] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F12)
 };
