@@ -19,6 +19,52 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
 #include "lib/lib8tion/lib8tion.h"
 
+// TAPDANCE - definitions
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_TRIPLE_TAP
+} td_state_t;
+
+typedef struct {
+    bool is_press_action;
+    td_state_t state;
+} td_tap_t;
+
+// TAPDANCE KEYCODES
+// LR enables layers
+// TF1-12 will send Alt+FX on hold
+enum {
+    LR1,
+    LR1S,
+    LR1C,
+    LR2,
+    LR3,
+    AF1, AF2, AF3, AF4, AF5, AF6, AF7, AF8, AF9, AF10, AF11, AF12
+};
+
+//  TAPDANCE - Function associated with all tap dances
+td_state_t cur_dance(qk_tap_dance_state_t *state);
+
+//  TAPDANCE - activate layer 1. Tap to toggle, hold to activate momentarily.
+void td_lr1_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lr1_reset(qk_tap_dance_state_t *state, void *user_data);
+
+// TAPDANCE - Tap to send normal KC_X, hold to momentarily enable layer
+void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data);
+
+// TAPDANCE - Tap sends kc. Hold to activate layer.
+void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data);
+
+// TAPDANCE - Alt+KC_X on hold functions
+void td_alt_finished(qk_tap_dance_state_t *state, void *user_data);
+void td_alt_reset(qk_tap_dance_state_t *state, void *user_data);
+
 // LED colors 
 // First 3 values are Hue, Saturation, Value (value=brightness).
 // Last value sets breathing effect. 
@@ -81,21 +127,42 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //      Ct_L      Win_L     Alt_L                                   SPACE                                   Alt_R     FN        Ct_R      Left      Down      Right
 
     [0] = LAYOUT(
-        KC_ESC,   KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_PSCR,            KC_MUTE,
+        KC_ESC,   TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), KC_PSCR,            KC_MUTE,
         KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,            KC_DEL,
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,                      KC_PGUP,
-        KC_CAPS,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,             KC_PGDN,
+        TD(LR1C), KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,             KC_PGDN,
         KC_LSFT,  KC_NUBS,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,            KC_RSFT,  KC_UP,    KC_END,
-        KC_LCTL,  KC_LGUI,  KC_LALT,                                KC_SPC,                                 KC_RALT,  MO(1),    KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
+        KC_LCTL,  TD(LR1),  KC_LALT,                                KC_SPC,                                 KC_RALT,  TD(LR1S), KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
 
+    // FN LAYER TODO rm reset
     [1] = LAYOUT(
-        _______,  KC_MYCM,  KC_WHOM,  KC_CALC,  KC_MSEL,  KC_MPRV,  KC_MNXT,  KC_MPLY,  KC_MSTP,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  _______,            _______,
-        _______,  RGB_TOG,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RESET,              _______,
-        _______,  _______,  RGB_VAI,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                      _______,
-        _______,  _______,  RGB_VAD,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
-        _______,  _______,  _______,  RGB_HUI,  _______,  _______,  _______,  NK_TOGG,  _______,  _______,  _______,  _______,            _______,  RGB_MOD,  _______,
-        _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  RGB_SPD,  RGB_RMOD, RGB_SPI
+        TO(0),    KC_MYCM,  KC_WHOM,  KC_CALC,  KC_MSEL,  KC_MPRV,  KC_MNXT,  KC_MPLY,  KC_MSTP,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RESET,              _______,
+        _______,  _______,  _______,  _______,  _______,  LCA(KC_T),_______,  KC_WH_U,  _______,  _______,  _______,  _______,  _______,                      KC_HOME,
+        _______,  _______,  _______,  _______,  _______,  _______,  KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  _______,  _______,  _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  KC_BTN2,  KC_WH_D,  _______,  _______,  _______,  _______,            _______,  _______,  KC_INS,
+        _______,  _______,  TD(LR2),                                KC_BTN1,                                TD(LR3),  _______,  _______,  _______,  _______, _______
+    ),
+
+    // RGB LAYER
+    [2] = LAYOUT(
+        TO(0),    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,  RGB_M_P,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RGB_VAD,  RGB_VAI,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  RGB_TOG,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                      _______,
+        _______,  _______,  RGB_SAI,  _______,  _______,  _______,  RGB_HUI,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,  _______,  _______,  RGB_SAD,  _______,  _______,  _______,  RGB_HUD,  RGB_MOD,  _______,  _______,  _______,            _______,  RGB_SPI,  _______,
+        _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  RGB_RMOD, RGB_SPD,  RGB_MOD
+    ),
+
+    // ADVANCED LAYER
+    [3] = LAYOUT(
+        TO(0),    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  RESET,    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                      _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  NK_TOGG,  _______,  _______,  _______,  _______,            _______,  _______,  _______,
+        _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  _______,  _______,  _______
     ),
 };
 
@@ -119,22 +186,59 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
     //  BSpc      PgDn      L_LED7    R_RED7    ]         R_SHIFT   L_LED8    R_LED8    Up        #         Left      Enter     Down
         L_DORA,   L_LGRE,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DRED,   L_DRED,   L_LYEL,   L_DRED,   L_LYEL,   L_DORA,   L_LYEL  
     },
+
     // FN LAYER
     [1] = {
     //  ESC       `         Tab       Caps      L_SHIFT   L_CTL     F1        1         Q         A         Z         L_WIN     
-        L_BRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   
+        L_BRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DORA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BRED,   
     //  F2        2         W         S         X         L_ALT     F3        3         E         D         C         F4        4         R         F         V
-        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+        L_DORA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DGRE,   L_DORA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DORA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
     //  F5        5         T         G         B         SPACE     F6        6         Y         H         N         F7        7         U         J         M
-        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,  
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DRED,   L_DRED,   L_DORA,   L__OFF,   L__OFF,   L_DROS,   L_DMAG,   L_DORA,   L__OFF,   L_DMAG,   L_DROS,   L__OFF,  
     //  F8        8         I         K         ,         R_ALT     F9        9         O         L         .         FN
-        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BRED,  
+        L_DORA,   L__OFF,   L__OFF,   L_DROS,   L__OFF,   L__OFF,   L_DORA,   L__OFF,   L__OFF,   L_DROS,   L__OFF,   L__OFF,  
     //  F10       0         P         ;         /         F11       -         [         "         Ct_R      F12       \         L_LED1    R_LED1
-        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BGRE,   L_BGRE,   
+        L_DORA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DORA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BRED,   L_BRED,   
     //  Print     L_LED2    R_LED2    Del       L_LED3    R_LED3    PgUp      L_LED4    R_LED4    =         Right     L_LED5    R_LED5    End       L_LED6    R_LED6
-        L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L_BGRE,   L_BGRE,  
+        L__OFF,   L_BRED,   L_BRED,   L__OFF,   L_BRED,   L_BRED,   L__OFF,   L_BRED,   L_BRED,   L__OFF,   L__OFF,   L_BRED,   L_BRED,   L__OFF,   L_BRED,   L_BRED,  
     //  BSpc      PgDn      L_LED7    L_LED7    ]         R_SHIFT   L_LED8    R_LED8    Up        #         Left      Enter     Down
-        L_BBLU,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF  
+        L_BBLU,   L__OFF,   L_BRED,   L_BRED,   L__OFF,   L__OFF,   L_BRED,   L_BRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF  
+    },
+
+    // RGB LAYER TODO match leds
+    [2] = {
+    //  ESC       `         Tab       Caps      L_SHIFT   L_CTL     F1        1         Q         A         Z         L_WIN     
+        L_BGRE,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   
+    //  F2        2         W         S         X         L_ALT     F3        3         E         D         C         F4        4         R         F         V
+        L__OFF,   L__OFF,   L__OFF,   L_BVIO,   L_BVIO,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+    //  F5        5         T         G         B         SPACE     F6        6         Y         H         N         F7        7         U         J         M
+        L__OFF,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BMAG,   L_BMAG,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BBLU,  
+    //  F8        8         I         K         ,         R_ALT     F9        9         O         L         .         FN
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,  
+    //  F10       0         P         ;         /         F11       -         [         "         Ct_R      F12       \         L_LED1    R_LED1
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BGRE,   L_BGRE,   
+    //  Print     L_LED2    R_LED2    Del       L_LED3    R_LED3    PgUp      L_LED4    R_LED4    =         Right     L_LED5    R_LED5    End       L_LED6    R_LED6
+        L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L_BGRE,   L_BGRE,   L_BCYA,   L_BBLU,   L_BGRE,   L_BGRE,   L__OFF,   L_BGRE,   L_BGRE,  
+    //  BSpc      PgDn      L_LED7    L_LED7    ]         R_SHIFT   L_LED8    R_LED8    Up        #         Left      Enter     Down
+        L__OFF,   L__OFF,   L_BGRE,   L_BGRE,   L__OFF,   L__OFF,   L_BGRE,   L_BGRE,   L_BAZU,   L__OFF,   L_BBLU,   L__OFF,   L_BAZU  
+    },
+
+    // ADVANCED LAYER
+    [3] = {
+    //  ESC       `         Tab       Caps      L_SHIFT   L_CTL     F1        1         Q         A         Z         L_WIN     
+        L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   
+    //  F2        2         W         S         X         L_ALT     F3        3         E         D         C         F4        4         R         F         V
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,
+    //  F5        5         T         G         B         SPACE     F6        6         Y         H         N         F7        7         U         J         M
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DMAG,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,  
+    //  F8        8         I         K         ,         R_ALT     F9        9         O         L         .         FN
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,  
+    //  F10       0         P         ;         /         F11       -         [         "         Ct_R      F12       \         L_LED1    R_LED1
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BBLU,   L_BBLU,   
+    //  Print     L_LED2    R_LED2    Del       L_LED3    R_LED3    PgUp      L_LED4    R_LED4    =         Right     L_LED5    R_LED5    End       L_LED6    R_LED6
+        L__OFF,   L_BBLU,   L_BBLU,   L__OFF,   L_BBLU,   L_BBLU,   L__OFF,   L_BBLU,   L_BBLU,   L__OFF,   L__OFF,   L_BBLU,   L_BBLU,   L__OFF,   L_BBLU,   L_BBLU,  
+    //  BSpc      PgDn      L_LED7    L_LED7    ]         R_SHIFT   L_LED8    R_LED8    Up        #         Left      Enter     Down
+        L__OFF,   L__OFF,   L_BBLU,   L_BBLU,   L__OFF,   L__OFF,   L_BBLU,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF  
     },
 };
 
@@ -231,3 +335,181 @@ void rgb_matrix_indicators_user(void) {
         rgb_matrix_set_color(28, rgb.r, rgb.g, rgb.b);
     }
 }
+
+
+// TAPDANCE - Common. Determine the current tap dance state
+// Double and triple tap is handled to make tapping more stable
+td_state_t cur_dance(qk_tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        // Key has not been interrupted, but the key is still held.
+        // Means you want to send a 'HOLD'.
+        else return TD_SINGLE_HOLD;
+    } 
+    else if (state->count == 2) return TD_DOUBLE_TAP;
+    else if (state->count == 3) return TD_TRIPLE_TAP;
+    else return TD_UNKNOWN;
+}
+
+
+// TAPDANCE - Tap to toggle layer 1. Hold to momentarily activate layer 1.
+static td_tap_t td_lr1_tapstate = {.is_press_action = true, .state = TD_NONE};
+
+// TODO use generic func that passes layer in user_data?
+void td_lr1_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lr1_tapstate.state = cur_dance(state);
+
+    switch (td_lr1_tapstate.state) {
+        // Toggle layer 1
+        case TD_SINGLE_TAP:
+            if (layer_state_is(1)) layer_off(1);
+            else layer_on(1);
+            break;
+        // Momentarily turn on layer 1
+        case TD_SINGLE_HOLD: layer_on(1); break;
+        case TD_DOUBLE_TAP: break;
+        case TD_TRIPLE_TAP: break;
+        case TD_NONE: break;
+        case TD_UNKNOWN: break;
+    }
+}
+
+void td_lr1_reset(qk_tap_dance_state_t *state, void *user_data) {
+    // If the key was held down and now is released then switch off the layer
+    if (td_lr1_tapstate.state == TD_SINGLE_HOLD) {
+        layer_off(1);
+    }
+    td_lr1_tapstate.state = TD_NONE;
+}
+
+
+// TAPDANCE - Tap to send normal KC_X, hold to momentarily enable layer
+// Func retreives current keycode and desired layer from user_data in custom tapdance action.
+// See: https://github.com/qmk/qmk_firmware/blob/master/quantum/process_keycode/process_tap_dance.c
+static td_tap_t td_lr_holdmo_tapstate = {.is_press_action = true, .state = TD_NONE};
+
+void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lr_holdmo_tapstate.state = cur_dance(state);
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+
+    switch (td_lr_holdmo_tapstate.state) {
+        case TD_SINGLE_TAP: register_code(pair->kc); break;
+        case TD_SINGLE_HOLD: layer_on(pair->layer); break;
+        case TD_DOUBLE_TAP: register_code(pair->kc); break;
+        case TD_TRIPLE_TAP: register_code(pair->kc); break;
+        case TD_NONE: break;
+        case TD_UNKNOWN: break;
+    }
+}
+
+void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data) {
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+
+    switch (td_lr_holdmo_tapstate.state) {
+        case TD_SINGLE_TAP: unregister_code(pair->kc); break;
+        case TD_SINGLE_HOLD: layer_off(pair->layer); break;
+        case TD_DOUBLE_TAP: unregister_code(pair->kc); break;
+        case TD_TRIPLE_TAP: unregister_code(pair->kc); break;
+        case TD_UNKNOWN: break;
+        case TD_NONE: break; 
+    }
+    td_lr_holdmo_tapstate.state = TD_NONE;
+}
+
+
+// TAPDANCE - Tap sends kc. Hold to activate layer.
+static td_tap_t td_lr_holdon_tapstate = {.is_press_action = true, .state = TD_NONE};
+
+void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_lr_holdon_tapstate.state = cur_dance(state);
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+
+    switch (td_lr_holdon_tapstate.state) {
+        case TD_SINGLE_TAP: register_code(pair->kc); break;
+        case TD_SINGLE_HOLD: layer_on(pair->layer); break;
+        /* case TD_SINGLE_HOLD: layer_move(pair->layer); break; */
+        case TD_DOUBLE_TAP: register_code(pair->kc); break;
+        case TD_TRIPLE_TAP: register_code(pair->kc); break;
+        case TD_NONE: break;
+        case TD_UNKNOWN: break;
+    }
+}
+
+void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data) {
+    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+
+    switch (td_lr_holdmo_tapstate.state) {
+        case TD_SINGLE_TAP: unregister_code(pair->kc); break;
+        case TD_SINGLE_HOLD: break;
+        case TD_DOUBLE_TAP: unregister_code(pair->kc); break;
+        case TD_TRIPLE_TAP: unregister_code(pair->kc); break;
+        case TD_UNKNOWN: break;
+        case TD_NONE: break; 
+    }
+    td_lr_holdon_tapstate.state = TD_NONE;
+}
+
+
+// TAPDANCE - Tap for normal KC_X. Hold to send Alt+KC_X
+// Func retreives current keycode from user_data in custom tapdance action.
+// This means I can use this func for any keycodes.
+// see: https://github.com/qmk/qmk_firmware/commit/ad7a5bdc4f2527f47ca22885e5d0b689fb8d4518
+// and this one: https://www.reddit.com/r/olkb/comments/kcfs52/qmk_generic_handler_for_tap_dance/
+static td_tap_t td_alt_tap_state = {.is_press_action = true, .state = TD_NONE};
+
+void td_alt_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_alt_tap_state.state = cur_dance(state);
+    qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
+    uint16_t keycode = pair->kc1;
+
+    switch (td_alt_tap_state.state) {
+        case TD_SINGLE_TAP: register_code(keycode); break;
+        case TD_SINGLE_HOLD: register_code16(LALT(keycode)); break;
+        case TD_DOUBLE_TAP: register_code(keycode); break;
+        case TD_TRIPLE_TAP: register_code(keycode); break;
+        case TD_UNKNOWN: break;
+        case TD_NONE: break;
+    }
+}
+
+void td_alt_reset(qk_tap_dance_state_t *state, void *user_data) {
+    qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
+    uint16_t keycode = pair->kc1;
+
+    switch (td_alt_tap_state.state) {
+        case TD_SINGLE_TAP: unregister_code(keycode); break;
+        case TD_SINGLE_HOLD: unregister_code16(LALT(keycode)); break;
+        case TD_DOUBLE_TAP: unregister_code(keycode); break;
+        case TD_TRIPLE_TAP: unregister_code(keycode); break;
+        case TD_UNKNOWN: break;
+        case TD_NONE: break; 
+    }
+    td_alt_tap_state.state = TD_NONE;
+}
+
+// Associate our tap dance key with its functionality
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Layer 1 activation for right FN
+    [LR1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lr1_finished, td_lr1_reset),
+    // Layer 1 activation on left Super hold
+    [LR1S] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_LGUI, 1),
+    // Layer 1 activation on Caps hold
+    [LR1C] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_CAPS, 1),
+    // Layer 2 activation on left Alt hold
+    [LR2] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_LALT, 2),
+    // Layer 3 activation on right Alt hold
+    [LR3] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_RALT, 3),
+    // Hold to send ALT+KC_F1-12
+    [AF1] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F1),
+    [AF2] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F2),
+    [AF3] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F3),
+    [AF4] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F4),
+    [AF5] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F5),
+    [AF6] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F6),
+    [AF7] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F7),
+    [AF8] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F8),
+    [AF9] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F9),
+    [AF10] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F10),
+    [AF11] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F11),
+    [AF12] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F12)
+};
