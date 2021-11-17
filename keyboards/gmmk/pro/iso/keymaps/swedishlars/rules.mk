@@ -6,7 +6,7 @@ VIA_ENABLE = no
 MOUSEKEY_ENABLE = yes
 
 # Enable tap dance
-# TAP_DANCE_ENABLE = yes
+TAP_DANCE_ENABLE = yes
 
 # Enables Link Time Optimization (LTO) when compiling the keyboard
 # TODO qmk warns that LTO likely fails on this board
