@@ -136,7 +136,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // WORK LAYER
-// TODO should I move this after FN Layer?
+// TODO rm: should I move this after FN Layer?
 [1] = LAYOUT_60_iso_arrow(
 //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
     _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,
@@ -167,6 +167,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // WORK FN LAYER
+// TODO rm:
 [3] = LAYOUT_60_iso_arrow(
 //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
     TO(1),    TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), KC_DEL,
