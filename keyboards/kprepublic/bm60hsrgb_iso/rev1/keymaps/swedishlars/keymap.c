@@ -88,14 +88,11 @@ typedef struct {
 // LR enables layers
 // TF1-12 will send Alt+FX on hold
 enum {
+    LR1,
+    LR1G,
+    LR1C,
     LR2,
-    LR2G,
-    LR2C,
     LR3,
-    LR3G,
-    LR3C,
-    LR4,
-    LR5,
     AF1, AF2, AF3, AF4, AF5, AF6, AF7, AF8, AF9, AF10, AF11, AF12
 };
 
@@ -121,115 +118,68 @@ void td_alt_reset(qk_tap_dance_state_t *state, void *user_data);
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-// DEFAULT LAYER
-[0] = LAYOUT_60_iso_arrow(
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    KC_GESC,  KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
-    KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
-    TD(LR2C), KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    KC_LSFT,  KC_NUBS,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_RSFT,  KC_UP,    KC_SLSH,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-    KC_LCTL,  TD(LR2),  KC_LALT,                                KC_SPC,                       KC_RALT,  TD(LR2G), KC_LEFT,  KC_DOWN,  KC_RGHT
-),
+    // DEFAULT LAYER
+    [0] = LAYOUT_60_iso_arrow(
+    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
+        KC_GESC,  KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,
+    //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
+        KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,
+    //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
+        TD(LR1C), KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,
+    //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
+        KC_LSFT,  KC_NUBS,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_RSFT,  KC_UP,    KC_SLSH,
+    //  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
+        KC_LCTL,  TD(LR1),  KC_LALT,                                KC_SPC,                       KC_RALT,  TD(LR1G), KC_LEFT,  KC_DOWN,  KC_RGHT
+    ),
 
-// WORK LAYER
-// TODO rm: should I move this after FN Layer?
-[1] = LAYOUT_60_iso_arrow(
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
-    TD(LR3C), _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-    _______,  TD(LR3),  _______,                                _______,                      _______,  TD(LR3G), _______,  _______,  _______
-),
+    // FN LAYER
+    // TODO add additional mouse button keys, if there's support for it.
+    [1] = LAYOUT_60_iso_arrow(
+    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
+        TO(0),    TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), KC_DEL,
+    //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
+        _______,  LCA(KC_Q),_______,  _______,  _______,  LCA(KC_T),_______,  KC_WH_U,  _______,  _______,  _______,  _______,  _______,
+    //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
+        _______,  _______,  _______,  LCA(KC_D),LCA(KC_F),_______,  KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  _______,  _______,  _______,  _______,
+    //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
+        _______,  _______,  _______,  _______,  _______,  _______,  KC_BTN2,  KC_WH_D,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  KC_PGUP,  _______,
+    //  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
+        _______,  TD(LR1),  TD(LR2),                                KC_BTN1,                      TD(LR3),  _______,  KC_HOME,  KC_PGDN,  KC_END
+    ),
 
-// FN LAYER
-// TODO add additional mouse button keys, if there's support for it.
-// TODO add kc for work fn?
-[2] = LAYOUT_60_iso_arrow(
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    TO(0),    TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), KC_DEL,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
-    _______,  LCA(KC_Q),_______,  _______,  _______,  LCA(KC_T),_______,  KC_WH_U,  _______,  _______,  _______,  _______,  _______,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
-    _______,  _______,  _______,  LCA(KC_D),LCA(KC_F),_______,  KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  _______,  _______,  _______,  _______,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    _______,  _______,  _______,  _______,  _______,  _______,  KC_BTN2,  KC_WH_D,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  KC_PGUP,  _______,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-    _______,  TD(LR2),  TD(LR4),                                KC_BTN1,                      TD(LR5),  _______,  KC_HOME,  KC_PGDN,  KC_END
-),
+    // RGB LAYER
+    [2] = LAYOUT_60_iso_arrow(
+    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
+        TG(2),    RGB_M_P,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_VAD,  RGB_VAI,  KC_NO,
+    //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
+        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_TOG,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+    //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
+        KC_NO,    KC_NO,    RGB_SAI,  KC_NO,    KC_NO,    KC_NO,    RGB_HUI,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+    //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
+        KC_NO,    KC_NO,    KC_NO,    RGB_SAD,  KC_NO,    KC_NO,    KC_NO,    RGB_HUD,  RGB_MOD,  KC_NO,    KC_NO,    KC_NO,    RGB_SPI,  KC_NO,
+    //  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
+        KC_NO,    KC_NO,    KC_NO,                                  KC_NO,                        KC_NO,    KC_NO,    RGB_RMOD, RGB_SPD,  RGB_MOD
+    ),
 
-// WORK FN LAYER
-// TODO rm:
-[3] = LAYOUT_60_iso_arrow(
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    TO(1),    TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), KC_DEL,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
-    _______,  MEH(KC_Q),_______,  _______,  _______,  MEH(KC_T),_______,  KC_WH_U,  _______,  _______,  _______,  _______,  _______,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
-    TD(LR3C), _______,  _______,  MEH(KC_D),MEH(KC_F),_______,  KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  _______,  _______,  _______,  _______,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    _______,  _______,  _______,  _______,  _______,  _______,  KC_BTN2,  KC_WH_D,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  KC_PGUP,  _______,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-    _______,  TD(LR3),  TD(LR4),                                KC_BTN1,                      TD(LR5),  _______,  KC_HOME,  KC_PGDN,  KC_END
-),
-
-// RGB LAYER
-[4] = LAYOUT_60_iso_arrow(
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    TG(4),    RGB_M_P,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_VAD,  RGB_VAI,  KC_NO,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
-    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_TOG,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
-    KC_NO,    KC_NO,    RGB_SAI,  KC_NO,    KC_NO,    KC_NO,    RGB_HUI,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    KC_NO,    KC_NO,    KC_NO,    RGB_SAD,  KC_NO,    KC_NO,    KC_NO,    RGB_HUD,  RGB_MOD,  KC_NO,    KC_NO,    KC_NO,    RGB_SPI,  KC_NO,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-    KC_NO,    KC_NO,    KC_NO,                                  KC_NO,                        KC_NO,    KC_NO,    RGB_RMOD, RGB_SPD,  RGB_MOD
-),
-
-// ADVANCED LAYER
-[5] = LAYOUT_60_iso_arrow(
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    TG(5),    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
-    KC_NO,    KC_NO,    TO(1),    KC_NO,    RESET,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
-    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    TO(0),    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
-    KC_NO,    KC_NO,    KC_NO,                                  KC_NO,                        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO
-),
+    // ADVANCED LAYER
+    [3] = LAYOUT_60_iso_arrow(
+    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
+        TG(3),    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+    //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]
+        KC_NO,    KC_NO,    KC_NO,    KC_NO,    RESET,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+    //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER
+        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+    //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
+        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+    //  CTRL      FN        ALT                                     SPACE                         ALTGR     SUPER     LEFT      DOWN      RIGHT
+        KC_NO,    KC_NO,    KC_NO,                                  KC_NO,                        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO
+    )
 };
 
 // CUSTOM RGB COLORS PER LAYER
 const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
-// DEFAULT LAYER
-[0] = {
-//  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-    L_DYEL,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DYEL,
-//  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
-    L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,
-//  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #
-    L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
-//  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-    L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DYEL,   L_DRED,
-//  CTRL      FN        ALT                                     SPACE                         ALTGR     FN        LEFT      DOWN      RIGHT
-    L_LGRE,   L_LGRE,   L_LGRE,                                 L_DRED,                       L_LGRE,   L_LGRE,   L_DYEL,   L_LYEL,   L_DYEL,
-    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
-        L__OFF,             L__OFF,                       L__OFF,             L__OFF,                       L__OFF,             L__OFF
-    },
-
-    // WORK LAYER
-    [1] = {
+    // DEFAULT LAYER
+    [0] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         L_DYEL,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DYEL,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
@@ -239,13 +189,13 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
         L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DYEL,   L_DRED,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN        LEFT      DOWN      RIGHT
-        L_LGRE,   L_LGRE,   L_LGRE,                                 L_DRED,                       L_LGRE,   L_LGRE,   L_DYEL,   L_DYEL,   L_DYEL,
+        L_LGRE,   L_LGRE,   L_LGRE,                                 L_DRED,                       L_LGRE,   L_LGRE,   L_DYEL,   L_LYEL,   L_DYEL,
     //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
-        L_DGRE,             L_DGRE,                       L_DGRE,             L_DGRE,                       L_DGRE,             L_DGRE
+        L__OFF,             L__OFF,                       L__OFF,             L__OFF,                       L__OFF,             L__OFF
     },
 
     // FN LAYER
-    [2] = {
+    [1] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         L_BRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DYEL,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
@@ -260,24 +210,8 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
         L_BRED,             L_BRED,                       L_BRED,             L_BRED,                       L_BRED,             L_BRED
     },
 
-    // FN WORK LAYER
-    [3] = {
-    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
-        L_BGRE,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DYEL,
-    //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
-        L__OFF,   L_DVIO,   L__OFF,   L__OFF,   L__OFF,   L_LGRE,   L__OFF,   L_DMAG,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
-    //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #
-        L__OFF,   L__OFF,   L__OFF,   L_LGRE,   L_DVIO,   L__OFF,   L_DROS,   L_DROS,   L_DROS,   L_DROS,   L__OFF,   L__OFF,   L__OFF,   
-    //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
-        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DRED,   L_DMAG,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DYEL,   L__OFF,
-    //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN        LEFT      DOWN      RIGHT
-        L__OFF,   L_BRED,   L_DGRE,                                 L_DRED,                       L__OFF,   L__OFF,   L_DYEL,   L_DYEL,   L_DYEL,
-    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
-        L_BGRE,             L_BGRE,                       L_BGRE,             L_BGRE,                       L_BGRE,             L_BGRE
-    },
-
     // RGB LAYER
-    [4] = {
+    [2] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         L_BBLU,   L_BRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_BCYA,   L__OFF,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
@@ -293,13 +227,13 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
     },
 
     // ADVANCED LAYER
-    [5] = {
+    [3] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC
         L_BYEL,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER
-        L__OFF,   L__OFF,   L_BGRE,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
     //  CAPS28    A         S         D         F         G         H         J         K         L         ;         '         #
-        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         SHIFT     UP        ?
         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN        LEFT      DOWN      RIGHT
@@ -313,17 +247,18 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
 // TAPPING TERM PER KEY - determines timeout for what is a tap and what is a hold 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case TD(LR2):
-        case TD(LR2G):
-        case TD(LR3):
-        case TD(LR3G):
+        // fn layer
+        case TD(LR1):
+        case TD(LR1G):
             return 160;
-        case TD(LR2C):
-        case TD(LR3C):
+        // fn layer - hold to mometarily activate
+        case TD(LR1C):
             return 140;
-        case TD(LR4):
+        // rgb layer
+        case TD(LR2):
             return 400;
-        case TD(LR5):
+        // advanced layer
+        case TD(LR3):
             return 600;
         default:
             return TAPPING_TERM;
@@ -344,7 +279,6 @@ void suspend_wakeup_init_user(void) {
 void set_led_color( uint8_t ledindex, HSVB hsv, bool use_matrix_value) {
     // NOTE: effect cycle timer example using user config:
     // uint16_t time = scale16by8(g_rgb_timer, rgb_matrix_config.speed / 8);
-
     uint8_t val = hsv.v;
 
     // if the brightness of the led is set to 0 in the map, the value is not overriden by matrix effect, 
@@ -417,12 +351,6 @@ void rgb_matrix_indicators_user(void) {
                 break;
             case 3:
                 set_layer_color(3);
-                break;
-            case 4:
-                set_layer_color(4);
-                break;
-            case 5:
-                set_layer_color(5);
                 break;
         }
     }
@@ -531,7 +459,6 @@ void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data) {
     switch (td_lr_holdon_tapstate.state) {
         case TD_SINGLE_TAP: register_code(pair->kc); break;
         case TD_SINGLE_HOLD: layer_on(pair->layer); break;
-        /* case TD_SINGLE_HOLD: layer_move(pair->layer); break; */
         case TD_DOUBLE_TAP: register_code(pair->kc); break;
         case TD_TRIPLE_TAP: register_code(pair->kc); break;
         case TD_NONE: break;
@@ -594,31 +521,23 @@ void td_alt_reset(qk_tap_dance_state_t *state, void *user_data) {
 
 // Associate our tap dance key with its functionality
 qk_tap_dance_action_t tap_dance_actions[] = {
-    // Layer 2 - FN 
+    // ---- Layer 1 - FN ----
     // Tap to toggle layer. Hold to momentarily activate.
-    [LR2] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_tglholdmo_finished, td_lr_tglholdmo_reset, 0, 2),
+    [LR1] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_tglholdmo_finished, td_lr_tglholdmo_reset, 0, 1),
     // Hold to momenarily activate. Tap send Left GUI
-    [LR2G] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_LGUI, 2),
+    [LR1G] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_LGUI, 1),
     // Hold to momentarily activate. Tap send Caps
-    [LR2C] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_CAPS, 2),
+    [LR1C] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_CAPS, 1),
 
-    // Layer 3 - Work FN
-    // Tap to toggle layer. Hold to momentarily activate.
-    [LR3] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_tglholdmo_finished, td_lr_tglholdmo_reset, 0, 3),
-    // Hold to momenarily activate. Tap send Left GUI
-    [LR3G] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_LGUI, 3),
-    // Hold to momentarily activate. Tap send Caps
-    [LR3C] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdmo_finished, td_lr_holdmo_reset, KC_CAPS, 3),
-
-    // Layer 4 - RGB
+    // ---- Layer 2 - RGB ----
     // Hold Left Alt to activate.
-    [LR4] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_LALT, 4),
+    [LR2] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_LALT, 2),
 
-    // Layer 5 - Advanced
+    // ---- Layer 3 - Advanced ----
     // Hold Right Alt to activate.
-    [LR5] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_RALT, 5),
+    [LR3] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_holdon_finished, td_lr_holdon_reset, KC_RALT, 3),
 
-    // Hold to send ALT+KC_F1-12
+    // ---- Hold to send ALT+KC_F1-12 ----
     [AF1] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F1),
     [AF2] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F2),
     [AF3] = ACTION_TAP_DANCE_FN_KEY(NULL, td_alt_finished, td_alt_reset, KC_F3),
