@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO use digitizer to position cursor on top bar + ALT + TAB to cycle between pcoip window??
 #include QMK_KEYBOARD_H
 
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
@@ -265,7 +266,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-// TODO testing rgb suspend, based on usb suspend I assume? No diff unfortunately.
+// suspend rgb on suspend
 void suspend_power_down_user(void) {
     rgb_matrix_set_suspend_state(true);
 }
