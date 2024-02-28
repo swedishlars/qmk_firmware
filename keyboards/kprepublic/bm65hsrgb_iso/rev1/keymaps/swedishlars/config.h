@@ -97,11 +97,11 @@
 // Custom tapdance advanced action. Pass keycode in user_data
 #define ACTION_TAP_DANCE_FN_KEY(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc) { \
     .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
-    .user_data = (void *)&((qk_tap_dance_pair_t) { kc, 0 }) \
+    .user_data = (void *)&((tap_dance_pair_t) { kc, 0 }) \
 }
 
 // Custom tapdance advanced action. Pass keycode and layer in user_data.
 #define ACTION_TAP_DANCE_FN_KEY_LAYER(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc, layer) { \
     .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
-    .user_data = (void *)&((qk_tap_dance_dual_role_t) {kc, layer, NULL}) \
+    .user_data = (void *)&((tap_dance_dual_role_t) {kc, layer, NULL}) \
 }

@@ -99,30 +99,30 @@ enum {
 
 
 //  TAPDANCE - Function associated with all tap dances
-td_state_t cur_dance(qk_tap_dance_state_t *state);
+td_state_t cur_dance(tap_dance_state_t *state);
 
 // TAPDANCE - activate layer. Tap to toggle, hold to activate momentarily.
-void td_lr_tglholdmo_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lr_tglholdmo_reset(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_tglholdmo_finished(tap_dance_state_t *state, void *user_data);
+void td_lr_tglholdmo_reset(tap_dance_state_t *state, void *user_data);
 
 // TAPDANCE - Tap to send normal KC_X, hold to momentarily enable layer
-void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_holdmo_finished(tap_dance_state_t *state, void *user_data);
+void td_lr_holdmo_reset(tap_dance_state_t *state, void *user_data);
 
 // TAPDANCE - Tap sends kc. Hold to activate layer.
-void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data);
+void td_lr_holdon_finished(tap_dance_state_t *state, void *user_data);
+void td_lr_holdon_reset(tap_dance_state_t *state, void *user_data);
 
 // TAPDANCE - Alt+KC_X on hold functions
-void td_alt_finished(qk_tap_dance_state_t *state, void *user_data);
-void td_alt_reset(qk_tap_dance_state_t *state, void *user_data);
+void td_alt_finished(tap_dance_state_t *state, void *user_data);
+void td_alt_reset(tap_dance_state_t *state, void *user_data);
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // DEFAULT LAYER
     [0] = LAYOUT_65_iso_blocker(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL
-        KC_GESC,  KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,  KC_DEL,
+        QK_GESC,  KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,  KC_DEL,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]                   INSERT
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,            KC_INS,
     //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER     PG UP
@@ -178,7 +178,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 // CUSTOM RGB COLORS PER LAYER
-const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
+const uint8_t PROGMEM ledcolors[][RGB_MATRIX_LED_COUNT][4] = {
     // DEFAULT LAYER
     [0] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL     0-14 = 15 leds
@@ -244,7 +244,6 @@ const uint8_t PROGMEM ledcolors[][DRIVER_LED_TOTAL][4] = {
     }
 };
 
-
 // TAPPING TERM PER KEY - determines timeout for what is a tap and what is a hold 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -301,10 +300,9 @@ void set_led_color( uint8_t ledindex, HSVB hsv, bool use_matrix_value) {
     rgb_matrix_set_color(ledindex, rgb.r, rgb.g, rgb.b);
 }
 
-
 // SET LED RGB & BREATHING CYCLE BASED ON LAYER
 void set_layer_color( uint8_t layer) {
-    for (uint8_t i = 0; i < DRIVER_LED_TOTAL; i++) {
+    for (uint8_t i = 0; i < RGB_MATRIX_LED_COUNT; i++) {
         // Get hsv + breathing cycle for current led index
         HSVB hsvb = { 
             .h = pgm_read_byte(&ledcolors[layer][i][0]),
@@ -331,7 +329,9 @@ void set_layer_color( uint8_t layer) {
 }
 
 // LED INDICATORS
-void rgb_matrix_indicators_user(void) {
+// TODO new refactor change:
+/* void rgb_matrix_indicators_user(void) { */
+bool rgb_matrix_indicators_user(void) {
     uint32_t mode = rgb_matrix_get_mode();
 
     // Assign custom layer colors if the rgb matrix is on.
@@ -361,13 +361,16 @@ void rgb_matrix_indicators_user(void) {
         HSVB hsvb = L_BCYA;
         set_led_color(30, hsvb, USE_RGB_MATRIX_VALUE_ON);
     }
+
+    // TODO new refactor change:
+    return false;
 }
 
 
 // TAPDANCE - Common.
 // Determine the current tap dance state
 // Double and triple tap is handled to make tapping more stable
-td_state_t cur_dance(qk_tap_dance_state_t *state) {
+td_state_t cur_dance(tap_dance_state_t *state) {
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
         // Key has not been interrupted, but the key is still held.
@@ -385,9 +388,9 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
 // -----------------------------------------------------------------------
 static td_tap_t td_lr_tglholdmo_tapstate = {.is_press_action = true, .state = TD_NONE};
 
-void td_lr_tglholdmo_finished(qk_tap_dance_state_t *state, void *user_data) {
+void td_lr_tglholdmo_finished(tap_dance_state_t *state, void *user_data) {
     td_lr_tglholdmo_tapstate.state = cur_dance(state);
-    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+    tap_dance_dual_role_t *pair = (tap_dance_dual_role_t *)user_data;
 
     switch (td_lr_tglholdmo_tapstate.state) {
         // Toggle layer
@@ -404,10 +407,10 @@ void td_lr_tglholdmo_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void td_lr_tglholdmo_reset(qk_tap_dance_state_t *state, void *user_data) {
+void td_lr_tglholdmo_reset(tap_dance_state_t *state, void *user_data) {
     // If the key was held down and now is released then switch off the layer
     if (td_lr_tglholdmo_tapstate.state == TD_SINGLE_HOLD) {
-        qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+        tap_dance_dual_role_t *pair = (tap_dance_dual_role_t *)user_data;
         layer_off(pair->layer);
     }
     td_lr_tglholdmo_tapstate.state = TD_NONE;
@@ -420,9 +423,9 @@ void td_lr_tglholdmo_reset(qk_tap_dance_state_t *state, void *user_data) {
 // See: https://github.com/qmk/qmk_firmware/blob/master/quantum/process_keycode/process_tap_dance.c
 static td_tap_t td_lr_holdmo_tapstate = {.is_press_action = true, .state = TD_NONE};
 
-void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data) {
+void td_lr_holdmo_finished(tap_dance_state_t *state, void *user_data) {
     td_lr_holdmo_tapstate.state = cur_dance(state);
-    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+    tap_dance_dual_role_t *pair = (tap_dance_dual_role_t *)user_data;
 
     switch (td_lr_holdmo_tapstate.state) {
         case TD_SINGLE_TAP: register_code(pair->kc); break;
@@ -434,8 +437,8 @@ void td_lr_holdmo_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data) {
-    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+void td_lr_holdmo_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_dual_role_t *pair = (tap_dance_dual_role_t *)user_data;
 
     switch (td_lr_holdmo_tapstate.state) {
         case TD_SINGLE_TAP: unregister_code(pair->kc); break;
@@ -453,9 +456,9 @@ void td_lr_holdmo_reset(qk_tap_dance_state_t *state, void *user_data) {
 // ------------------------------------------------
 static td_tap_t td_lr_holdon_tapstate = {.is_press_action = true, .state = TD_NONE};
 
-void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data) {
+void td_lr_holdon_finished(tap_dance_state_t *state, void *user_data) {
     td_lr_holdon_tapstate.state = cur_dance(state);
-    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+    tap_dance_dual_role_t *pair = (tap_dance_dual_role_t *)user_data;
 
     switch (td_lr_holdon_tapstate.state) {
         case TD_SINGLE_TAP: register_code(pair->kc); break;
@@ -467,8 +470,8 @@ void td_lr_holdon_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data) {
-    qk_tap_dance_dual_role_t *pair = (qk_tap_dance_dual_role_t *)user_data;
+void td_lr_holdon_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_dual_role_t *pair = (tap_dance_dual_role_t *)user_data;
 
     switch (td_lr_holdon_tapstate.state) {
         case TD_SINGLE_TAP: unregister_code(pair->kc); break;
@@ -490,9 +493,9 @@ void td_lr_holdon_reset(qk_tap_dance_state_t *state, void *user_data) {
 // and this one: https://www.reddit.com/r/olkb/comments/kcfs52/qmk_generic_handler_for_tap_dance/
 static td_tap_t td_alt_tap_state = {.is_press_action = true, .state = TD_NONE};
 
-void td_alt_finished(qk_tap_dance_state_t *state, void *user_data) {
+void td_alt_finished(tap_dance_state_t *state, void *user_data) {
     td_alt_tap_state.state = cur_dance(state);
-    qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
     uint16_t keycode = pair->kc1;
 
     switch (td_alt_tap_state.state) {
@@ -505,8 +508,8 @@ void td_alt_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void td_alt_reset(qk_tap_dance_state_t *state, void *user_data) {
-    qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
+void td_alt_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
     uint16_t keycode = pair->kc1;
 
     switch (td_alt_tap_state.state) {
@@ -521,7 +524,7 @@ void td_alt_reset(qk_tap_dance_state_t *state, void *user_data) {
 }
 
 // Associate our tap dance key with its functionality
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
     // ---- Layer 1 - FN ----
     // Tap to toggle layer. Hold to momentarily activate.
     [LR1] = ACTION_TAP_DANCE_FN_KEY_LAYER(NULL, td_lr_tglholdmo_finished, td_lr_tglholdmo_reset, 0, 1),
