@@ -18,6 +18,51 @@
 
 #include QMK_KEYBOARD_H
 
+
+// TODO
+// create a struct that allows setting per layer rgb for a list of keycodes?
+// or can I use led matrix flags?
+//
+// LED colors
+// First 3 values are Hue, Saturation, Value (value=brightness).
+// Last value sets breathing effect. 0 = no breathing. > 0 sets cycle time
+// TODO perhaps pass breathing as a separate arg
+#define LED_MAX 150
+
+#define L_DRED { 0, LED_MAX, LED_MAX, 0 }
+#define L_BRED { 0, LED_MAX, LED_MAX, 30 }
+
+#define L_DORA { 8, LED_MAX, LED_MAX, 0 }
+#define L_LORA { 14, LED_MAX, LED_MAX, 0 }
+
+#define L_DYEL { 36, LED_MAX, LED_MAX, 0 }
+#define L_LYEL { 41, LED_MAX, LED_MAX, 0 }
+#define L_BYEL { 36, LED_MAX, LED_MAX, 36 }
+
+#define L_DGRE { 85, LED_MAX, LED_MAX, 0 }
+#define L_LGRE { 60, LED_MAX, LED_MAX, 0 }
+#define L_BGRE { 85, LED_MAX, LED_MAX, 37 }
+
+#define L_DCYA { 127, LED_MAX, LED_MAX, 0 }
+#define L_BCYA { 127, LED_MAX, LED_MAX, 38 }
+
+#define L_DAZU { 150, LED_MAX, LED_MAX, 0 }
+#define L_BAZU { 150, LED_MAX, LED_MAX, 39 }
+
+#define L_DBLU { 169, LED_MAX, LED_MAX, 0 }
+#define L_BBLU { 169, LED_MAX, LED_MAX, 41 }
+
+#define L_DVIO { 180, LED_MAX, LED_MAX, 0 }
+#define L_BVIO { 180, LED_MAX, LED_MAX, 42 }
+
+#define L_DMAG { 201, LED_MAX, LED_MAX, 0 }
+#define L_BMAG { 201, LED_MAX, LED_MAX, 46 }
+
+#define L_DROS { 253, LED_MAX, LED_MAX, 0 }
+#define L_BROS { 222, LED_MAX, LED_MAX, 40 }
+#define L__OFF { 0, 0, 0, 0 }
+
+
 // TODO this is used for rgb lighting, not matrix, keep for ref in casee I can use similar for defining custom key effects?
 /*
 #define INDICATOR_BRIGHTNESS 30
@@ -29,13 +74,16 @@
 #define SET_INDICATORS(hsv) \
 	{0, 1, HSV_OVERRIDE_HELP(hsv, INDICATOR_BRIGHTNESS)}, \
     {35+0, 1, hsv}
+
 #define SET_UNDERGLOW(hsv) \
 	{1, 6, hsv}, \
     {35+1, 6,hsv}
+
 #define SET_NUMPAD(hsv)     \
 	{35+15, 5, hsv},\
 	  {35+22, 3, hsv},\
 	  {35+27, 3, hsv}
+
 #define SET_NUMROW(hsv) \
 	{10, 2, hsv}, \
 		{20, 2, hsv}, \
@@ -43,6 +91,7 @@
 	  {35+ 10, 2, hsv}, \
 	  {35+ 20, 2, hsv}, \
 	  {35+ 30, 2, hsv}
+
 #define SET_INNER_COL(hsv)	\
 	{33, 4, hsv}, \
 	  {35+ 33, 4, hsv}
@@ -50,9 +99,11 @@
 #define SET_OUTER_COL(hsv) \
 	{7, 4, hsv}, \
 	  {35+ 7, 4, hsv}
+
 #define SET_THUMB_CLUSTER(hsv) 	\
 	{25, 2, hsv}, \
 	  {35+ 25, 2, hsv}
+
 #define SET_LAYER_ID(hsv) 	\
 	{0, 1, HSV_OVERRIDE_HELP(hsv, INDICATOR_BRIGHTNESS)}, \
     {35+0, 1, HSV_OVERRIDE_HELP(hsv, INDICATOR_BRIGHTNESS)}, \
@@ -226,77 +277,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	),
 };
 
-#ifdef RGBLIGHT_ENABLE
-// TODO rm
-/* char layer_state_str[70]; */
-// Now define the array of layers. Later layers take precedence
 
-// QWERTY
-// Light on inner column and underglow
-/* const rgblight_segment_t PROGMEM layer_qwerty_lights[] = RGBLIGHT_LAYER_SEGMENTS( */
-/*   SET_LAYER_ID(HSV_RED), */
-/*   // TODO test: */
-/*   SET_INDICATORS(HSV_ORANGE) */
-/* ); */
-
-// _NUM
-// Light on outer column and underglow
-/* const rgblight_segment_t PROGMEM layer_num_lights[] = RGBLIGHT_LAYER_SEGMENTS( */
-/* 	SET_LAYER_ID(HSV_TEAL) */
-
-/* ); */
-// _SYMBOL,
-// Light on inner column and underglow
-/* const rgblight_segment_t PROGMEM layer_symbol_lights[] = RGBLIGHT_LAYER_SEGMENTS( */
-/* 	SET_LAYER_ID(HSV_BLUE) */
-
-/*     ); */
-// _COMMAND
-// Light on inner column and underglow
-/* const rgblight_segment_t PROGMEM layer_command_lights[] = RGBLIGHT_LAYER_SEGMENTS( */
-/*   SET_LAYER_ID(HSV_PURPLE) */
-/* ); */
-
-//_NUMPAD
-/* const rgblight_segment_t PROGMEM layer_numpad_lights[] = RGBLIGHT_LAYER_SEGMENTS( */
-/* 	SET_INDICATORS(HSV_ORANGE), */
-/*     SET_UNDERGLOW(HSV_ORANGE), */
-/* 	SET_NUMPAD(HSV_BLUE), */
-/*     {7, 4, HSV_ORANGE}, */
-/*     {25, 2, HSV_ORANGE}, */
-/*     {35+6, 4, HSV_ORANGE}, */
-/*     {35+25, 2, HSV_ORANGE} */
-/*     ); */
-// _SWITCHER   // light up top row
-/* const rgblight_segment_t PROGMEM layer_switcher_lights[] = RGBLIGHT_LAYER_SEGMENTS( */
-/* 	SET_LAYER_ID(HSV_GREEN), */
-/* 	SET_NUMROW(HSV_GREEN) */
-/* ); */
-
-// TODO not used
-/* const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST( */
-
-/*     layer_qwerty_lights, */
-/* 	layer_num_lights,// overrides layer 1 */
-/* 	layer_symbol_lights, */
-/*     layer_command_lights, */
-/* 	layer_numpad_lights, */
-/* 	layer_switcher_lights,  // Overrides other layers */
-/* 	layer_colemakdh_lights */
-/* ); */
-
-// TODO this is used for rgblight, not rgb_matrix, rm:
-/* layer_state_t layer_state_set_user(layer_state_t state) { */
-/* 	rgblight_set_layer_state(0, layer_state_cmp(state, _DEFAULTS) && layer_state_cmp(default_layer_state,_QWERTY)); */
-/* 	rgblight_set_layer_state(1, layer_state_cmp(state, _LOWER)); */
-/* 	rgblight_set_layer_state(2, layer_state_cmp(state, _RAISE)); */
-/* 	rgblight_set_layer_state(3, layer_state_cmp(state, _ADJUST)); */
-/* 	rgblight_set_layer_state(4, layer_state_cmp(state, _NUMPAD)); */
-/* 	rgblight_set_layer_state(5, layer_state_cmp(state, _SWITCH)); */
-/*     return state; */
-/* } */
-#endif
-
+// TODO copy set_layer_color from bm65
+// TODO copy set_led_color from bm65
 
 #ifdef RGB_MATRIX_ENABLE
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
@@ -309,20 +292,18 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                // get led index
                 uint8_t index = g_led_config.matrix_co[row][col];
 
-                // TODO use this to store keycode:
+                // get keycode
                 uint16_t kc = keymap_key_to_keycode(layer, (keypos_t){col,row});
 
-                if (index >= led_min && index < led_max && index != NO_LED &&
-                // TODO orig:
-                /* keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) { */
-                kc > KC_TRNS) {
+                // TODO this is not quite working, seem to filter out too many led indicies?
+                if (index >= led_min && index < led_max && index != NO_LED && kc > KC_TRNS) {
                     // TODO use kc case?
 
-                    // TODO default colors set max 255 values, which might draw too much current
-                    // 100 seem to be a safe value?
-                    /* rgb_matrix_set_color(index, RGB_GREEN); */
+                    // TODO default colors set max 255 values, which crashes controller.
+                    // 150 seem to be max safe value.
                     rgb_matrix_set_color(index, 0,100,0);
                 }
                 else {
@@ -362,7 +343,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
 
 #ifdef OLED_ENABLE
-// TODO replace
+// TODO replace with something useful
 static void render_logo(void) {
     static const char PROGMEM qmk_logo[] = {
         0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94,
