@@ -71,7 +71,6 @@ typedef struct PACKED {
 
 // TODO use RGB_MATRIX_MAX_LED_COUNT
 // TODO can I define array index order in struct?
-/* typedef struct PACKED led_color_t; */
 typedef struct PACKED {
     HSVB    hsvb[58];
 } led_color_t;

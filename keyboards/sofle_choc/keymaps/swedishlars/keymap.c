@@ -24,10 +24,11 @@
 #include "lib/rgb.h"
 #include "lib/oled.h"
 #include "lib/pointing_device.h"
-// TODO rename
 #include "swedishlars.h"
 
 // Custom keycode names
+// TODO move to header
+//
 // TODO create send cmd to open terminal & also tmux?
 // Move to left desktop: C( = LCTL, G( = LGUI   result: LCTL + LGUI (meta) + LEFT ARROW
 #define DESK_L C(G(KC_LEFT))
@@ -151,10 +152,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // layer 5
-// TODO rename CONFIG or SETUP
-[_SWITCH] = LAYOUT(
+// TODO use enum layer names
+[_ADJUST] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |           |  base lyr |  lower    |  raise    |  numpad   |  mouse    |                          |switch     |           |           |           |           |  reboot   |
+ // |           |  base lyr |  lower    |  raise    |  numpad   |  mouse    |                          |adjust     |           |           |           |           |  reboot   |
      QK_BOOT,    TO(0),      TO(1),      TO(2),      TO(3),      TO(4),                                 TO(5),      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |           |           |           | clear mem |
@@ -174,7 +175,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-// TODO rename post_init_timer?
+// Oled help msg timer
+// TODO test cooment out to see if it fixes oled timeout
 uint16_t oled_help_timer = 0;
 
 
@@ -190,7 +192,8 @@ void keyboard_post_init_user(void) {
     pointing_device_set_cpi_on_side(true, 500);
     pointing_device_set_cpi_on_side(false, 500);
 
-    // TODO testing
+    // start timer for displaying help msg.
+    // TODO test cooment out to see if it fixes oled timeout
     oled_help_timer = timer_read();
 }
 
@@ -199,6 +202,7 @@ void keyboard_post_init_user(void) {
 // TODO does not work on slave side
 void suspend_power_down_user(void) {
     rgb_matrix_set_suspend_state(true);
+    oled_off();
 }
 
 
@@ -219,10 +223,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_LOWER:
             if (record->event.pressed) {
                 layer_on(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _SWITCH);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
 
                 // TODO make audio/haptic funcs?
-                if (IS_LAYER_ON(_SWITCH)) {
+                if (IS_LAYER_ON(_ADJUST)) {
                     PLAY_SONG(click_sound);
 
                     // haptic feedback for setup layer
@@ -231,16 +235,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             } else {
                 layer_off(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _SWITCH);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
             }
             return false;
 
         case KC_RAISE:
             if (record->event.pressed) {
                 layer_on(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _SWITCH);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
 
-                if (IS_LAYER_ON(_SWITCH)) {
+                if (IS_LAYER_ON(_ADJUST)) {
                     PLAY_SONG(click_sound);
 
                     haptic_set_mode(1);
@@ -248,7 +252,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             } else {
                 layer_off(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _SWITCH);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
             }
             return false;
 
@@ -300,26 +304,37 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
-        // TODO orig 128x32 oled rotation
+        // NOTE orig 128x32 oled rotation
         /* return OLED_ROTATION_270; */
 
-        // TODO test 64x128 oled
+        // 64x128 oled
+        // TODO since new oled does not need rotation,
+        // this func is now redundant
         return OLED_ROTATION_0;
     }
     return rotation;
 }
 
+// TODO move to oled.c?
 bool oled_task_user(void) {
+    // TODO see if this fixes timeout:
+    if (last_input_activity_elapsed() < OLED_SUSPEND_TIME) {
+        oled_on();
+    } else {
+        oled_off();
+        return false;
+    }
+
     if (is_keyboard_master()) {
-        oled_render_right();
+        oled_render_left();
     }
     else {
         if (!oled_startup_done) {
             oled_render_logo();
-            defer_exec(3000, oled_rotate, NULL);
+            defer_exec(OLED_LOGO_TIME + 1000, oled_rotate, NULL);
         }
         else {
-            oled_render_left();
+            oled_render_right();
         }
 
     }

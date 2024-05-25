@@ -15,10 +15,8 @@ MOUSEKEY_ENABLE = yes
 # enable deferred execution of callbacks
 DEFERRED_EXEC_ENABLE = yes
 
-# Oled - NOTE not needed, defaults work
-# TODO disable again
+# Oled
 OLED_ENABLE = yes
-# OLED_DRIVER = ssd1306
 
 # Track Pad
 POINTING_DEVICE_ENABLE = yes

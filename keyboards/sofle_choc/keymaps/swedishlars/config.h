@@ -31,10 +31,14 @@
 // activity timestamp synching
 #define SPLIT_ACTIVITY_ENABLE
 
+// TODO test if this fixes oled timeout
+#define SPLIT_WATCHDOG_ENABLE
+
 
 #ifdef OLED_ENABLE
     #define SPLIT_OLED_ENABLE
     #define OLED_UPDATE_INTERVAL 50
+
     // standard sofle 128x32 oled
     /* #define OLED_DISPLAY_128X64 */
 
@@ -44,6 +48,8 @@
 
     // set default brightness
     #define OLED_BRIGHTNESS 128
+
+    #define OLED_TIMEOUT 0
 #endif
 
 
