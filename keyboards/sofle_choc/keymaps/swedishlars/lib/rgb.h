@@ -26,13 +26,8 @@
 #define L_LGRE { 60, 255, LED_MAX, 0 }
 #define L_BGRE { 85, 255, LED_MAX, 36 }
 
-
 #define L_DCYA { 95, 255, LED_MAX, 0 }
 #define L_BCYA { 95, 255, LED_MAX, 38 }
-
-// TODO remove AZU, too similar to BLU
-#define L_DAZU { 150, 255, LED_MAX, 0 }
-#define L_BAZU { 150, 255, LED_MAX, 40 }
 
 #define L_DBLU { 169, 255, LED_MAX, 0 }
 #define L_LBLU { 158, 255, LED_MAX, 0 }
@@ -41,17 +36,8 @@
 #define L_DVIO { 180, 255, LED_MAX, 0 }
 #define L_BVIO { 180, 255, LED_MAX, 44 }
 
-// TODO remove MAG, too similar to RED
-#define L_DMAG { 201, 255, LED_MAX, 0 }
-#define L_BMAG { 201, 255, LED_MAX, 46 }
-
-// TODO remove ROS, too similar to RED
-#define L_DROS { 253, 255, LED_MAX, 0 }
-#define L_BROS { 222, 255, LED_MAX, 48 }
 #define L__OFF { 0, 0, 0, 0 }
 
-// TODO maybe define common color rows for my led maps, similar to this:
-/* #define NUM_KEYS {KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9} */
 
 // Use keyboard current brighness when setting LED HSV value.
 #define USE_RGB_MATRIX_VALUE_ON true
@@ -60,8 +46,6 @@
 #define USE_RGB_MATRIX_VALUE_OFF false
 
 // RGB HSV + breathe cycle time
-/* typedef struct _HSVB HSVB; */
-/* typedef struct PACKED HSVB; */
 typedef struct PACKED {
     uint8_t h;
     uint8_t s;
@@ -69,14 +53,18 @@ typedef struct PACKED {
     uint8_t b;
 } HSVB;
 
-// TODO use RGB_MATRIX_MAX_LED_COUNT
-// TODO can I define array index order in struct?
+// array of per key led hsv + breathe cycle time
 typedef struct PACKED {
-    HSVB    hsvb[58];
+    HSVB    hsvb[RGB_MATRIX_LED_COUNT];
 } led_color_t;
 
+// array of per layer and key hsv + breathe cycle time
 extern const led_color_t PROGMEM ledcolors[];
 
+
+// rgb to key index conversion. 
+// Array index order represents rgb index.
+// value represents key index.
 extern const uint8_t PROGMEM rgb_matrix_index[]; 
 
 void set_led_color( uint8_t index, HSVB hsvb, bool use_matrix_value); 

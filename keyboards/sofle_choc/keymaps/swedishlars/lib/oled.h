@@ -5,11 +5,9 @@
 #define OLED_KEYLOG_LENGTH 11
 
 // How long to display help message
-// TODO rename timeout
 #define OLED_HELP_TIME 10000
 
 // How long to display startup logo
-// TODO rename timeout
 #define OLED_LOGO_TIME 2000
 
 // Turn off oled when there is no input activity
@@ -21,25 +19,42 @@ extern bool oled_startup_done;
 // timer for hiding oled help
 extern uint16_t oled_help_timer;
 
-// TODO
-extern bool oled_lock_enabled;
+// enable/disable oled sleep when no input activity
+extern bool oled_sleep_enabled;
 
 // global used to check if keylogger is enabled
 extern bool oled_keylogger_enabled;
 
-uint32_t oled_rotate(uint32_t trigger_time, void *cb_arg);
+// Deferred execution callback to clear and rotate display.
+uint32_t oled_startup(uint32_t trigger_time, void *cb_arg);
 
 bool process_record_user_oled(uint16_t keycode, keyrecord_t *record); 
 
-void oled_render_logo(void);
+// TODO test calling directly
+void add_keylog(uint16_t keycode, keyrecord_t *record);
+
+void oled_startup_logo(void);
 void oled_render_left(void);
 void oled_render_right(void);
 void oled_render_boot(bool bootloader);
 
+// TODO test enum names for array index
+enum keycode_desc_index {
+    KEYCODE_DEFAULT,
+    KEYCODE_SHIFT,
+    KEYCODE_LOWER,
+    KEYCODE_RAISE
+};
+
+// Key code descriptions - array index represents keycode
+// TODO went for 3d array as it makes it simpler, works now rm note:
+// NOTE: These arrays are declared separately so that minimum memory space is taken
 // NOTE: backslash does not count as a char
-static const char PROGMEM keycode_to_name[256][OLED_KEYLOG_LENGTH] = {
+/* static const char PROGMEM keycode_to_desc[256][OLED_KEYLOG_LENGTH] = { */
+static const char PROGMEM keycode_to_desc[][256][OLED_KEYLOG_LENGTH] = {
 //   0           1            2            3            4            5            6            7            8            9         Raw code 
 //  ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+    {
     "          ","          ","          ","          "," a        "," b        "," c        "," d        "," e        "," f        ",  // 0-9
     " g        "," h        "," i        "," j        "," k        "," l        "," m        "," n        "," o        "," p        ",  // 10-19
     " q        "," r        "," s        "," t        "," u        "," v        "," w        "," x        "," y        "," z        ",  // 20-29
@@ -66,11 +81,15 @@ static const char PROGMEM keycode_to_name[256][OLED_KEYLOG_LENGTH] = {
     "R Alt     ","R Gui     ","          ","          ","          ","          ","          "," 24       "," 26       "," 24       ",  // 230-239
     "25        ","          ","          ","          ","          ","          ","          ","          ","          "," 24       ",  // 240- 249
     "25        "," 27       "," 26       ","          ","          ","          "                                                       // 250-255
-};
+    },
+/* }; */
 
-static const char PROGMEM shifted_keycode_to_name[101][OLED_KEYLOG_LENGTH] = {
+// Shifted key code descriptions - array index represents keycode
+// TODO orig:
+/* static const char PROGMEM keycode_to_desc_shift[101][OLED_KEYLOG_LENGTH] = { */
 //   0           1            2            3            4            5            6            7            8            9              Raw code 
-//   -----     --------     --------     --------     --------     --------     --------     --------     --------     -------------- 
+//  ----------   ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+    {
     "          ","          ","          ","          "," A        "," B        "," C        "," D        "," E        "," F        ",  // 0-9
     " G        "," H        "," I        "," J        "," K        "," L        "," M        "," N        "," O        "," P        ",  // 10-19
     " Q        "," R        "," S        "," T        "," U        "," V        "," W        "," X        "," Y        "," Z        ",  // 20-29
@@ -82,31 +101,23 @@ static const char PROGMEM shifted_keycode_to_name[101][OLED_KEYLOG_LENGTH] = {
     " Left     "," Down     "," Up       ","Num Lock  ","/         "," *        "," -        "," +        ","Enter     "," 1        ",  // 80-89
     " 2        "," 3        "," 4        "," 5        "," 6        "," 7        "," 8        "," 9        "," 0        "," .        ",  // 90-99
     " |        ",                                                                                                                       // 100
+    },
+/* }; */
+
+// Key description overrides per layer
+/* static const char PROGMEM keycode_to_desc_lower[24][OLED_KEYLOG_LENGTH] = { */
+    {
+    [7] =    " d (tmux) ",
+    [23] =   " t (Term) "
+    },
+/* }; */
+
+/* static const char PROGMEM keycode_to_desc_raise[54][OLED_KEYLOG_LENGTH] = { */
+    {
+    [53] =    "Neg Symbol"
+    }
 };
 
-static const char PROGMEM lower_keycode_to_name[30][OLED_KEYLOG_LENGTH] = {
-//   0      1       2       3       4       5       6       7            8       9         Raw code 
-//   -------------------------------------------------------------     ------------------
-    ""          ,""          ,""          ,""          ,""          ,""          ,""          ,"Tmux Term ",""          ,""          ,  // 0-9
-    ""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,  // 10-19
-    ""          ,""          ,""          ,"Terminal  ",""          ,""          ,""          ,""          ,""          ,""          ,  // 20-29
-};
-
-static const char PROGMEM raise_keycode_to_name[90][OLED_KEYLOG_LENGTH] = {
-//   0      1       2       3       4       5       6       7       8       9         Raw code 
-//   -------------------------------------------------------------------------------
-    ""          ,""          ,""          ,""          ,""          ,""          ,"Ctrl + c  ",""          ,""          ,""          ,  // 0-9
-    ""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,  // 10-19
-    ""          ,""          ,""          ,"Terminal  ",""          ,"Ctrl + v  ",""          ,"Ctrl + x  ",""          ,"Ctrl + z  ",  // 20-29
-    ""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,  // 30-39
-    ""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,  // 40-49
-    ""          ,""          ,""          ,"Neg Symbol",""          ,""          ,""          ,""          ,"Alt + F1  ","Alt + F2  ",  // 50-59
-    "Alt + F3  ","Alt + F4  ","Alt + F5  ","Alt + F6  ","Alt + F7  ","Alt + F8  ","Alt + F9  ","Alt + F10 ","Alt + F11 ","Alt + F12 ",  // 60-69
-    ""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,""          ,"Alt+Right ",  // 70-79
-    "Alt+Left  ","Alt+Down  ","Alt+Up    ",""          ,""          ,""          ,""          ,""          ,""          ,""          ,  // 80-89
-};
-
-// TODO add numpad, mouse & setup layers
 
 
 // 128x32 oled logo
@@ -287,15 +298,20 @@ static const char PROGMEM layer_undefined_logo[] = {
 
 
 static const char PROGMEM off_btn_logo[] = {
-0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x7d, 0x45, 0x45, 0x45, 0x45, 
-0x45, 0x7d, 0x01, 0xff
+0xff, 0x01, 0x7d, 0x45, 0x45, 0x45, 0x45, 0x45, 0x7d, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 
+0x01, 0x01, 0x01, 0xff
 };
 
 static const char PROGMEM on_btn_logo[] = {
-0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 
+0xff, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 
 0x7d, 0x7d, 0x01, 0xff
 };
 
+static const char PROGMEM oled_sleep_logo[] = {
+0xff, 0x83, 0x01, 0x7d, 0x7d, 0x39, 0x83, 0xff, 0x01, 0x01, 0x7f, 0x7f, 0x7f, 0x7f, 0xff, 0x01, 
+0x01, 0x6d, 0x6d, 0x6d, 0x7d, 0xff, 0x01, 0x01, 0x7d, 0x7d, 0x39, 0x83, 0xff, 0x2f, 0x6f, 0x4f, 
+0xff, 0x3b, 0x5b, 0x6b, 0x73, 0xff, 0x3d, 0x5d, 0x6d, 0x75, 0x79, 0xff
+};
 
 static const char PROGMEM caps_logo[] = {
 0xff, 0xff, 0x01, 0x01, 0x7d, 0x7d, 0x7d, 0x39, 0xff, 0x01, 0x01, 0xed, 0xed, 0xe1, 0x0f, 0xff, 
@@ -328,14 +344,6 @@ static const char PROGMEM bottom_banner_logo[] = {
 0x01, 0x7d, 0x05, 0x09, 0x11, 0x21, 0x7d, 0x01, 0x01, 0x7d, 0x45, 0x45, 0x45, 0x39, 0x00, 0x00
 };
 
-/*
-static const char PROGMEM modifiers_logo[] = {
-0x01, 0x01, 0x01, 0x01, 0x01, 0x7d, 0x05, 0x19, 0x05, 0x7d, 0x01, 0x01, 0x39, 0x45, 0x45, 0x45, 
-0x39, 0x01, 0x01, 0x7d, 0x45, 0x45, 0x45, 0x39, 0x01, 0x01, 0x7d, 0x01, 0x01, 0x7d, 0x15, 0x15, 
-0x05, 0x01, 0x01, 0x7d, 0x01, 0x01, 0x7d, 0x55, 0x55, 0x45, 0x01, 0x01, 0x7d, 0x15, 0x35, 0x55, 
-0x09, 0x01, 0x01, 0x5d, 0x55, 0x55, 0x75, 0x01, 0x01, 0x29, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
-};
-*/
 
 static const char PROGMEM shift_logo[] = {
 0xff, 0xa1, 0xa1, 0xad, 0xad, 0x8d, 0x8d, 0xff, 0x81, 0x81, 0xef, 0xef, 0xef, 0x81, 0xff, 0xbd, 
@@ -350,4 +358,16 @@ static const char PROGMEM alt_logo[] = {
 static const char PROGMEM ctrl_logo[] = {
 0xff, 0x81, 0x81, 0xbd, 0xbd, 0xbd, 0x99, 0xff, 0xfd, 0xfd, 0x81, 0x81, 0xfd, 0xfd, 0xff, 0x81, 
 0x81, 0xed, 0xcd, 0x8d, 0xa1, 0xff, 0x81, 0x81, 0xbf, 0xbf, 0xbf, 0xbf, 0xff, 0x00, 0x00, 0x00
+};
+
+static const char PROGMEM gui_logo[] = {
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x81, 0x81, 0xbd, 0xbd, 0xad, 0x8d, 
+0xff, 0x81, 0x81, 0xbf, 0xbf, 0xbf, 0x81, 0xff, 0xbd, 0x81, 0xbd, 0xff, 0x00, 0x00, 0x00, 0x00
+};
+
+static const char PROGMEM keylogger_logo[] = {
+0xff, 0x81, 0x81, 0xe7, 0xd3, 0xb9, 0xff, 0x81, 0x81, 0xad, 0xad, 0xbd, 0xff, 0xf9, 0xf3, 0x87, 
+0x87, 0xf3, 0xf9, 0xff, 0x81, 0x81, 0xbf, 0xbf, 0xbf, 0xff, 0xc3, 0x81, 0xbd, 0xbd, 0x99, 0xc3, 
+0xff, 0x81, 0x81, 0xbd, 0xbd, 0xad, 0x8d, 0xff, 0x81, 0x81, 0xbd, 0xbd, 0xad, 0x8d, 0xff, 0x81, 
+0x81, 0xad, 0xad, 0xbd, 0xff, 0x81, 0x81, 0xed, 0xcd, 0xad, 0xb3, 0xff, 0x00, 0x00, 0x00, 0x00
 };

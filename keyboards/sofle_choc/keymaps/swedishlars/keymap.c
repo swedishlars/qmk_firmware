@@ -24,27 +24,13 @@
 #include "lib/rgb.h"
 #include "lib/oled.h"
 #include "lib/pointing_device.h"
+/* #include "lib/audio.h" */
 #include "swedishlars.h"
 
-// Custom keycode names
-// TODO move to header
-//
-// TODO create send cmd to open terminal & also tmux?
-// Move to left desktop: C( = LCTL, G( = LGUI   result: LCTL + LGUI (meta) + LEFT ARROW
-#define DESK_L C(G(KC_LEFT))
-#define DESK_R C(G(KC_RIGHT))
 
-// momentarily activate layer when held
-#define LT_NUMP LT(_NUMPAD,KC_CAPS)
-
-// Maya custom keys
-#define MAYA_R A(KC_BTN1)
-#define MAYA_T A(KC_BTN3)
-#define MAYA_S A(KC_BTN2)
-
-// TODO move to lib
 // custom sounds
 float click_sound[][2] = SONG(TERMINAL_SOUND);
+/* float close_encounter_song[][2] = SONG(CLOSE_ENCOUNTERS_SONG); */
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -76,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      _______,    KC_F1,      KC_F2,      KC_F3,      KC_F4,      KC_F5,                                 KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_DEL,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | ` and ¬   | F11       | F12       |           |           | terminal  |                          |           |           | [ and {   | ] and }   |print scren|           |
-     KC_GRV,     KC_F11,     KC_F12,     _______,    _______,    LCA(KC_T),                             _______,    _______,    KC_LBRC,    KC_RBRC,    KC_PSCR,    _______,
+     KC_GRV,     KC_F11,     KC_F12,     _______,    _______,    KC_TERM,                               _______,    _______,    KC_LBRC,    KC_RBRC,    KC_PSCR,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           | app menu  |           | tmux term |           |page up    |                          | left      | down      | up        |  right    |           |           |
      _______,    KC_APP,     _______,    LCA(KC_D),  _______,    KC_PGUP,                               KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
@@ -95,7 +81,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_RAISE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           | alt+F1    | alt+F2    | alt+F3    | alt+F4    | alt+F5    |                          | alt+F6    | alt+F7    | alt+F8    | alt+F9    | alt+F10   |insert     |
-     _______,    A(KC_F1),   A(KC_F2),   A(KC_F3),   A(KC_F4),   A(KC_F5),                              A(KC_F6),   A(KC_F7),   A(KC_F8),   A(KC_F9),   A(KC_F10),  KC_INS,
+     _______,    KC_AF1,     A(KC_F2),   A(KC_F3),   A(KC_F4),   A(KC_F5),                              A(KC_F6),   A(KC_F7),   A(KC_F8),   A(KC_F9),   A(KC_F10),  KC_INS,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |    ¬      | alt+F11   | alt+F12   |           |           |           |                          |           |           |    {      |    }      | play      |           |
      S(KC_GRV),  A(KC_F11),  A(KC_F12),  _______,    _______,    _______,                               _______,    _______,    KC_LCBR,    KC_RCBR,    KC_MPLY,    _______,
@@ -104,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      _______,    _______,    _______,    _______,    _______,    KC_HOME,                               A(KC_LEFT), A(KC_DOWN), A(KC_UP), A(KC_RGHT),    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
  // |           | undo      | cut       |copy       |paste      |           |           |  |           |           |           |           |           |           |           |
-     _______,    C(KC_Z),    C(KC_X),    C(KC_C),    C(KC_V),    KC_END,     _______,       _______,    _______,    KC_MUTE,    KC_MPRV,    KC_MNXT,    _______,    _______,
+     _______,    KC_UNDO,    KC_CUT,     KC_COPY,    KC_PASTE,   KC_END,     _______,       _______,    _______,    KC_MUTE,    KC_MPRV,    KC_MNXT,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------+-----------'
  //                         |           |           |           |           |           |  |           |           |           | vol -     | vol+l     |
                              _______,    _______,    _______,    _______,    _______,       _______,    _______,    _______,    KC_VOLD,    KC_VOLU
@@ -152,14 +138,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // layer 5
-// TODO use enum layer names
 [_ADJUST] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           |  base lyr |  lower    |  raise    |  numpad   |  mouse    |                          |adjust     |           |           |           |           |  reboot   |
-     QK_BOOT,    TO(0),      TO(1),      TO(2),      TO(3),      TO(4),                                 TO(5),      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
+     QK_BOOT,    TO(_QWERTY),TO(_LOWER), TO(_RAISE), TO(_NUMPAD),TO(_MOUSE),                            TO(_ADJUST),XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |           |           |           | clear mem |
-     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RGB_TOG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,
+ // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |           |oled sleep |           | clear mem |
+     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RGB_TOG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    KC_OSLEEP,  XXXXXXX,    EE_CLR,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           | audio tog | sys sleep |           |           |           |                          | haptic tg |           |           |           |           |           |
      XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               HF_TOGG,    XXXXXXX,    KC_KEYLOG,  XXXXXXX,    XXXXXXX,    XXXXXXX,
@@ -176,7 +161,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 // Oled help msg timer
-// TODO test cooment out to see if it fixes oled timeout
 uint16_t oled_help_timer = 0;
 
 
@@ -193,22 +177,7 @@ void keyboard_post_init_user(void) {
     pointing_device_set_cpi_on_side(false, 500);
 
     // start timer for displaying help msg.
-    // TODO test cooment out to see if it fixes oled timeout
     oled_help_timer = timer_read();
-}
-
-
-// suspend callbacks
-// TODO does not work on slave side
-void suspend_power_down_user(void) {
-    rgb_matrix_set_suspend_state(true);
-    oled_off();
-}
-
-
-// wake callbacks
-void suspend_wakeup_init_user(void) {
-    rgb_matrix_set_suspend_state(false);
 }
 
 
@@ -224,12 +193,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 layer_on(_LOWER);
                 update_tri_layer(_LOWER, _RAISE, _ADJUST);
-
-                // TODO make audio/haptic funcs?
                 if (IS_LAYER_ON(_ADJUST)) {
                     PLAY_SONG(click_sound);
-
+                    /* PLAY_SONG(close_encounter_song); */
                     // haptic feedback for setup layer
+                    // TODO make haptic func?
                     haptic_set_mode(1);
                     haptic_play();
                 }
@@ -237,16 +205,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 layer_off(_LOWER);
                 update_tri_layer(_LOWER, _RAISE, _ADJUST);
             }
+            // TODO teask break instead
+            // does not work well,try reverting
             return false;
+            /* break; */
 
         case KC_RAISE:
             if (record->event.pressed) {
                 layer_on(_RAISE);
                 update_tri_layer(_LOWER, _RAISE, _ADJUST);
-
                 if (IS_LAYER_ON(_ADJUST)) {
                     PLAY_SONG(click_sound);
-
                     haptic_set_mode(1);
                     haptic_play();
                 }
@@ -255,17 +224,61 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 update_tri_layer(_LOWER, _RAISE, _ADJUST);
             }
             return false;
+            /* break; */
+
+        // TODO test Maya custom keycode
+        /* case MAYA_R: */
+        /*     if (record->event.pressed) { */
+        /*         register_code16(A(KC_BTN1)); */
+        /*     } else { */
+        /*         unregister_code16(A(KC_BTN1)); */
+        /*     } */
+        /*     break; */
+
+        /* case MAYA_S: */
+        /*     if (record->event.pressed) { */
+        /*         register_code16(A(KC_BTN2)); */
+        /*     } else { */
+        /*         unregister_code16(A(KC_BTN2)); */
+        /*     } */
+        /*     break; */
+
+        // TODO test
+        /* case QK_MODS ... QK_MODS_MAX: */
 
         // allow normal process of modifiers and layer tap
         // disregarding if keylogger is enabled 
+        // TODO I should not need any of this any longer? Looks like I do need it
         case KC_LCTL ... KC_RGUI:
+
+        // TODO do I keep?
         case LT_NUMP:
+
+        // TODO test add modifier range here, A(kc) ... ?
+        // This works but downside is it sends keycode to pc.
+        /* case MAYA_T: */
+        /* case MAYA_R: */
+        /* case MAYA_S: */
+        /* case KC_UNDO: */
+        /* case KC_CUT: */
+        /* case KC_COPY: */
+        /* case KC_PASTE: */
             return true;
     }
 
     // do not send key if keylogger help is enabled
     // (except for modifiers & layer change)
+    // TODO test unpacking modifiers here
     if (oled_keylogger_enabled) {
+        // TODO rm:
+        /* switch (keycode) { */
+        /*     // TODO test unpack modifier + basic key, see quantum repeat_key.c */
+        /*     case QK_MODS ... QK_MODS_MAX: */
+        /*         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode); */
+        /*         return false; */
+        /* } */
+
+        add_keylog(keycode, record);
         return false;
     }
 
@@ -302,36 +315,34 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
 
 #ifdef OLED_ENABLE
+// Oled rotation on master side should be 0, while slave is flipper 180
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
         // NOTE orig 128x32 oled rotation
         /* return OLED_ROTATION_270; */
 
         // 64x128 oled
-        // TODO since new oled does not need rotation,
-        // this func is now redundant
         return OLED_ROTATION_0;
     }
     return rotation;
 }
 
-// TODO move to oled.c?
 bool oled_task_user(void) {
-    // TODO see if this fixes timeout:
-    if (last_input_activity_elapsed() < OLED_SUSPEND_TIME) {
-        oled_on();
-    } else {
-        oled_off();
-        return false;
-    }
+    // Turn off oled when keyboard is idle
+    if (is_keyboard_master() & oled_sleep_enabled) {
+        if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) {
+            oled_off();
+            return false;
+        }
+    } 
 
     if (is_keyboard_master()) {
         oled_render_left();
     }
     else {
         if (!oled_startup_done) {
-            oled_render_logo();
-            defer_exec(OLED_LOGO_TIME + 1000, oled_rotate, NULL);
+            oled_startup_logo();
+            defer_exec(OLED_LOGO_TIME + 1000, oled_startup, NULL);
         }
         else {
             oled_render_right();
@@ -359,7 +370,21 @@ report_mouse_t pointing_device_task_combined_user(report_mouse_t left_report, re
 #endif
 
 
+// wake callbacks
+void suspend_wakeup_init_user(void) {
+    rgb_matrix_set_suspend_state(false);
+}
+
+
+// suspend callbacks
+void suspend_power_down_user(void) {
+    rgb_matrix_set_suspend_state(true);
+    oled_off();
+}
+
+
+// Firmware reset: either soft reset or reset to boot loader
 bool shutdown_user(bool jump_to_bootloader) {
     oled_render_boot(jump_to_bootloader);
-    return false;
+    return true;
 }

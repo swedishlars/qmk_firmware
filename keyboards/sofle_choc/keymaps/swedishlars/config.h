@@ -31,7 +31,7 @@
 // activity timestamp synching
 #define SPLIT_ACTIVITY_ENABLE
 
-// TODO test if this fixes oled timeout
+// Reboot slave side if no communication from master within timeout
 #define SPLIT_WATCHDOG_ENABLE
 
 
@@ -104,7 +104,8 @@
     #define AUDIO_PWM_DRIVER PWMD6
     #define AUDIO_PWM_CHANNEL RP2040_PWM_CHANNEL_B
     #define NO_MUSIC_MODE
-    #define STARTUP_SONG SONG(STARTUP_SOUND)
+    /* #define STARTUP_SONG SONG(STARTUP_SOUND) */
+    #define STARTUP_SONG SONG(CLOSE_ENCOUNTERS_SONG)
 #endif
 
 // Remove the auto-repeat ability of tapping and activate the hold function instead. 
@@ -113,7 +114,8 @@
 // tap-hold threshold, default is 200
 #ifdef TAPPING_TERM
     #undef TAPPING_TERM
-    #define TAPPING_TERM 140
+    /* #define TAPPING_TERM 140 */
+    #define TAPPING_TERM 130
 #endif
 
 

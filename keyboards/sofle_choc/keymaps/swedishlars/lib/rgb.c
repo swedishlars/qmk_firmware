@@ -1,6 +1,5 @@
 #include "rgb.h"
 
-// TODO SHould this be in rgb.h?
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
 #include "lib/lib8tion/lib8tion.h"
 
@@ -164,7 +163,6 @@ const led_color_t PROGMEM ledcolors[] = {
                    L__OFF,    L__OFF,       L__OFF,    L__OFF,       L__OFF,             L__OFF,   L__OFF,    L__OFF,    L_DCYA,       L_DCYA
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 }}
-
 };
 
 

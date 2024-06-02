@@ -1,15 +1,20 @@
 #include "oled.h"
+/* #include "audio.h" */
 #include "swedishlars.h"
 
 // TODO implement drashna oled brightness adjust
 
 bool oled_startup_done = false;
+bool oled_sleep_enabled = true;
 bool oled_keylogger_enabled = false;
+
+// custom audio
+float keylog_sound[][2] = SONG(CHROMATIC_SOUND);
+
 
 // Deferred execution callback to clear and rotate display.
 // Returns 0 to indicate it should not be repeated.
-// TODO rename func now that no rotation is needed
-uint32_t oled_rotate(uint32_t trigger_time, void *cb_arg) {
+uint32_t oled_startup(uint32_t trigger_time, void *cb_arg) {
     oled_clear();
 
     // NOTE: rotation for orig screen:
@@ -21,44 +26,128 @@ uint32_t oled_rotate(uint32_t trigger_time, void *cb_arg) {
 
 // KEY LOGGER
 // --------------------------------------------------------------------------
-const char* get_keycode_desc(uint16_t keycode) {
-    // check if we have a layer code desc
-    if (layer_state_is(_LOWER)) {
-        if ( (keycode < ARRAY_SIZE(lower_keycode_to_name)) &&
-            (strlen(lower_keycode_to_name[keycode]) > 0)
-        ) {
-            return lower_keycode_to_name[keycode];
+// Get a description of keycode that can be rendered on oled.
+// First check if there is a layer enabled which has a description override.
+// Then check if shift is held and there is a shifted keycode description.
+// If none of the above is true, return a default keycode description.
+
+// TODO orig:
+/* const char* get_keycode_desc(uint16_t keycode) { */
+const char* get_keycode_desc(uint16_t keycode, uint8_t keycode_mod) {
+    /* // Lower layer */
+    /* if (layer_state_is(_LOWER)) { */
+    /*     if ( (keycode < ARRAY_SIZE(keycode_to_desc_lower)) && */
+    /*         (strlen(keycode_to_desc_lower[keycode]) > 0) */
+    /*     ) { */
+    /*         return keycode_to_desc_lower[keycode]; */
+    /*     } */
+    /* } */
+
+    /* // Raise layer */
+    /* if (layer_state_is(_RAISE)) { */
+    /*     if ( (keycode < ARRAY_SIZE(keycode_to_desc_raise)) && */
+    /*         (strlen(keycode_to_desc_raise[keycode]) > 0) */
+    /*     ) { */
+    /*         return keycode_to_desc_raise[keycode]; */
+    /*     } */
+    /* } */
+
+    /* // shifted keycode description */
+    /* if ( (get_mods() & MOD_MASK_SHIFT) && */
+    /*      (keycode < ARRAY_SIZE(keycode_to_desc_shift)) */
+    /* ) { */
+    /*     return keycode_to_desc_shift[keycode]; */
+    /* } */
+
+    /* // Default keycode description */
+    /* if (keycode < ARRAY_SIZE(keycode_to_desc)) { */
+    /*     return keycode_to_desc[keycode]; */
+    /* } */
+
+    // TODO this works now!
+    uint8_t keycode_layer = KEYCODE_DEFAULT;
+
+    switch (get_highest_layer(layer_state)) {
+        case _LOWER:
+            keycode_layer = KEYCODE_LOWER;
+            break;
+        case _RAISE:
+            keycode_layer = KEYCODE_RAISE;
+            break;
+    }
+
+    if (keycode < ARRAY_SIZE(keycode_to_desc[KEYCODE_DEFAULT])) {
+        if (keycode_layer > KEYCODE_DEFAULT) {
+            if (strlen(keycode_to_desc[keycode_layer][keycode]) > 0) {
+                return keycode_to_desc[keycode_layer][keycode];
+            } 
         }
-    }
 
-    if (layer_state_is(_RAISE)) {
-        if ( (keycode < ARRAY_SIZE(raise_keycode_to_name)) &&
-            (strlen(raise_keycode_to_name[keycode]) > 0)
-        ) {
-            return raise_keycode_to_name[keycode];
-        }
-    }
+        if (strlen(keycode_to_desc[keycode_mod][keycode]) > 0) {
+            return keycode_to_desc[keycode_mod][keycode];
+        } 
 
-    // check if we have a shifted code
-    if ( (keycode < ARRAY_SIZE(shifted_keycode_to_name)) && 
-        (get_mods() & MOD_MASK_SHIFT)
-    ) {
-        return shifted_keycode_to_name[keycode];
-    }
-
-    // check if we have a un-modified code
-    if (keycode < ARRAY_SIZE(keycode_to_name)) {
-        return keycode_to_name[keycode];
+        return keycode_to_desc[KEYCODE_DEFAULT][keycode];
     }
 
     return "          ";
 } 
 
-// Store keylog
-char oled_keylog_str[OLED_KEYLOG_LENGTH] = {0};
+// Store current key code
+// TODO set LENGTH to 10 and char array to +1?
 char oled_keylog_code[OLED_KEYLOG_LENGTH] = {0};
 
+// Store current active modifiers
+// Use 20 char array (double line on oled)
+char oled_keylog_mod[OLED_KEYLOG_LENGTH + 10] = {0};
+
+// Store current key description
+char oled_keylog_desc[OLED_KEYLOG_LENGTH] = {0};
+
 void add_keylog(uint16_t keycode, keyrecord_t *record) {
+    // TODO works!
+    uint8_t keycode_mod = KEYCODE_DEFAULT;
+
+    // temp store any active modifiers
+    char active_mods[21] = {0};
+
+    // Get active real modifiers (actual mod keys pressed)
+    const uint8_t mods = get_mods() | get_oneshot_mods() | get_weak_mods();
+
+    // Get active weak mods, mods that are part of macros & modifier keycodes like LALT(kc) 
+    // NOTE: get_weak_mods() above does not seem to cover all of it.
+    const uint8_t weak_mods = QK_MODS_GET_MODS(keycode);
+
+
+    // Temp store description for all active modifiers
+    // Concatenate 5 char strings so oled renders max 2 mods per line
+    if ((mods & MOD_MASK_SHIFT) || (weak_mods & MOD_MASK_SHIFT)) {
+        strcat(active_mods, "SHFT+");
+        // TODO works!
+        keycode_mod = KEYCODE_SHIFT;
+    }
+
+    // Temp store description for alt mod
+    if ((mods & MOD_MASK_ALT) || (weak_mods & MOD_MASK_ALT)) {
+        strcat(active_mods, " Alt+");
+    }
+
+    // Temp store description for ctrl mod
+    if ((mods & MOD_MASK_CTRL) || (weak_mods & MOD_MASK_CTRL)) {
+        strcat(active_mods, "Ctrl+");
+    }
+
+    // Store all current active modifier descriptions.
+    // Pad string right aligned to 20 chars (double lines on oled)
+    if (sizeof(active_mods)) {
+        snprintf(oled_keylog_mod, OLED_KEYLOG_LENGTH + 10,"%20s", active_mods);
+    } 
+    // Store empty 20 char string if there are not modifiers
+    else {
+        snprintf(oled_keylog_mod, OLED_KEYLOG_LENGTH, "                    ");
+    }
+
+    // Set keycode
     if (IS_QK_MOD_TAP(keycode) && record->tap.count) {
         keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
     } 
@@ -69,17 +158,26 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
     } 
 
+    // TODO testing user. It works but code is a very high index
+    /* if (IS_USER_KEYCODE(keycode)) { */
+    /*     snprintf(oled_keylog_code, OLED_KEYLOG_LENGTH, "uk %3d", keycode); */
+    /* } */
+
     // store keycode
-    if (keycode < ARRAY_SIZE(keycode_to_name)) {
-        // orig 128x32 oled
+    // TODO If I get rid of if statement then I can render full range codes,
+    // but I need to cater for character space on oled.
+    /* if (keycode < ARRAY_SIZE(keycode_to_desc)) { */
+    if (keycode < ARRAY_SIZE(keycode_to_desc[KEYCODE_DEFAULT])) {
+        // 128x32 oled
         /* snprintf(oled_keylog_code, OLED_KEYLOG_LENGTH, "k:%3d", keycode); */
 
-        // new 64x128 oled:
+        // New 64x128 oled:
         snprintf(oled_keylog_code, OLED_KEYLOG_LENGTH, "kcode: %3d", keycode);
-    }
+    } 
 
     // store key description
-    snprintf(oled_keylog_str, OLED_KEYLOG_LENGTH, get_keycode_desc(keycode));
+    /* snprintf(oled_keylog_desc, OLED_KEYLOG_LENGTH, get_keycode_desc(keycode)); */
+    snprintf(oled_keylog_desc, OLED_KEYLOG_LENGTH, get_keycode_desc(keycode, keycode_mod));
 }
 
 
@@ -88,20 +186,33 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
 void oled_render_keylog(uint8_t line) {
     oled_set_cursor(0, line);
     if (oled_keylogger_enabled) {
-        oled_write(PSTR("KEY LOGGER"), false);
+        oled_write_raw(keylogger_logo, sizeof(keylogger_logo));
+        oled_set_cursor(0, line + 1);
         oled_write(oled_keylog_code, false);
-        /* oled_set_cursor(0, line + 2); */
-        oled_write(PSTR("          "), false);
-        oled_write(oled_keylog_str, false);
+        // TODO orig:
+        /* oled_write(PSTR("          "), false); */
+
+        // TODO test double line mod
+        // _ln writes new line it seems?
+        oled_write(oled_keylog_mod, false);
+
+        /* oled_set_cursor(0, line + 4); */
+
+        oled_write(oled_keylog_desc, false);
     }
     else {
+        oled_write(PSTR("          "), false);
+        oled_write(PSTR("          "), false);
         oled_write(PSTR("          "), false);
         oled_write(PSTR("          "), false);
         oled_write(PSTR("          "), false);
     }
 }
 
+
 // Setup a mask which can be or'd with bytes to turn off pixels
+// Fade oled screen in a random pixel fashion
+// -------------------------------------------------------------------------------
 const uint8_t single_bit_masks[8] = {127, 191, 223, 239, 247, 251, 253, 254};
 
 void oled_render_fade(void) {
@@ -130,8 +241,8 @@ void oled_render_fade(void) {
 }
 
 
-// use as startup logo
-void oled_render_logo(void) {
+// Keyboard startup logo
+void oled_startup_logo(void) {
     static uint16_t logo_timer;
     uint16_t timer = timer_elapsed(logo_timer);
     
@@ -149,9 +260,6 @@ void oled_render_logo(void) {
 }
 
 
-
-
-
 void oled_render_base_help(uint8_t line) {
     oled_set_cursor(0, line);
     oled_write(PSTR("Hold      "), false);
@@ -165,7 +273,6 @@ void oled_render_base_help(uint8_t line) {
     oled_write(PSTR("for Setup "), false);
     oled_write(PSTR("layer     "), false);
     oled_write(PSTR("   ---    "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
 void oled_render_lower_help(uint8_t line) {
@@ -181,7 +288,6 @@ void oled_render_lower_help(uint8_t line) {
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
 void oled_render_raise_help(uint8_t line) {
@@ -197,7 +303,6 @@ void oled_render_raise_help(uint8_t line) {
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
 void oled_render_numpad_help(uint8_t line) {
@@ -213,7 +318,6 @@ void oled_render_numpad_help(uint8_t line) {
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
 void oled_render_mouse_help(uint8_t line) {
@@ -229,7 +333,6 @@ void oled_render_mouse_help(uint8_t line) {
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
 void oled_render_setup_help(uint8_t line) {
@@ -245,7 +348,6 @@ void oled_render_setup_help(uint8_t line) {
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
 void oled_render_no_help(uint8_t line) {
@@ -261,82 +363,72 @@ void oled_render_no_help(uint8_t line) {
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
     oled_write(PSTR("          "), false);
-    /* oled_write(PSTR("          "), false); */
 }
 
-/* void oled_render_right(void) { */
+// TODO add insert if possible
 void oled_render_left(void) {
-    // TODO test
-    /* if (!is_oled_on()) { */
-    /*     return; */
-    /* } */
-
-    // Keyboard LED Status
+    // Led status
     led_t led_state = host_keyboard_led_state();
-
-    /* oled_write(led_state.caps_lock ? PSTR("Caps    ON") : PSTR("Caps   OFF"), false); */
-
-    // new oled, new width is 10 chars
-    oled_write_raw(caps_logo, sizeof(caps_logo));
-    oled_set_cursor(7, 0);
-    oled_write_raw(led_state.caps_lock ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
-
-    // TODO add insert if possible
-
-    // rgb status
-    oled_set_cursor(0, 1);
-    /* oled_write(rgb_matrix_is_enabled() ? PSTR("Leds    ON") : PSTR("Rgb    OFF"), false); */
-
+    /* oled_set_cursor(0, 1); */
     oled_write_raw(leds_logo, sizeof(leds_logo));
-    oled_set_cursor(7, 1);
+    oled_set_cursor(7, 0);
     oled_write_raw(rgb_matrix_is_enabled() ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
 
-    // audio
+    // Oled sleep status
+    oled_set_cursor(0, 1);
+    oled_write_raw(oled_sleep_logo, sizeof(oled_sleep_logo));
+    oled_set_cursor(7, 1);
+    oled_write_raw(oled_sleep_enabled ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
+
+    // audio status
     oled_set_cursor(0, 2);
-    /* oled_write(audio_is_on() ? PSTR("Audio   ON") : PSTR("Audio  OFF"), false); */
     oled_write_raw(audio_logo, sizeof(audio_logo));
     oled_set_cursor(7, 2);
     oled_write_raw(audio_is_on() ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
 
-    // haptic
+    // haptic status
     oled_set_cursor(0, 3);
-    /* uint8_t haptic_state = haptic_get_enable(); */
-    /* oled_write(haptic_state ? PSTR("Haptic  ON") : PSTR("Haptic OFF"), false); */
     oled_write_raw(haptic_logo, sizeof(haptic_logo));
     oled_set_cursor(7, 3);
     oled_write_raw(haptic_get_enable() ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
 
+    // Caps status
     oled_set_cursor(0, 4);
+    oled_write_raw(caps_logo, sizeof(caps_logo));
+    oled_set_cursor(7, 4);
+    oled_write_raw(led_state.caps_lock ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
+
+    // bottom banner
+    oled_set_cursor(0, 5);
     oled_write_raw(bottom_banner_logo, sizeof(bottom_banner_logo));
 
-    // modifier
-    oled_set_cursor(0, 5);
-    /* oled_write((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT ? PSTR("SHIFT") : PSTR("     "), false); */
-
+    // Shift modifier status
+    oled_set_cursor(0, 6);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
         oled_write_raw(shift_logo, sizeof(shift_logo));
     } 
     else { oled_write(PSTR("     "), false); }
 
-    oled_set_cursor(5,5);
-    /* oled_write((get_mods() | get_oneshot_mods()) & MOD_MASK_ALT ? PSTR("  ALT") : PSTR("     "), false); */
-
+    // Alt modifier status
+    oled_set_cursor(5,6);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_ALT) {
         oled_write_raw(alt_logo, sizeof(alt_logo));
     } 
     else { oled_write(PSTR("     "), false); }
 
-    oled_set_cursor(0, 6);
-    /* oled_write((get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL ? PSTR("CTRL ") : PSTR("     "), false); */
-
+    // Ctrl modifier status
+    oled_set_cursor(0, 7);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL) {
         oled_write_raw(ctrl_logo, sizeof(ctrl_logo));
     } 
     else { oled_write(PSTR("     "), false); }
 
-    // TODO logo
-    oled_set_cursor(5, 6);
-    oled_write((get_mods() | get_oneshot_mods()) & MOD_MASK_GUI ? PSTR("  GUI") : PSTR("     "), false);
+    // Gui modifier status
+    oled_set_cursor(5, 7);
+    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_GUI) {
+        oled_write_raw(gui_logo, sizeof(gui_logo));
+    } 
+    else { oled_write(PSTR("     "), false); }
 
     // keylogger
     oled_render_keylog(11);
@@ -344,20 +436,14 @@ void oled_render_left(void) {
 
 
 // render info for current layer
-// TODO used oled_write_raw instead of oled_write_raw_P
 void oled_render_right(void) {
-    /* oled_write(PSTR("  Layer:  "), false); */
-
-    // 64x128 oled
-    oled_write_raw_P(layer_logo, sizeof(layer_logo));
+    oled_write_raw(layer_logo, sizeof(layer_logo));
     oled_set_cursor(0, 2);
 
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
-            /* oled_write(PSTR("  Base    "), false); */
-            oled_write_raw_P(layer_base_logo, sizeof(layer_base_logo));
+            oled_write_raw(layer_base_logo, sizeof(layer_base_logo));
 
-            // TODO check if this is what causes oled to not timeout
             if (timer_elapsed(oled_help_timer) < OLED_HELP_TIME) {
                 oled_render_base_help(5);
             } else {
@@ -365,32 +451,26 @@ void oled_render_right(void) {
             }
             break;
         case _LOWER:
-            /* oled_write(PSTR("  Lower   "), false); */
-            oled_write_raw_P(layer_lower_logo, sizeof(layer_lower_logo));
+            oled_write_raw(layer_lower_logo, sizeof(layer_lower_logo));
             oled_render_lower_help(5);
             break;
         case _RAISE:
-            /* oled_write(PSTR("  Raise   "), false); */
-            oled_write_raw_P(layer_raise_logo, sizeof(layer_raise_logo));
+            oled_write_raw(layer_raise_logo, sizeof(layer_raise_logo));
             oled_render_raise_help(5);
             break;
         case _NUMPAD:
-            /* oled_write(PSTR("  NumPad  "), false); */
-            oled_write_raw_P(layer_numpad_logo, sizeof(layer_numpad_logo));
+            oled_write_raw(layer_numpad_logo, sizeof(layer_numpad_logo));
             oled_render_numpad_help(5);
             break;
         case _MOUSE:
-            /* oled_write(PSTR("  Mouse   "), false); */
-            oled_write_raw_P(layer_mouse_logo, sizeof(layer_mouse_logo));
+            oled_write_raw(layer_mouse_logo, sizeof(layer_mouse_logo));
             oled_render_mouse_help(5);
             break;
         case _ADJUST:
-            /* oled_write(PSTR("  Adjust  "), false); */
-            oled_write_raw_P(layer_adjust_logo, sizeof(layer_adjust_logo));
+            oled_write_raw(layer_adjust_logo, sizeof(layer_adjust_logo));
             oled_render_setup_help(5);
             break;
         default:
-            /* oled_write(PSTR(" Undefined"), false); */
             oled_write_raw_P(layer_undefined_logo, sizeof(layer_undefined_logo));
     }
 
@@ -417,27 +497,34 @@ void oled_render_boot(bool bootloader) {
 
 // TODO add key process for oled brightness, see drashna
 bool process_record_user_oled(uint16_t keycode, keyrecord_t *record) {
-    // toggle keylogger
-    if (keycode == KC_KEYLOG) {
-        if (record->event.pressed) {
-            // TODO uncomment when I have audio.h
-            /* PLAY_SONG(click_sound); */
-            haptic_set_mode(1);
-            haptic_play();
-            oled_keylogger_enabled = !oled_keylogger_enabled;
+    if (record->event.pressed) {
+        switch (keycode) {
+
+            // toggle oled sleep
+            case KC_OSLEEP:
+                oled_sleep_enabled = !oled_sleep_enabled;
+                if (!oled_sleep_enabled) {
+                    oled_on();
+                }
+                break;
+
+            // toggle keylogger
+            case KC_KEYLOG:
+                // TODO change song, make a warning siren
+                PLAY_SONG(keylog_sound);
+                haptic_set_mode(1);
+                haptic_play();
+                oled_keylogger_enabled = !oled_keylogger_enabled;
+                return false;
         }
-        return false;
     }
     
     // render keylog on oled
-    if (oled_keylogger_enabled) {
-        if (record->event.pressed) {
-            add_keylog(keycode, record);
-        }
-        return true;
-    }
+    // TODO test calling directly from keymap.c
+    /* if (oled_keylogger_enabled) { */
+    /*     add_keylog(keycode, record); */
+    /* } */
 
-    // TODO
     return true;
 
 }
