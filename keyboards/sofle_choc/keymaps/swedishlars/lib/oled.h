@@ -2,6 +2,7 @@
 
 #include "quantum.h"
 
+// Oled one line lenght + char array termination
 #define OLED_KEYLOG_LENGTH 11
 
 // How long to display help message
@@ -13,14 +14,13 @@
 // Turn off oled when there is no input activity
 #define OLED_SUSPEND_TIME 60000
 
+#define OLED_BRIGTHNESS_STEP 32
+
 // global to check if oled startup logo anim is done
 extern bool oled_startup_done;
 
 // timer for hiding oled help
 extern uint16_t oled_help_timer;
-
-// enable/disable oled sleep when no input activity
-extern bool oled_sleep_enabled;
 
 // global used to check if keylogger is enabled
 extern bool oled_keylogger_enabled;
@@ -30,7 +30,7 @@ uint32_t oled_startup(uint32_t trigger_time, void *cb_arg);
 
 bool process_record_user_oled(uint16_t keycode, keyrecord_t *record); 
 
-// TODO test calling directly
+// Render key code & description help on oled
 void add_keylog(uint16_t keycode, keyrecord_t *record);
 
 void oled_startup_logo(void);
@@ -38,7 +38,7 @@ void oled_render_left(void);
 void oled_render_right(void);
 void oled_render_boot(bool bootloader);
 
-// TODO test enum names for array index
+// Enum names for keycode description array index
 enum keycode_desc_index {
     KEYCODE_DEFAULT,
     KEYCODE_SHIFT,
@@ -47,10 +47,7 @@ enum keycode_desc_index {
 };
 
 // Key code descriptions - array index represents keycode
-// TODO went for 3d array as it makes it simpler, works now rm note:
-// NOTE: These arrays are declared separately so that minimum memory space is taken
 // NOTE: backslash does not count as a char
-/* static const char PROGMEM keycode_to_desc[256][OLED_KEYLOG_LENGTH] = { */
 static const char PROGMEM keycode_to_desc[][256][OLED_KEYLOG_LENGTH] = {
 //   0           1            2            3            4            5            6            7            8            9         Raw code 
 //  ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
@@ -82,11 +79,8 @@ static const char PROGMEM keycode_to_desc[][256][OLED_KEYLOG_LENGTH] = {
     "25        ","          ","          ","          ","          ","          ","          ","          ","          "," 24       ",  // 240- 249
     "25        "," 27       "," 26       ","          ","          ","          "                                                       // 250-255
     },
-/* }; */
 
 // Shifted key code descriptions - array index represents keycode
-// TODO orig:
-/* static const char PROGMEM keycode_to_desc_shift[101][OLED_KEYLOG_LENGTH] = { */
 //   0           1            2            3            4            5            6            7            8            9              Raw code 
 //  ----------   ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
     {
@@ -102,30 +96,20 @@ static const char PROGMEM keycode_to_desc[][256][OLED_KEYLOG_LENGTH] = {
     " 2        "," 3        "," 4        "," 5        "," 6        "," 7        "," 8        "," 9        "," 0        "," .        ",  // 90-99
     " |        ",                                                                                                                       // 100
     },
-/* }; */
 
 // Key description overrides per layer
-/* static const char PROGMEM keycode_to_desc_lower[24][OLED_KEYLOG_LENGTH] = { */
+    // LOWER layer
     {
-    [7] =    " d (tmux) ",
-    [23] =   " t (Term) "
+    [7]  =  "d (tmux)  ",
+    [9]  =  "f (maxwin)",
+    [23] =  "t (Term)  "
     },
-/* }; */
 
-/* static const char PROGMEM keycode_to_desc_raise[54][OLED_KEYLOG_LENGTH] = { */
+    // UPPER layer
     {
-    [53] =    "Neg Symbol"
+    [53] =  "(Neg Symb)"
     }
 };
-
-
-
-// 128x32 oled logo
-/* static const char PROGMEM qmk_logo[] = { */
-/*     0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94, */
-/*     0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF, 0xB0, 0xB1, 0xB2, 0xB3, 0xB4, */
-/*     0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF, 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0x00 */
-/* }; */
 
 
 // 64x128 oled logo

@@ -24,9 +24,12 @@
 #include "lib/rgb.h"
 #include "lib/oled.h"
 #include "lib/pointing_device.h"
-/* #include "lib/audio.h" */
 #include "swedishlars.h"
 
+
+// TODO make haptic func?
+// TODO add fullscreen, quit app
+// TODO Add tapdance for numpad layer switching (tap/hold)
 
 // custom sounds
 float click_sound[][2] = SONG(TERMINAL_SOUND);
@@ -34,7 +37,6 @@ float click_sound[][2] = SONG(TERMINAL_SOUND);
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
  // layer 0
 [_QWERTY] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
@@ -51,11 +53,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_LSFT,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,       KC_NO,          KC_NO,     KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_RSFT,
  // .-----------+-----------+-----------+-----------+-----------------------|-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
  //                         | \ and |   |left ctl   |left alt   | lower     | space     |  | enter     |  raise    |right alt  | - and _   | = and +   |
-                             KC_NUBS,    KC_LCTL,     KC_LALT,   KC_LOWER,   KC_SPC,        KC_ENT,     KC_RAISE,   KC_RALT,    KC_MINS,    KC_EQL
+                             KC_NUBS,    KC_LCTL,     KC_LALT,   TT(_LOWER), KC_SPC,        KC_ENT,     TT(_RAISE), KC_RALT,    KC_MINS,    KC_EQL
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
 // layer 1
+// NOTE shift+ctl is a combo for work
 [_LOWER] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           | F1        | F2        | F3        | F4        | F5        |                          | F6        | F7        | F8        |F9         | F10       |frw del    |
@@ -64,11 +67,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // | ` and ¬   | F11       | F12       |           |           | terminal  |                          |           |           | [ and {   | ] and }   |print scren|           |
      KC_GRV,     KC_F11,     KC_F12,     _______,    _______,    KC_TERM,                               _______,    _______,    KC_LBRC,    KC_RBRC,    KC_PSCR,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           | app menu  |           | tmux term |           |page up    |                          | left      | down      | up        |  right    |           |           |
-     _______,    KC_APP,     _______,    LCA(KC_D),  _______,    KC_PGUP,                               KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
+ // |           | app menu  |           | tmux term |max win tgl|page up    |                          | left      | down      | up        |  right    |           |           |
+     _______,    KC_APP,     _______,    KC_TMUX,    LCA(KC_F),  KC_PGUP,                               KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
- // | lshift    |           |           |           |           |page down  |           |  |           |           |           |           |           |           | rshift    |
-     _______,    _______,    _______,    _______,    _______,    KC_PGDN,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
+ // | lshift+ctl|           |           |           |           |page down  |           |  |           |           |           |           |           |           | rshift    |
+     S(KC_LCTL), _______,    _______,    _______,    _______,    KC_PGDN,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------+-----------'
  //                         |           |           |           |           |           |  |           |           |           |           |           |
                              _______,    _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______
@@ -76,12 +79,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // layer 2
-// TODO add fullscreen, maximise, minimise, quit window
-// TODO shift+ctl+up/down is a problem with ride
 [_RAISE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           | alt+F1    | alt+F2    | alt+F3    | alt+F4    | alt+F5    |                          | alt+F6    | alt+F7    | alt+F8    | alt+F9    | alt+F10   |insert     |
-     _______,    KC_AF1,     A(KC_F2),   A(KC_F3),   A(KC_F4),   A(KC_F5),                              A(KC_F6),   A(KC_F7),   A(KC_F8),   A(KC_F9),   A(KC_F10),  KC_INS,
+     _______,    A(KC_F1),     A(KC_F2),   A(KC_F3),   A(KC_F4),   A(KC_F5),                              A(KC_F6),   A(KC_F7),   A(KC_F8),   A(KC_F9),   A(KC_F10),  KC_INS,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |    ¬      | alt+F11   | alt+F12   |           |           |           |                          |           |           |    {      |    }      | play      |           |
      S(KC_GRV),  A(KC_F11),  A(KC_F12),  _______,    _______,    _______,                               _______,    _______,    KC_LCBR,    KC_RCBR,    KC_MPLY,    _______,
@@ -107,7 +108,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      _______,    _______,    _______,    KC_PEQL,    _______,    _______,                               _______,    KC_4,       KC_5,       KC_6,       KC_P,       _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |           |                          |     H     |     1     |     2     |     3     |           |           |
-     _______,    _______,    _______,    _______,    _______,    _______,                               KC_H,       KC_1,       KC_2,       KC_3,       _______,    _______,
+     _______,    _______,    _______,    _______,    _______,     _______,                               KC_H,       KC_1,       KC_2,       KC_3,       _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |           |           |  |           |           |     *     |     ,     |   .       |     /     |           |
      _______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,   _______,    KC_PAST,    KC_COMM,    KC_DOT,     _______,    _______,
@@ -121,19 +122,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MOUSE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
-     _______,    KC_ACL0,    KC_ACL1,    KC_ACL2,    XXXXXXX,    XXXXXXX,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+     _______,    KC_ACL0,    KC_ACL1,    KC_ACL2,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
-     _______,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+     _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
-     XXXXXXX,    MAYA_S,     MAYA_T,     MAYA_R,     XXXXXXX,    KC_WH_U,                               XXXXXXX,  XXXXXXX,      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+ // |           |alt+mouse2 |alt+mouse3 |alt+mouse1 |           |wheel up   |                          |           |           |           |           |           |           |
+     _______,    A(KC_BTN2), A(KC_BTN3), A(KC_BTN1), _______,    KC_WH_U,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
- // |           |           |           |           |           |           |           |  |           |           |           |           |           |           |           |
-     _______,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    KC_WH_D,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    _______,
+ // |           |           |           |           |           |wheel down |           |  |           |           |           |           |           |           |           |
+     _______,    _______,    _______,    _______,    _______,    KC_WH_D,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
  //                         |           |           |           |           |  Space    |  | rgb mode  |           |           |           |           |
-                             XXXXXXX,    _______,    _______,    KC_BTN3,    KC_BTN1,       KC_BTN2,    _______,    _______,    XXXXXXX,    XXXXXXX
+                             _______,    _______,    _______,    KC_BTN3,    KC_BTN1,       KC_BTN2,    _______,    _______,    _______,    _______
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
@@ -143,8 +144,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // |           |  base lyr |  lower    |  raise    |  numpad   |  mouse    |                          |adjust     |           |           |           |           |  reboot   |
      QK_BOOT,    TO(_QWERTY),TO(_LOWER), TO(_RAISE), TO(_NUMPAD),TO(_MOUSE),                            TO(_ADJUST),XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |           |oled sleep |           | clear mem |
-     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RGB_TOG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    KC_OSLEEP,  XXXXXXX,    EE_CLR,
+ // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |oled sleep |oled tgl   |           | clear mem |
+     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RGB_TOG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    KC_OSLEEP,  KC_OTGL,    XXXXXXX,    EE_CLR,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           | audio tog | sys sleep |           |           |           |                          | haptic tg |           |           |           |           |           |
      XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               HF_TOGG,    XXXXXXX,    KC_KEYLOG,  XXXXXXX,    XXXXXXX,    XXXXXXX,
@@ -160,6 +161,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+// Declare persistent eeprom config
+user_config_t user_config;
+
 // Oled help msg timer
 uint16_t oled_help_timer = 0;
 
@@ -171,8 +175,19 @@ void pointing_device_init_user(void) {
 }
 
 
+void eeconfig_init_user(void) {
+    user_config.raw = 0;
+    /* user_config.oled_brightness = OLED_BRIGHTNESS; */
+    user_config.oled_enabled = true;
+    user_config.oled_sleep_enabled = true;
+    eeconfig_update_user(user_config.raw);
+}
+
 void keyboard_post_init_user(void) {
-    // left trackpad -scrolling
+    // Initialise eeprom user config
+    user_config.raw = eeconfig_read_user();
+
+    // left trackpad -use for vertical/horizontal scrolling
     pointing_device_set_cpi_on_side(true, 500);
     pointing_device_set_cpi_on_side(false, 500);
 
@@ -181,103 +196,78 @@ void keyboard_post_init_user(void) {
 }
 
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // tri-layer, tap to toggle, hold to activate momentarily
+    state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+
+    switch (get_highest_layer(state)) {
+    case _ADJUST:
+        PLAY_SONG(click_sound);
+        // TODO do I need to set this everytime?
+        haptic_set_mode(1);
+        haptic_play();
+        break;
+    }
+
+    return state;
+}
+
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // render key code:
-    // If help is enabled then key code is displayed on oled but keycode is not processed.
+    // Process oled keycodes
     process_record_user_oled(keycode, record);
 
+    // TODO add audio & haptic for rest of adjust layer keys (audio, rgb, sys sleep, oled)
     switch (keycode) {
+        // TODO rm, use layer_state_set_user instead
         // tri_layer, when lower and raise keys are pressed, activate a third layer
-        // TODO explore built-in tri-layer again
-        case KC_LOWER:
-            if (record->event.pressed) {
-                layer_on(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-                if (IS_LAYER_ON(_ADJUST)) {
-                    PLAY_SONG(click_sound);
-                    /* PLAY_SONG(close_encounter_song); */
-                    // haptic feedback for setup layer
-                    // TODO make haptic func?
-                    haptic_set_mode(1);
-                    haptic_play();
-                }
-            } else {
-                layer_off(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            }
-            // TODO teask break instead
-            // does not work well,try reverting
-            return false;
-            /* break; */
-
-        case KC_RAISE:
-            if (record->event.pressed) {
-                layer_on(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-                if (IS_LAYER_ON(_ADJUST)) {
-                    PLAY_SONG(click_sound);
-                    haptic_set_mode(1);
-                    haptic_play();
-                }
-            } else {
-                layer_off(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            }
-            return false;
-            /* break; */
-
-        // TODO test Maya custom keycode
-        /* case MAYA_R: */
+        /* case KC_LOWER: */
         /*     if (record->event.pressed) { */
-        /*         register_code16(A(KC_BTN1)); */
+        /*         layer_on(_LOWER); */
+        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
+        /*         if (IS_LAYER_ON(_ADJUST)) { */
+        /*             PLAY_SONG(click_sound); */
+        /*             haptic_set_mode(1); */
+        /*             haptic_play(); */
+        /*         } */
         /*     } else { */
-        /*         unregister_code16(A(KC_BTN1)); */
+        /*         layer_off(_LOWER); */
+        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
         /*     } */
-        /*     break; */
+        /*     return false; */
 
-        /* case MAYA_S: */
+        /* case KC_RAISE: */
         /*     if (record->event.pressed) { */
-        /*         register_code16(A(KC_BTN2)); */
+        /*         layer_on(_RAISE); */
+        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
+        /*         if (IS_LAYER_ON(_ADJUST)) { */
+        /*             PLAY_SONG(click_sound); */
+        /*             haptic_set_mode(1); */
+        /*             haptic_play(); */
+        /*         } */
         /*     } else { */
-        /*         unregister_code16(A(KC_BTN2)); */
+        /*         layer_off(_RAISE); */
+        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
         /*     } */
-        /*     break; */
+        /*     return false; */
 
-        // TODO test
-        /* case QK_MODS ... QK_MODS_MAX: */
 
-        // allow normal process of modifiers and layer tap
+
+        // allow normal process of modifiers and layer change
         // disregarding if keylogger is enabled 
-        // TODO I should not need any of this any longer? Looks like I do need it
+        // TODO This did not work well with logger:
+        // QK_MODS ... QK_LAYER_TAP_TOGGLE_MAX to include both mods and layers
+        /* case QK_MODS ... QK_LAYER_TAP_TOGGLE_MAX: */
+        // maybe works if I update keylogger?
+
+        case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
         case KC_LCTL ... KC_RGUI:
-
-        // TODO do I keep?
-        case LT_NUMP:
-
-        // TODO test add modifier range here, A(kc) ... ?
-        // This works but downside is it sends keycode to pc.
-        /* case MAYA_T: */
-        /* case MAYA_R: */
-        /* case MAYA_S: */
-        /* case KC_UNDO: */
-        /* case KC_CUT: */
-        /* case KC_COPY: */
-        /* case KC_PASTE: */
             return true;
     }
 
     // do not send key if keylogger help is enabled
     // (except for modifiers & layer change)
-    // TODO test unpacking modifiers here
     if (oled_keylogger_enabled) {
-        // TODO rm:
-        /* switch (keycode) { */
-        /*     // TODO test unpack modifier + basic key, see quantum repeat_key.c */
-        /*     case QK_MODS ... QK_MODS_MAX: */
-        /*         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode); */
-        /*         return false; */
-        /* } */
-
         add_keylog(keycode, record);
         return false;
     }
@@ -318,25 +308,26 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 // Oled rotation on master side should be 0, while slave is flipper 180
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
-        // NOTE orig 128x32 oled rotation
-        /* return OLED_ROTATION_270; */
-
-        // 64x128 oled
         return OLED_ROTATION_0;
     }
     return rotation;
 }
 
 bool oled_task_user(void) {
-    // Turn off oled when keyboard is idle
-    if (is_keyboard_master() & oled_sleep_enabled) {
-        if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) {
+    if (is_keyboard_master()) {
+        // Turn off oled by user
+        if (!user_config.oled_enabled) {
             oled_off();
             return false;
         }
-    } 
 
-    if (is_keyboard_master()) {
+        // Turn off oled when keyboard is idle
+        if (user_config.oled_sleep_enabled) {
+            if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) {
+                oled_off();
+                return false;
+            }
+        } 
         oled_render_left();
     }
     else {
@@ -347,7 +338,6 @@ bool oled_task_user(void) {
         else {
             oled_render_right();
         }
-
     }
     return false;
 }
@@ -378,13 +368,16 @@ void suspend_wakeup_init_user(void) {
 
 // suspend callbacks
 void suspend_power_down_user(void) {
-    rgb_matrix_set_suspend_state(true);
     oled_off();
+    rgb_matrix_set_suspend_state(true);
 }
 
 
 // Firmware reset: either soft reset or reset to boot loader
 bool shutdown_user(bool jump_to_bootloader) {
+    // Disable by default when booting
+    haptic_disable();
+
     oled_render_boot(jump_to_bootloader);
     return true;
 }

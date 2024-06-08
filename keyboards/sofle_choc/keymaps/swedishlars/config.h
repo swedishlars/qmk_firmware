@@ -34,6 +34,14 @@
 // Reboot slave side if no communication from master within timeout
 #define SPLIT_WATCHDOG_ENABLE
 
+// Remove the auto-repeat ability of tapping and activate the hold function instead. 
+#define QUICK_TAP_TERM 0
+
+// tap-hold threshold, default is 200
+#define TAPPING_TERM 140
+
+// Toggle layer with 1 tap
+#define TAPPING_TOGGLE 1
 
 #ifdef OLED_ENABLE
     #define SPLIT_OLED_ENABLE
@@ -47,8 +55,10 @@
     #define OLED_IC OLED_IC_SH1107
 
     // set default brightness
-    #define OLED_BRIGHTNESS 128
+    /* #define OLED_BRIGHTNESS 128 */
+    #define OLED_BRIGHTNESS 96
 
+    // Note: oled timeout is incompatible with oled off.
     #define OLED_TIMEOUT 0
 #endif
 
@@ -108,15 +118,6 @@
     #define STARTUP_SONG SONG(CLOSE_ENCOUNTERS_SONG)
 #endif
 
-// Remove the auto-repeat ability of tapping and activate the hold function instead. 
-#define QUICK_TAP_TERM 0
-
-// tap-hold threshold, default is 200
-#ifdef TAPPING_TERM
-    #undef TAPPING_TERM
-    /* #define TAPPING_TERM 140 */
-    #define TAPPING_TERM 130
-#endif
 
 
 #ifdef RGB_MATRIX_ENABLE

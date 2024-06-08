@@ -1,9 +1,7 @@
 #pragma once
 
 // Custom keycode names
-//
-// TODO create send cmd to open terminal & also tmux?
-
+//-------------------------------------------------------------------------------------
 // Movement
 // Move to left desktop: C( = LCTL, G( = LGUI   result: LCTL + LGUI (meta) + LEFT ARROW
 #define DESK_L C(G(KC_LEFT))
@@ -11,13 +9,6 @@
 
 // momentarily activate layer when held
 #define LT_NUMP LT(_NUMPAD,KC_CAPS)
-
-// Maya custom mouse keys (alt + mouse btn)
-// TODO test maya keys as custom keycode so oled keylog works. I do not need this for keylog any longer!
-// TODO rename KC_ABTN1
-#define MAYA_R A(KC_BTN1)
-#define MAYA_T A(KC_BTN3)
-#define MAYA_S A(KC_BTN2)
 
 // actions
 #define KC_UNDO C(KC_Z)
@@ -27,9 +18,8 @@
 
 // Apps
 #define KC_TERM LCA(KC_T)
-
-// Modifiers
-#define KC_AF1 A(KC_F1)       // alt + F1
+#define KC_TMUX LCA(KC_D)
+//-------------------------------------------------------------------------------------
 
 enum custom_keycodes {
     KC_QWERTY = SAFE_RANGE,
@@ -38,8 +28,9 @@ enum custom_keycodes {
     KC_ADJUST,
     KC_KEYLOG,
     KC_OSLEEP,
-    /* MAYA_R, */
-    /* MAYA_S */
+    KC_OTGL,
+    /* KC_OLED_INC, */
+    /* KC_OLED_DEC */
 };
 
 enum sofle_layers {
@@ -51,3 +42,18 @@ enum sofle_layers {
     _MOUSE,
     _ADJUST
 };
+
+
+// persistent user config written to eeprom
+typedef union {
+    uint32_t raw;
+    struct {
+        //uint8_t oled_brightness : 8;
+        bool oled_enabled : 1;
+        bool oled_sleep_enabled : 1;
+        bool haptic_enabled : 1;
+    };
+} user_config_t; 
+
+extern user_config_t user_config;
+

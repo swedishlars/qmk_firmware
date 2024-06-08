@@ -73,14 +73,14 @@ const led_color_t PROGMEM ledcolors[] = {
      // |    `    | F11     | F12     |         |         | terminal|                          |         |         |    [    |    ]    |print scn|         |
          L_MRED,    L_DORA,   L_DORA,   L_DRED,   L_DRED,   L_DGRE,                              L_DRED,   L_DRED,   L_MRED,   L_MRED,   L_DGRE,  L_DRED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
-     // |         | app menu|         |tmux term|         |page up  |                          | left    |  down   | up      | right   |         |         |
-         L_DRED,   L_DGRE,   L_DRED,   L_DGRE,   L_DRED,   L_DBLU,                              L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,   L_DRED,
+     // |         | app menu|         |tmux term|maxwintgl|page up  |                          | left    |  down   | up      | right   |         |         |
+         L_DRED,   L_DGRE,   L_DRED,   L_DGRE,   L_DGRE,   L_DBLU,                              L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |page down|          |    |          |         |         |         |         |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         L_MRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |    |     |             |          |            /          /      \          \            |          |             |          |
-                   L_DRED,    L_DRED,       L_DRED,    L_BRED,       L_DRED,             L_DRED,   L_BRED,    L_DRED,    L_DRED,       L_DRED
+                   L_DRED,    L_DRED,       L_DRED,    L_BRED,       L_DRED,             L_DRED,   L_DRED,    L_DRED,    L_DRED,       L_DRED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 }},
 
@@ -93,14 +93,14 @@ const led_color_t PROGMEM ledcolors[] = {
      // |    ¬    | alt+F11 | alt+F12 |         |         |         |                          |         |         |    {    |    }    | play    |         |
          L_LRED,   L_LORA,   L_LORA,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_LRED,   L_LRED,   L_LGRE,   L_DRED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
-     // |         | app menu|         |         |         | home    |                          |alt+left |alt+down |alt+up   |alt+right|         |         |
-         L_DRED,   L_DVIO,   L_DRED,   L_DRED,   L_DRED,   L_LBLU,                              L_LBLU,   L_LBLU,   L_LBLU,   L_DBLU,   L_DRED,   L_DRED,
+     // |         |         |         |         |         | home    |                          |alt+left |alt+down |alt+up   |alt+right|         |         |
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_LBLU,                              L_LBLU,   L_LBLU,   L_LBLU,   L_DBLU,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         | undo    | cut     |copy     |paste    | end     |          |    |          |         | mute    | prev    | next    |         |         |
          L_DRED,   L_DCYA,   L_DCYA,   L_DCYA,   L_DCYA,   L_LBLU,                              L_DRED,   L_DGRE,   L_DGRE,   L_DGRE,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |          |             |          |            /          /      \          \            |          | vol -       | vol +    |
-                   L_DRED,    L_DRED,       L_DRED,    L_BRED,       L_DRED,             L_DRED,   L_BRED,    L_DRED,    L_DGRE,       L_DGRE
+                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,             L_DRED,   L_BRED,    L_DRED,    L_DGRE,       L_DGRE
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 }},
 
@@ -128,19 +128,19 @@ const led_color_t PROGMEM ledcolors[] = {
 [4] = {{
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
-         L__OFF,   L_DYEL,   L_DYEL,   L_DYEL,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+         L_DRED,   L_DYEL,   L_DYEL,   L_DYEL,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
-         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
-         L__OFF,   L_BCYA,   L_BCYA,   L_BCYA,   L__OFF,   L_DBLU,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+         L_DRED,   L_BCYA,   L_BCYA,   L_BCYA,   L_DRED,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |          |    |          |         |         |         |         |         |         |
-         L_DRED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DBLU,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DRED,
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |          |   ctrl      | alt      | mouse 3    /  mouse 1 /      \ mouse 2  \            |          |             |          |
-                   L__OFF,    L_DRED,       L_DRED,    L_BORA,       L_BORA,             L_BORA,   L_DRED,    L_DRED,    L__OFF,       L__OFF
+                   L_DRED,    L_DRED,       L_DRED,    L_BORA,       L_BORA,             L_BORA,   L_DRED,    L_DRED,    L_DRED,       L_DRED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 }},
 
@@ -150,11 +150,11 @@ const led_color_t PROGMEM ledcolors[] = {
      // |reboot    |base lyr|lower    |raise    |numpad   |mouse    |                          |switch   |         |         |         |         |reboot   |
          L_BRED,   L_BGRE,   L_BGRE,   L_BGRE,   L_BGRE,   L_BGRE,                              L_BGRE,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BRED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
-     // |clear mem|         |         |         |rgb togg |rgb deflt|                          |         |         |         |         |         |clear mem|
-         L_BYEL,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_DCYA,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BYEL,
+     // |clear mem|         |         |         |rgb togg |rgb deflt|                          |         |         |oled slp |oled tgl |         |clear mem|
+         L_BYEL,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_DCYA,                              L__OFF,   L__OFF,   L_DVIO,   L_BVIO,   L__OFF,   L_BYEL,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
-     // |         |audio tog|sys sleep|         |         |         |                          |haptic tg|         |         |         |         |         |
-         L__OFF,   L_BORA,   L_BVIO,   L__OFF,   L__OFF,   L__OFF,                              L_BORA,   L__OFF,   L_BORA,   L__OFF,   L__OFF,   L__OFF,
+     // |         |Audio tgl|sys sleep|         |         |         |                          |haptic tg|         |         |         |         |         |
+         L__OFF,   L_BVIO,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,                              L_BORA,   L__OFF,   L_BORA,   L__OFF,   L__OFF,   L__OFF,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |          |    |          |         |         |         |         |         |         |
          L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
