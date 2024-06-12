@@ -56,7 +56,8 @@
 
     // set default brightness
     /* #define OLED_BRIGHTNESS 128 */
-    #define OLED_BRIGHTNESS 96
+    /* #define OLED_BRIGHTNESS 96 */
+    #define OLED_BRIGHTNESS 92
 
     // Note: oled timeout is incompatible with oled off.
     #define OLED_TIMEOUT 0

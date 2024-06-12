@@ -30,10 +30,10 @@
 // TODO make haptic func?
 // TODO add fullscreen, quit app
 // TODO Add tapdance for numpad layer switching (tap/hold)
+// TODO enable caps word
 
 // custom sounds
 float click_sound[][2] = SONG(TERMINAL_SOUND);
-/* float close_encounter_song[][2] = SONG(CLOSE_ENCOUNTERS_SONG); */
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -219,40 +219,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // TODO add audio & haptic for rest of adjust layer keys (audio, rgb, sys sleep, oled)
     switch (keycode) {
-        // TODO rm, use layer_state_set_user instead
-        // tri_layer, when lower and raise keys are pressed, activate a third layer
-        /* case KC_LOWER: */
-        /*     if (record->event.pressed) { */
-        /*         layer_on(_LOWER); */
-        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
-        /*         if (IS_LAYER_ON(_ADJUST)) { */
-        /*             PLAY_SONG(click_sound); */
-        /*             haptic_set_mode(1); */
-        /*             haptic_play(); */
-        /*         } */
-        /*     } else { */
-        /*         layer_off(_LOWER); */
-        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
-        /*     } */
-        /*     return false; */
-
-        /* case KC_RAISE: */
-        /*     if (record->event.pressed) { */
-        /*         layer_on(_RAISE); */
-        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
-        /*         if (IS_LAYER_ON(_ADJUST)) { */
-        /*             PLAY_SONG(click_sound); */
-        /*             haptic_set_mode(1); */
-        /*             haptic_play(); */
-        /*         } */
-        /*     } else { */
-        /*         layer_off(_RAISE); */
-        /*         update_tri_layer(_LOWER, _RAISE, _ADJUST); */
-        /*     } */
-        /*     return false; */
-
-
-
         // allow normal process of modifiers and layer change
         // disregarding if keylogger is enabled 
         // TODO This did not work well with logger:
@@ -277,7 +243,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-#ifdef RGB_MATRIX_ENABLE
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
 
@@ -301,10 +266,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
      set_caps_led_color();   
     return false;
 }
-#endif
 
 
-#ifdef OLED_ENABLE
 // Oled rotation on master side should be 0, while slave is flipper 180
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
@@ -321,7 +284,7 @@ bool oled_task_user(void) {
             return false;
         }
 
-        // Turn off oled when keyboard is idle
+        // Turn off oled when keyboard input is idle
         if (user_config.oled_sleep_enabled) {
             if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) {
                 oled_off();
@@ -341,10 +304,8 @@ bool oled_task_user(void) {
     }
     return false;
 }
-#endif
 
 
-#ifdef POINTING_DEVICE_ENABLE
 report_mouse_t pointing_device_task_combined_user(report_mouse_t left_report, report_mouse_t right_report) {
     // Left side for horisontal/vertical scrolling
     left_report = pointing_device_set_scroll(left_report);
@@ -357,7 +318,6 @@ report_mouse_t pointing_device_task_combined_user(report_mouse_t left_report, re
 
     return pointing_device_combine_reports(left_report, right_report);
 }
-#endif
 
 
 // wake callbacks
