@@ -1,3 +1,6 @@
+// Copyright 2024 Lars Johansson (github.com/swedishlars)
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #include "rgb.h"
 
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
@@ -107,20 +110,20 @@ const led_color_t PROGMEM ledcolors[] = {
 // NUMPAD
 [3] = {{
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
-     // |         |         |         |         |         |         |                          |         |    7    |    8    |    9    |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_LRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DRED,
+     // |    0    |    1    |    2    |    3    |    $    |    %    |                          |    ^    |    &    |    *    |    (    |    )    |         |
+         L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_MRED,   L_MRED,                              L_MRED,   L_MRED,   L_MRED,   L_MRED,   L_MRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
-     // |         |         |         |         |         |         |                          |         |    4    |   5     |    6    |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_MRED,   L_DRED,   L_DRED,                              L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DRED,   L_DRED,
+     // |         |    4    |    5    |    6    |    (    |    )    |                          |         |         |         |         |         |         |
+         L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_LRED,   L_LRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
-     // |         |         |         |         |         |         |                          |    =    |    1    |   2     |    3    |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DRED,   L_DRED,
+     // |         |    7    |    8    |    9    |    -    |    +    |                          |         |         |         |         |    :    |         |
+         L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DYEL,   L_DYEL,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_MRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
-     // |         |         |         |         |         |         |          |    |          |         |    *    |    ,    |    .    |   /     |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_LRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |         |         |         |    =    |    /    |    *    |          |    |          |         |         |         |         |         |         |
+         L_DRED,   L_DRED,   L_DRED,   L_DVIO,   L_DCYA,   L_DCYA,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
-     //           |    |     |             |          | lower      /  Space   /      \ Enter    \  raise     |          |  - minus    | + plus   |
-                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,             L_DRED,   L_DRED,    L_MRED,    L_LRED,       L_LRED
+     //           |    |     |     :       | delete   | enter      /  Space   /      \ Enter    \  raise     |          |  - minus    | + plus   |
+                   L_DRED,    L_LRED,       L_DBLU,    L_LBLU,       L_DRED,             L_DRED,   L_DRED,    L_DRED,    L_MRED,       L_MRED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 }},
 

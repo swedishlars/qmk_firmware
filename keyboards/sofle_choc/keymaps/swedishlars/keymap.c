@@ -1,18 +1,5 @@
-/* Copyright 2021 Dane Evans
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright 2024 Lars Johansson (github.com/swedishlars)
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdio.h>
 
@@ -101,20 +88,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // layer 3
 [_NUMPAD] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |           |           |           |           |           |           |                          |    ^      |     7     |     8     |     9     |     0     | back      |
-     _______,    _______,    _______,    _______,    _______,    _______,                               KC_CIRC,    KC_7,       KC_8,       KC_9,       KC_0,      KC_BSPC,
+ // |           |     1     |     2     |     3     |     $     |     %     |                          |    ^      |     &     |     *     |     (     |     )     |           |
+     KC_0,       KC_1,       KC_2,       KC_3,       KC_DLR,     KC_PERC,                               KC_CIRC,    KC_AMPR,    KC_ASTR,     KC_LPRN,    KC_RPRN,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |     =     |           |           |                          |           |     4     |     5     |     6     |           |           |
-     _______,    _______,    _______,    KC_PEQL,    _______,    _______,                               _______,    KC_4,       KC_5,       KC_6,       KC_P,       _______,
+ // |           |     4     |     5     |     6     |     (     |     )     |                          |           |           |           |           |           |           |
+     _______,    KC_4,       KC_5,       KC_6,       KC_LPRN,    KC_RPRN,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |           |           |           |                          |     H     |     1     |     2     |     3     |           |           |
-     _______,    _______,    _______,    _______,    _______,     _______,                               KC_H,       KC_1,       KC_2,       KC_3,       _______,    _______,
+ // |           |     7     |     8     |     9     |     -     |     +     |                          |           |           |           |           |     :     |           |
+     _______,    KC_7,       KC_8,       KC_9,       KC_PMNS,    KC_PPLS,                               _______,    _______,    _______,    _______,    KC_COLN,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |           |           |           |           |  |           |           |     *     |     ,     |   .       |     /     |           |
-     _______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,   _______,    KC_PAST,    KC_COMM,    KC_DOT,     _______,    _______,
+ // |           |           |           |     =     |     /     |     *     |           |  |           |           |           |     ,     |    .      |     /     |           |
+     _______,    _______,    _______,    KC_PEQL,    KC_PSLS,    KC_PAST,    _______,        _______,   _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------+-----------'
- //                         |           |           |           |           |           |  |           |           |     =     |  - minus  |  + plus   |
-                             _______,    _______,    _______,    _______,    _______,       _______,    _______,    KC_PEQL,    KC_PMNS,    KC_PPLS
+ //                         |           |           |           |           |           |  |           |           |           |  - minus  |  + plus   |
+                             _______,    KC_COLN,    KC_BSPC,    KC_ENT,     _______,        _______,   _______,    _______,    KC_PMNS,    KC_PPLS
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
