@@ -21,7 +21,7 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      // | tab     |    A    |    S    |    D    |    F    |   G     |                                              |    H    |    J    |    K    |    L    |    ;    |   '     |
          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+-------------------.      .-------------------|---------+---------+---------+---------+---------+---------|
-     // | lshift  |    Z    |    X    |         |         |    B    |         |         |      |         |         |    N    |    M    | , and < | . and>  | / and ? | rshift  |
+     // | lshift  |    Z    |    X    |    C    |    V    |    B    |    [    |    `    |      |    #    |    ]    |    N    |    M    | , and < | . and>  | / and ? | rshift  |
          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------|-------------------|      |---------+---------|-------------------------------------------------+---------'
      //                               | \ and | |left ctl |left alt | lower   | space   |      | enter   |  raise  |right alt| - and _ | = and + |
@@ -30,23 +30,42 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //                                underglow                                                                                        underglow 
          L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF,
          L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF
+),
 
+// GAME
+[1] = RGB_MATRIX_LAYOUT( 
+     // .-----------------------------------------------------------.                                              ,-----------------------------------------------------------.
+     // |         |         |    E    |    W    |         |         |                                              |    Y    |    U    |    I    |    O    |    P    |backspace|
+         L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DRED,  L_DRED,                                                   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |---------+---------+---------+---------|---------+---------|                                              |---------+---------|---------|---------|---------+---------|
+     // |         |    F    |    A    |    S    |    D    |         |                                              |    H    |    J    |    K    |    L    |    ;    |   '     |
+         L_DRED,   L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DRED,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |---------+---------+---------+---------+---------+---------+-------------------.      .-------------------|---------+---------+---------+---------+---------+---------|
+     // |         |         |         |         |         |         |         |         |      |         |         |    N    |    M    | , and < | . and>  | / and ? | rshift  |
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // .---------+-------------------------------------------------|-------------------|      |---------+---------|-------------------------------------------------+---------'
+     //                               | \ and | |left ctl |left alt | lower   | space   |      | enter   |  raise  |right alt| - and _ | = and + |
+                                       L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // ______________________________|_________|_________|_________|_________|_________|      |_________|_________|_________|_________|_________|______________________________
+     //                                underglow                                                                                        underglow 
+         L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF,
+         L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF
 ),
 
 // LOWER numpad
-[1] = RGB_MATRIX_LAYOUT( 
+[2] = RGB_MATRIX_LAYOUT( 
      // .-----------------------------------------------------------.                                              ,------------------------------------------------ ----------.
      // |= equal  |/ div    |7        |8        |9        |backspace|                                              |         |         |         |         |         |insert   |
-         L_LRED,   L_DGRE,   L_LORA,   L_LORA,   L_LORA,   L_DBLU,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,
+         L_LRED,   S_DGRE,   L_LORA,   L_LORA,   L_LORA,   L_DBLU,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,
      // |---------+---------+---------+---------|---------+---------|                                              |---------+---------|---------|---------|---------+---------|
      // |delete   |* mult   |4        |5        |6        |- minus  |                                              |         |         |         |         |         |         |
-         L_DBLU,   L_DGRE,   L_LORA,   L_LORA,   L_LORA,   L_DGRE,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_MRED,   L_DRED,
+         L_DBLU,   S_DGRE,   L_LORA,   L_LORA,   L_LORA,   S_DGRE,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_MRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+-------------------.      .-------------------|---------+---------+---------+---------+---------+---------|
      // |         |0        |1        |2        |3        |- plus   |         |         |      |         |         |         |         |         |         |         |         |
-         L_DRED,   L_LORA,   L_LORA,   L_LORA,   L_LORA,   L_DGRE,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         L_DRED,   L_LORA,   L_LORA,   L_LORA,   L_LORA,   S_DGRE,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------|-------------------|      |---------+---------|-------------------------------------------------+---------'
      //                               |         |. dot    |enter    |         |         |      |         |         |         |         |         |
-                                       L_DRED,   L_LRED,   L_DBLU,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+                                       L_DRED,   L_LRED,   L_DBLU,   L_BRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
      // ______________________________|_________|_________|_________|_________|_________|      |_________|_________|_________|_________|_________|______________________________
      //                                underglow                                                                                        underglow 
          L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF,
@@ -54,7 +73,7 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
 ),
 
 // RAISE symbols
-[2] = RGB_MATRIX_LAYOUT( 
+[3] = RGB_MATRIX_LAYOUT( 
      // .-----------------------------------------------------------.                                              ,------------------------------------------------ ----------.
      // |         |    !    |    "    |    £    |    $    |    %    |                                              |    ^    |    &    |    *    |    (    |    )    |del      |
          L_DRED,   L_LORA,   L_LORA,   L_LORA,   L_LORA,   L_LORA,                                                  L_LORA,   L_LORA,   L_LORA,   L_LORA,   L_LORA,   L_LRED,
@@ -63,10 +82,10 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
          L_DRED,   L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,                                                  L_LBLU,   L_LBLU,   L_LBLU,   L_LBLU,   L_LRED,   L_DRED,
      // |---------+---------+---------+---------+---------+---------+-------------------.      .-------------------|---------+---------+---------+---------+---------+---------|
      // |shift+ctl|         |         |         |         |         |         |         |      |         |         |alt+left |alt+down |alt+up   |alt+right|         |         |
-         L_DGRE,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,   L_DRED,
+         S_DGRE,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------|-------------------|      |---------+---------|-------------------------------------------------+---------'
      //                               |         |         |         |         |         |      |         |         |         |         |         |
-                                       L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+                                       L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,          L_DRED,   L_BRED,   L_DRED,   L_DRED,   L_DRED,
      // ______________________________|_________|_________|_________|_________|_________|      |_________|_________|_________|_________|_________|______________________________
      //                                underglow                                                                                        underglow 
          L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF,
@@ -74,7 +93,7 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
 ),
 
 // FUNC F/media/apps
-[3] = RGB_MATRIX_LAYOUT( 
+[4] = RGB_MATRIX_LAYOUT( 
      // .-----------------------------------------------------------.                                              ,-----------------------------------------------------------.
      // |         |F1        |F2      |F3       |F4       |F5       |                                              |F6       |F7       |F8       |F9       |F10      |F11      |
          L_DRED,   L_LORA,   L_LORA,   L_LORA,   L_LORA,   L_LORA,                                                  L_LORA,   L_LORA,   L_LORA,   L_LORA,   L_LORA,  L_LORA,
@@ -83,10 +102,10 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
          L_DRED,   L_LRED,   L_DBLU,   L_DRED,   L_LRED,   L_DBLU,                                                  L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_LORA,
      // |---------+---------+---------+---------+---------+---------+-------------------.      .-------------------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |bash term|         |         |      |         |         |play/paus|mute     |previous |next     |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   L_DGRE,   L_DGRE,   L_DGRE,   L_DGRE,   L_DRED,   L_DRED,
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,   L_DRED,   L_DRED,          L_DRED,   L_DRED,   S_DGRE,   S_DGRE,   S_DGRE,   S_DGRE,   L_DRED,   L_DRED,
      // .---------+-------------------------------------------------|-------------------|      |---------+---------|-------------------------------------------------+---------'
      //                               |         |         |         |         |         |      |         |         |vol -    |vol +    |         |
-                                       L_DRED,   L_DRED,   L_DRED,   L_BRED,   L_DRED,          L_DRED,   L_DRED,   L_DGRE,   L_DGRE,   L_DRED,
+                                       L_DRED,   L_DRED,   L_DRED,   L_BRED,   L_DRED,          L_DRED,   L_BRED,   S_DGRE,   S_DGRE,   L_DRED,
      // ______________________________|_________|_________|_________|_________|_________|      |_________|_________|_________|_________|_________|______________________________
      //                                underglow                                                                                        underglow 
          L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF,
@@ -94,19 +113,20 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
 ),
 
 // ADJUST
-[4] = RGB_MATRIX_LAYOUT( 
+// TODO change boot colour
+[5] = RGB_MATRIX_LAYOUT( 
      // .-----------------------------------------------------------.                                              ,-----------------------------------------------------------.
      // |boot     |         |         |         |rgb togg |rgb deflt|                                              |         |         |         |oled tgl |oled slep|boot     |
-         L_BRED,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_DCYA,                                                  L__OFF,   L__OFF,   L__OFF,   L_BVIO,   L_DVIO,   L_BRED,
+         B_LGRE,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_DCYA,                                                  L__OFF,   L__OFF,   L__OFF,   L_BVIO,   L_DVIO,   B_LGRE,
      // |---------+---------+---------+---------+---------+---------|                                              |---------+---------+---------+---------+---------+---------|
-     // |reboot   |         |sys sleep|         |         |         |                                              |         |         |key log  |base layr|         |reboot   |
-         L_BGRE,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,                                                  L__OFF,   L__OFF,   L_BORA,   L_BROS,   L__OFF,   L_BGRE,
+     // |reboot   |         |sys sleep|         |         |game layr|                                              |         |         |key log  |         |         |reboot   |
+         B_DGRE,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L_BROS,                                                  L__OFF,   L__OFF,   L_BORA,   L__OFF,   L__OFF,   B_DGRE,
      // |---------+---------+---------+---------+---------+---------+-------------------.      .-------------------|---------+---------+---------+---------+---------+---------|
-     // |         |         |         |clear mem|         |         |         |         |      |         |         |         |         |clear mem|         |         |autoshift|
-         L__OFF,   L__OFF,   L__OFF,   L_BYEL,   L__OFF,   L__OFF,   L__OFF,   L__OFF,          L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BYEL,   L__OFF,   L__OFF,   L_BAZU,
+     // |         |         |         |clear mem|         |base layr|         |         |      |         |         |         |         |clear mem|         |         |autoshift|
+         L__OFF,   L__OFF,   L__OFF,   L_BYEL,   L__OFF,   L_BROS,   L__OFF,   L__OFF,          L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BYEL,   L__OFF,   L__OFF,   L_BAZU,
      // .---------+-------------------------------------------------|-------------------|      |---------+---------|-------------------------------------------------+---------'
      //                               |         |         |         |         |         |      |         |         |rgb -    |rgb +    |         |
-                                       L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,          L__OFF,   L__OFF,   L_DCYA,   L_DCYA,   L__OFF,
+                                       L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,          L__OFF,   L__OFF,   L_DCYA,   L_DCYA,   L_BRED,
      // ______________________________|_________|_________|_________|_________|_________|      |_________|_________|_________|_________|_________|______________________________
      //                                underglow                                                                                        underglow 
          L__OFF,                       L__OFF,                       L__OFF,                              L__OFF,                       L__OFF,                       L__OFF,
@@ -116,13 +136,10 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
 
 
 // Set LED for Caps Lock
-// TODO get correct index
+// TODO use define to declare caps index
 void set_caps_led_color(void) {
     if (host_keyboard_led_state().caps_lock) {
-        HSVB hsvb = L_BRED;
-        // TODO orig:
-        //set_led_color(26, hsvb, USE_RGB_MATRIX_VALUE_ON);
-        // TODO use define to declare caps index
+        HSVB hsvb = L_BBLU;
         set_led_color(35, hsvb, USE_RGB_MATRIX_VALUE_ON);
     }
 }

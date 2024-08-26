@@ -40,6 +40,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //                                     `------------------------------------------------------------'  `-----------------------------------------------------------'
 ),
 
+// TODO move after base?
+[_GAME] = LAYOUT(
+// ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
+// |           |           |     E     |      W     |           |           |                                                  |           |           |           |           |           |           | 
+    _______,    _______,    KC_E,       KC_W,        _______,    _______,                                                       _______,    _______,    _______,    _______,    _______,    _______,
+// |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
+// |           |     F     |     A     |     S      |     D     |           |                                                  |           |           |           |           |           |F12        |
+    _______,    KC_F,       KC_A,       KC_S,        KC_D,       _______,                                                       _______,    _______,    _______,    _______,    _______,    _______,
+// |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
+// |           |           |           |            |           |           |           |           |  |           |           |           |           |           |           |           |           |
+    _______,    _______,    _______,    _______,     _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,    _______,
+// `-----------------------------------+-----------+------------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------------------------------'
+//                                     |            |           |           |           |           |  |           |           |           |           |           |
+                                        _______,     _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______
+//                                     `------------------------------------------------------------'  `-----------------------------------------------------------'
+),
+
 // Numpad - follow standard pad layout as close as possible
 [_LOWER] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
@@ -98,11 +115,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // |bootloader |           |           |            |toggle rgb |reset rgb  |                                                  |           |           |           |oled toggle|oled sleep |bootloader | 
     QK_BOOT,    XXXXXXX,    XXXXXXX,    XXXXXXX,     RGB_TOG,    RGB_M_P,                                                       XXXXXXX,    XXXXXXX,    XXXXXXX,    KC_OTGL,    KC_OSLEEP,  QK_BOOT,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |reboot     |           |           |            |           |           |                                                  |           |           |           |reset layer|           |reboot     |
-    QK_RBT,     XXXXXXX,    XXXXXXX,    XXXXXXX,     XXXXXXX,    XXXXXXX,                                                       XXXXXXX,    XXXXXXX,    KC_KEYLOG,  TO(_QWERTY),XXXXXXX,    QK_RBT,
+// |reboot     |           |           |            |           |game layer |                                                  |           |           |           |           |           |reboot     |
+    QK_RBT,     XXXXXXX,    XXXXXXX,    XXXXXXX,     XXXXXXX,    TG(_GAME),                                                     XXXXXXX,    XXXXXXX,    KC_KEYLOG,  XXXXXXX    ,XXXXXXX,    QK_RBT,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
-// |           |           |           |clear eeprom|           |           |           |           |  |           |           |           |           |clear eeprm|           |           |auto shift |
-    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,     XXXXXXX,    XXXXXXX,    AS_TOGG,
+// |           |           |           |clear eeprom|           |base layer |           |           |  |           |           |           |           |clear eeprm|           |           |auto shift |
+    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,      XXXXXXX,    TO(_QWERTY),XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,     XXXXXXX,    XXXXXXX,    AS_TOGL,
 // `-----------------------------------+------------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------------------------------'
 //                                     |            |           |           |           |           |  |           |           | rgb -     | rgb +     |           |
                                         XXXXXXX,     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    RGB_VAD,    RGB_VAI,    XXXXXXX
@@ -122,6 +139,8 @@ void eeconfig_init_user(void) {
     /* user_config.oled_brightness = OLED_BRIGHTNESS; */
     user_config.oled_enabled = true;
     user_config.oled_sleep_enabled = true;
+    user_config.autoshift_enabled = true;
+    /* user_config.autoshift_enabled = get_autoshift_state(); */
     eeconfig_update_user(user_config.raw);
 }
 
@@ -139,6 +158,10 @@ void keyboard_post_init_user(void) {
     // start timer for displaying help msg.
     // TODO use this for blinking logo?
     /* oled_help_timer = timer_read(); */
+
+    // Custom eeprom autoshift init
+    if (user_config.autoshift_enabled) { autoshift_enable(); } 
+    else { autoshift_disable(); }
 }
 
 
@@ -154,19 +177,42 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 
-// tri-layer, tap to toggle, hold to activate momentarily
 layer_state_t layer_state_set_user(layer_state_t state) {
+    // Turn off auto shift for gaming layer
+    if (user_config.autoshift_enabled && IS_LAYER_OFF_STATE(state, _GAME)) {
+        autoshift_enable();
+    } else {
+        autoshift_disable();
+    }
+
+    // tri-layer, tap to toggle, hold to activate momentarily
     state = update_tri_layer_state(state, _LOWER, _RAISE, _FUNC);
     return state;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // Custom eeprom autoshift toggle
+        case AS_TOGL:
+            if (record->event.pressed) {
+                user_config.autoshift_enabled = !user_config.autoshift_enabled;
+                eeconfig_update_user(user_config.raw);
+
+                // TODO make func?
+                if (user_config.autoshift_enabled) { autoshift_enable(); } 
+                else { autoshift_disable(); }
+            }
+            break;
+    }
+
     // Process oled keycodes
+    // TODO retire?
     process_record_user_oled(keycode, record);
 
     // do not send key if keylogger help is enabled
     // (except for modifiers & layer change)
-    // TODO move to oled?
+    // TODO move to oled or alternative as if statement inside switch above?
+    // OR retire process_record_user_oled?
     if (oled_keylogger_enabled) {
         // allow normal process of modifiers and layer change
         // disregarding if keylogger is enabled 
@@ -194,20 +240,35 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 bool oled_task_user(void) {
     // TODO try moving this outside keyboard_master again, see if it fixes pc power off state
     // drashna has this and sleep in housekeeping_task_oled() which is called by housekeeping_task_user()
-    if (is_keyboard_master()) {
-        // Turn off oled by user
-        if (!user_config.oled_enabled) {
+
+    // Turn off oled by user
+    if (!user_config.oled_enabled) {
+        oled_off();
+        return false;
+    }
+
+    // Turn off oled when keyboard input is idle
+    if (user_config.oled_sleep_enabled) {
+        if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) {
             oled_off();
             return false;
         }
+    } 
+
+    if (is_keyboard_master()) {
+        // Turn off oled by user
+        /* if (!user_config.oled_enabled) { */
+        /*     oled_off(); */
+        /*     return false; */
+        /* } */
 
         // Turn off oled when keyboard input is idle
-        if (user_config.oled_sleep_enabled) {
-            if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) {
-                oled_off();
-                return false;
-            }
-        } 
+        /* if (user_config.oled_sleep_enabled) { */
+        /*     if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) { */
+        /*         oled_off(); */
+        /*         return false; */
+        /*     } */
+        /* } */ 
         oled_render_left();
     }
     else {

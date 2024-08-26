@@ -64,6 +64,7 @@
 // LED colors
 // First 3 values are Hue, Saturation, Value (value=brightness).
 // Last value sets breathing effect. 0 = no breathing. > 0 sets cycle time
+// TODO use S_ (solid) & B_ (blinking) prefixes
 #define L_DRED { 0, 255, LED_MAX, 0 }
 #define L_BRED { 0, 255, LED_MAX, 30 }
 
@@ -79,21 +80,30 @@
 
 #define L_DYEL { 30, 255, LED_MAX, 0 }
 #define L_BYEL { 30, 255, LED_MAX, 34 }
+
+// light yellow
+// TODO not used:
 #define L_LYEL { 41, 255, LED_MAX, 0 }
 
-#define L_DGRE { 85, 255, LED_MAX, 0 }
-#define L_LGRE { 60, 255, LED_MAX, 0 }
-#define L_BGRE { 85, 255, LED_MAX, 36 }
+// light green
+#define S_LGRE { 65, 255, LED_MAX, 0 }
+#define B_LGRE { 65, 255, LED_MAX, 35 }
 
-// TODO cyan too similar to green
+// dark green
+#define S_DGRE { 85, 255, LED_MAX, 0 }
+#define B_DGRE { 85, 255, LED_MAX, 36 }
+
+// cyan
 #define L_DCYA { 125, 255, LED_MAX, 0 }
 #define L_BCYA { 125, 255, LED_MAX, 38 }
 
+// azule
 #define L_DAZU { 158, 255, LED_MAX, 0 }
 #define L_BAZU { 158, 255, LED_MAX, 40 }
 
 #define L_DBLU { 169, 255, LED_MAX, 0 }
 #define L_BBLU { 169, 255, LED_MAX, 42 }
+
 // TODO use L_DAZU instead
 #define L_LBLU { 158, 255, LED_MAX, 0 }
 

@@ -101,6 +101,7 @@ void oled_advance_pages(uint8_t pages, bool clear_page) {
 // First check if there is a layer enabled which has a description override.
 // Then check if shift is held and there is a shifted keycode description.
 // If none of the above is true, return a default keycode description.
+// TODO handle other layers
 const char* get_keycode_desc(uint16_t keycode, uint8_t key_desc_mod) {
     // Set keycode description override for layer
     uint8_t key_desc_layer = KEYCODE_DEFAULT;
@@ -256,7 +257,8 @@ void oled_render_caps(void) {
     // TODO orig:
     /* led_t led_state = host_keyboard_led_state(); */
     /* if (!led_state.caps_lock) { */
-    // TODO using caps word
+    
+    // render caps word status
     if (!is_caps_word_on()) {
         oled_advance_page(true);
         return;
@@ -366,6 +368,19 @@ void oled_render_base(void) {
     oled_write(PSTR("      : settings     "), false);
 }
 
+void oled_render_game(void) {
+    oled_advance_pages(3, true);
+    oled_write(PSTR("GAMING               "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("WASD        :  orange"), false);
+    oled_advance_page(true);
+    oled_write(PSTR("TODO        :  blue  "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("TODO        :  rose  "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("TODO        :  green "), false);
+}
+
 void oled_render_lower(void) {
     oled_advance_pages(3, true);
     oled_write(PSTR("NUMBER PAD           "), false);
@@ -394,6 +409,7 @@ void oled_render_raise(void) {
     oled_write(PSTR("modifier    :  green "), false);
 }
 
+// CHANGE colour order
 void oled_render_func(void) {
     oled_advance_pages(3, true);
     oled_write(PSTR("F-KEYS - APPS - MEDIA"), false);
@@ -407,19 +423,20 @@ void oled_render_func(void) {
     oled_write(PSTR("media       :  green "), false);
 }
 
+// TODO this is the colour order I should follow for all layers
 void oled_render_adjust(void) {
     oled_advance_page(true);
     oled_write(PSTR("CONFIGURATION - RESET"), false);
     oled_advance_page(true);
-    oled_write(PSTR("Key help   :  orange "), false);
-    oled_write(PSTR("pc system  :  blue   "), false);
-    oled_write(PSTR("reset layer:  rose   "), false);
-    oled_write(PSTR("bootloader :  red    "), false);
-    oled_write(PSTR("clear eeprm:  yellow "), false);
-    oled_write(PSTR("reboot     :  green  "), false);
+    oled_write(PSTR("Key help  : orange   "), false);
+    oled_write(PSTR("clear mem : yellow   "), false);
+    oled_write(PSTR("bootloader: palegreen"), false);
+    oled_write(PSTR("reboot    : green    "), false);
+    oled_write(PSTR("rgb light : cyan     "), false);
+    oled_write(PSTR("pc system : blue     "), false);
     oled_advance_page(true);
-    oled_write(PSTR("rgb light  :  cyan   "), false);
-    oled_write(PSTR("oled       :  violet "), false);
+    oled_write(PSTR("oled      : violet   "), false);
+    oled_write(PSTR("set layer : rose     "), false);
 }
 
 /* void oled_render_mouse(uint8_t line) { */
@@ -466,12 +483,17 @@ void oled_render_right(void) {
     oled_write_raw(layer_header_logo, sizeof(layer_header_logo));
     oled_advance_pages(2, false);
 
-    // TODO make eeprom option to hide help and perhaps display a cool anim instead?
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
             oled_write_raw(layer_base_logo, sizeof(layer_base_logo));
             oled_advance_pages(2, false);
             oled_render_base();
+            break;
+
+        case _GAME:
+            oled_write_raw(layer_game_logo, sizeof(layer_game_logo));
+            oled_advance_pages(2, false);
+            oled_render_game();
             break;
 
         case _LOWER:
@@ -534,6 +556,7 @@ void oled_render_boot(bool bootloader) {
 }
 
 
+// TODO retire?
 bool process_record_user_oled(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {

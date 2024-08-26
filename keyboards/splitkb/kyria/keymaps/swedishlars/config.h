@@ -32,11 +32,11 @@
 // Toggle layer with 1 tap
 #define TAPPING_TOGGLE 1
 
-// TODO testing caps word
+// Caps word
 #define BOTH_SHIFTS_TURNS_ON_CAPS_WORDS
 #define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
 
-// TODO auto shift
+// Auto shift
 #define AUTO_SHIFT_TIMEOUT 200
 
 
