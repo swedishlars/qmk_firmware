@@ -6,47 +6,37 @@
 
 #include "lib/rgb.h"
 #include "lib/oled.h"
+#include "lib/tapdance.h"
 #include "swedishlars.h"
 
-// Note: LAlt/Enter (ALT_ENT) is not the same thing as the keyboard shortcut Alt+Enter.
-// The notation `mod/tap` denotes a key that activates the modifier `mod` when held down, and
-// produces the key `tap` when tapped (i.e. pressed and released).
-// TODO move CTL_QUOT to KC+EQL
-// TODO do similar with RALT
-// TODO Add mouse keys?
-// TODO Use KC_GRV for something better? KC_LGUI?
 
-// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-// TODO add mouse layer?
-// TODO add mouse keys
-// TODO I do not use r shift, replace with mouse layer?
-// or to toggle some functionality? Maybe for mouse layer?
-// TODO testing caps word on r shift
-// TODO remove caps lock, I do not need it.
-[_QWERTY] = LAYOUT(
+// TODO use tap-hold on KC_LCTL for something?
+// TODO do similar with LALT
+// TODO remove caps lock, I do not need it?
+[_BASE] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
 // |esc        |     Q     |     W     |     E      |     R     |     T     |                                                  |     Y     |     U     |     I     |     O     |     P     |backspace  | 
     KC_ESC,     KC_Q,       KC_W,       KC_E,        KC_R,       KC_T ,                                                         KC_Y,       KC_U ,      KC_I ,      KC_O ,      KC_P ,      KC_BSPC,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |tab        |     A     |     S     |     D      |     F     |     G     |                                                  |     H     |     J     |     K     |     L     |    ;  :   | Ctr / ' " |
-    KC_TAB,     KC_A,       KC_S,       KC_D,        KC_F,       KC_G ,                                                         KC_H,       KC_J ,      KC_K ,      KC_L ,      KC_SCLN,    CTL_QUOT,
+// |tab        |     A     |     S     |     D      |     F     |     G     |                                                  |     H     |     J     |     K     |     L     |    ;  :   |   '  @    |
+    KC_TAB,     KC_A,       KC_S,       KC_D,        KC_F,       KC_G ,                                                         KC_H,       KC_J ,      KC_K ,      KC_L ,      KC_SCLN,    KC_QUOT,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
-// |Left Shift |   Z       |   X       |   C        |   V       |   B       |[ {        |` and ¬    |  |# and ~    |] }        |   N       |   M       |   ,  <    | . >       |   /  ?    | RShift    |
-    KC_LSFT,    KC_Z,       KC_X,       KC_C,        KC_V,       KC_B,       KC_LBRC,    KC_GRV,        KC_NUHS,    KC_RBRC,    KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,    QK_CAPS_WORD_TOGGLE,
+// |Left Shift |   Z       |   X       |     C      |   V       |   B       |  [ and {  |  \ and |  |  |  # and ~  |  ] and }  |     N     |   M       |   ,  <    | . >       |   /  ?    |cw/sft+ctl |
+    KC_LSFT,    KC_Z,       KC_X,       KC_C,        KC_V,       KC_B,       KC_LBRC,    KC_NUBS,       KC_NUHS,    KC_RBRC,    KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,    TD(CW_SFT),
 // `-----------------------------------+------------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------------------------------'
-//                                     |\ and |     |L ctl      |L Alt      |lower      |space      |  |enter      |raise      |- and _    |= and +    |caps/adjust|
-                                        KC_NUBS,     KC_LCTL,    KC_LALT,    TT(_LOWER), KC_SPC,        KC_ENT,     TT(_RAISE), KC_MINS,    KC_EQL,     CAPS_ADJUST
+//                                     |  ` and ¬   |  L ctl    |  L Alt    |  lower    |  space    |  |  enter    |  raise    |  - and _  |  = and +  |caps/adjust|
+                                        KC_GRV,       KC_LCTL,    KC_LALT,    TT(_LOWER), KC_SPC,        KC_ENT,     TT(_RAISE), KC_MINS,    KC_EQL,     CAPS_ADJUST
 //                                     `------------------------------------------------------------'  `-----------------------------------------------------------'
 ),
 
-// TODO move after base?
+// Gaming layer
 [_GAME] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
 // |           |           |     E     |      W     |           |           |                                                  |           |           |           |           |           |           | 
     _______,    _______,    KC_E,       KC_W,        _______,    _______,                                                       _______,    _______,    _______,    _______,    _______,    _______,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |           |     F     |     A     |     S      |     D     |           |                                                  |           |           |           |           |           |F12        |
+// |           |     F     |     A     |     S      |     D     |           |                                                  |           |           |           |           |           |           |
     _______,    KC_F,       KC_A,       KC_S,        KC_D,       _______,                                                       _______,    _______,    _______,    _______,    _______,    _______,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
 // |           |           |           |            |           |           |           |           |  |           |           |           |           |           |           |           |           |
@@ -60,17 +50,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Numpad - follow standard pad layout as close as possible
 [_LOWER] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |= equal    |/ div      |7          |8           |9          |backspace  |                                                  |           |           |           |           |           |insert     | 
-    KC_PEQL,    KC_SLSH,    KC_7,       KC_8,        KC_9,       KC_BSPC,                                                       _______,    _______,    _______,    _______,    _______,    KC_INS,
+// |delete     |/ div      |7          |8           |9          |backspace  |                                                  |           |           |mouse up   |           |           |insert     | 
+    KC_DEL,     KC_SLSH,    KC_7,       KC_8,        KC_9,       KC_BSPC,                                                       _______,    _______,    MS_UP,      _______,    _______,    KC_INS,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |delete     |* mult     |4          5|           |6          |- minus    |                                                  |           |           |           |           |           |           |      
-    KC_DEL,     KC_ASTR,     KC_4,      KC_5,        KC_6,       KC_PMNS,                                                       _______,    _______,    _______,    _______,    _______,    _______,
+// |= equal    |* mult     |4          |5           |6          |- minus    |                                                  |wheel up   |mouse left |mouse down |mouse right|           |           |      
+    KC_PEQL,    KC_ASTR,    KC_4,       KC_5,        KC_6,       KC_PMNS,                                                       MS_WHLU,    MS_LEFT,    MS_DOWN,    MS_UP,      MS_RGHT,    _______,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
-// |           |0          |1          |2           |3          |- plus     |           |           |  |           |           |           |           |           |           |           |           |
-    _______,    KC_0,       KC_1,       KC_2,        KC_3,       KC_PPLS,    _______,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,    _______,
+// |. dot      |0          |1          |2           |3          |- plus     |           |           |  |mouse 2    |mouse 3    |wheel down |           |           |           |           |           |
+    KC_DOT,     KC_0,       KC_1,       KC_2,        KC_3,       KC_PPLS,    _______,    _______,       MS_BTN2,    MS_BTN3,    MS_WHLD,    _______,    _______,    _______,    _______,    _______,
 // `-----------------------------------+-----------+------------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------------------------------'
-//                                     |           |. dot       |enter      |           |           |  |           |           |           |           |           |
-                                        _______,    KC_DOT,      KC_ENT,   _______,     _______,       _______,    _______,    _______,    _______,    _______
+//                                     |           |            |enter      |           |           |  |mouse 1    |           |           |           |           |
+                                        _______,    _______,     KC_ENT,     _______,    _______,       MS_BTN1,    _______,    _______,    _______,    _______
 //                                     `------------------------------------------------------------'  `-----------------------------------------------------------'
 ),
 
@@ -84,8 +74,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // |           |home       |page down  |page up     |end        |           |                                                  |left       |down       |up         |right      |     :     |           |      
     _______,    KC_HOME,    KC_PGDN,    KC_PGUP,     KC_END,     _______,                                                       KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    KC_COLN,    _______,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
-// |lshift+ctl |           |           |            |           |           |           |           |  |           |           |alt + left |alt + down |alt + up   |alt + right|           |           |
-    S(KC_LCTL), _______,    _______,    _______,     _______,    _______,    _______,    _______,       _______,    _______,    A(KC_LEFT), A(KC_DOWN), A(KC_UP),   A(KC_RGHT), _______,    _______,
+// |           |           |           |            |           |           |           |           |  |           |           |alt + left |alt + down |alt + up   |alt + right|           |           |
+    _______,    _______,    _______,    _______,     _______,    _______,    _______,    _______,       _______,    _______,    A(KC_LEFT), A(KC_DOWN), A(KC_UP),   A(KC_RGHT), _______,    _______,
 // `-----------------------------------+-----------+------------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------------------------------'
 //                                     |            |           |           |           |           |  |           |           |           |           |           |
                                         _______,     _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______
@@ -115,11 +105,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // |bootloader |           |           |            |toggle rgb |reset rgb  |                                                  |           |           |           |oled toggle|oled sleep |bootloader | 
     QK_BOOT,    XXXXXXX,    XXXXXXX,    XXXXXXX,     RGB_TOG,    RGB_M_P,                                                       XXXXXXX,    XXXXXXX,    XXXXXXX,    KC_OTGL,    KC_OSLEEP,  QK_BOOT,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |reboot     |           |           |            |           |game layer |                                                  |           |           |           |           |           |reboot     |
-    QK_RBT,     XXXXXXX,    XXXXXXX,    XXXXXXX,     XXXXXXX,    TG(_GAME),                                                     XXXXXXX,    XXXXXXX,    KC_KEYLOG,  XXXXXXX    ,XXXXXXX,    QK_RBT,
+// |reboot     |           | pc sleep  |            |           |game layer |                                                  |           |           |           |           |           |reboot     |
+    QK_RBT,     XXXXXXX,    KC_SLEP,    XXXXXXX,     XXXXXXX,    TG(_GAME),                                                     XXXXXXX,    XXXXXXX,    KC_KEYLOG,  XXXXXXX    ,XXXXXXX,    QK_RBT,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
 // |           |           |           |clear eeprom|           |base layer |           |           |  |           |           |           |           |clear eeprm|           |           |auto shift |
-    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,      XXXXXXX,    TO(_QWERTY),XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,     XXXXXXX,    XXXXXXX,    AS_TOGL,
+    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,      XXXXXXX,    TO(_BASE),  XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    EE_CLR,     XXXXXXX,    XXXXXXX,    AS_TOGL,
 // `-----------------------------------+------------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------------------------------'
 //                                     |            |           |           |           |           |  |           |           | rgb -     | rgb +     |           |
                                         XXXXXXX,     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    RGB_VAD,    RGB_VAI,    XXXXXXX
@@ -130,17 +120,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Declare persistent eeprom config
 user_config_t user_config;
 
+// TODO rm:
 // Oled help msg timer
 /* uint16_t oled_help_timer = 0; */
 
 
 void eeconfig_init_user(void) {
     user_config.raw = 0;
-    /* user_config.oled_brightness = OLED_BRIGHTNESS; */
     user_config.oled_enabled = true;
     user_config.oled_sleep_enabled = true;
     user_config.autoshift_enabled = true;
-    /* user_config.autoshift_enabled = get_autoshift_state(); */
     eeconfig_update_user(user_config.raw);
 }
 
@@ -159,7 +148,7 @@ void keyboard_post_init_user(void) {
     // TODO use this for blinking logo?
     /* oled_help_timer = timer_read(); */
 
-    // Custom eeprom autoshift init
+    // Custom eeprom autoshift init)
     if (user_config.autoshift_enabled) { autoshift_enable(); } 
     else { autoshift_disable(); }
 }
@@ -181,16 +170,97 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     // Turn off auto shift for gaming layer
     if (user_config.autoshift_enabled && IS_LAYER_OFF_STATE(state, _GAME)) {
         autoshift_enable();
-    } else {
-        autoshift_disable();
-    }
+    } else { autoshift_disable(); }
 
     // tri-layer, tap to toggle, hold to activate momentarily
     state = update_tri_layer_state(state, _LOWER, _RAISE, _FUNC);
     return state;
 }
 
+
+// tap dance
+// Determine the tapdance state to return
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) { return TD_SINGLE_TAP; }
+        else { return TD_SINGLE_HOLD; }
+    }
+    else { return TD_UNKNOWN; }
+}
+
+// Tap: turn on caps word. Hold: shift+ctrl
+// NOTE: to use caps_word_toggle(), add TD(KC) to caps_word_press_user()
+void rshift_finished(tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            caps_word_on();
+            break;
+        case TD_SINGLE_HOLD:
+            register_mods(MOD_BIT(KC_LSFT));
+            register_mods(MOD_BIT(KC_LCTL));
+            break;
+        default:
+            break;
+    }
+}
+
+void rshift_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            break;
+        case TD_SINGLE_HOLD:
+            unregister_mods(MOD_BIT(KC_LSFT));
+            unregister_mods(MOD_BIT(KC_LCTL));
+            break;
+        default:
+            break;
+    }
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+        [CW_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rshift_finished, rshift_reset)
+};
+
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Key help/logger.
+    // Do not send key to host if keylogger help is enabled.
+    // Allow normal process of modifiers and dedicated layer change keys.
+    // Otherwise the consectutive key press will not be handled.
+    // Active modifiers will be checked by keylogger and displayed on oled.
+    //
+    if (oled_keylogger_enabled) {
+        // disregarding if keylogger is enabled 
+        switch (keycode) {
+            case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
+                // Exept layer changes done from a layer.
+                // Those should be checked by keylogger and displayed on oled.
+                // TODO This works but is very hardcoded. test again if I can
+                // check if current layer is not base and break?
+                if (keycode == TG(_GAME) || keycode == TO(_BASE)) {
+                    break;
+                } else { 
+                    return true;
+                }
+
+            // Allow normal process of real mods. 
+            case MODIFIER_KEYCODE_RANGE:
+                return true;
+
+            // Allow normal process of mod combos like  S(KC_LCTL) = shift+ctrl
+            // NOTE this works but s hardcoded. Have not found a dynamic way.
+            case S(KC_LCTL):
+                return true;
+
+        }
+        // make sure key in not the keylog toggler
+        if (keycode != KC_KEYLOG) {
+            add_keylog(keycode, record);
+            return false;
+        }
+    }
+
     switch (keycode) {
         // Custom eeprom autoshift toggle
         case AS_TOGL:
@@ -198,34 +268,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 user_config.autoshift_enabled = !user_config.autoshift_enabled;
                 eeconfig_update_user(user_config.raw);
 
-                // TODO make func?
                 if (user_config.autoshift_enabled) { autoshift_enable(); } 
                 else { autoshift_disable(); }
             }
             break;
+             
+        // Toggle oled display on/off
+        case KC_OTGL:
+            if (record->event.pressed) {
+                user_config.oled_enabled = !user_config.oled_enabled;
+                eeconfig_update_user(user_config.raw);
+            }
+            break;
+
+        // toggle oled sleep
+        case KC_OSLEEP:
+            if (record->event.pressed) {
+                user_config.oled_sleep_enabled = !user_config.oled_sleep_enabled;
+                eeconfig_update_user(user_config.raw);
+            }
+            break;
+
+        // toggle keylogger
+        case KC_KEYLOG:
+            if (record->event.pressed) {
+                oled_keylogger_enabled = !oled_keylogger_enabled;
+            }
+            return false;
     }
-
-    // Process oled keycodes
-    // TODO retire?
-    process_record_user_oled(keycode, record);
-
-    // do not send key if keylogger help is enabled
-    // (except for modifiers & layer change)
-    // TODO move to oled or alternative as if statement inside switch above?
-    // OR retire process_record_user_oled?
-    if (oled_keylogger_enabled) {
-        // allow normal process of modifiers and layer change
-        // disregarding if keylogger is enabled 
-        // NOTE cannot use QK_MODS ... QK_MODS_MAX here:
-        switch (keycode) {
-            case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
-            case KC_LCTL ... KC_RGUI:
-                return true;
-        }
-        add_keylog(keycode, record);
-        return false;
-    }
-
     return true;
 }
 
@@ -234,13 +304,14 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
     set_layer_color(layer, led_min, led_max);
     set_caps_led_color();   
+    
+    // TODO this work if led index is on master side
+    set_caps_word_led();
     return false;
 }
 
-bool oled_task_user(void) {
-    // TODO try moving this outside keyboard_master again, see if it fixes pc power off state
-    // drashna has this and sleep in housekeeping_task_oled() which is called by housekeeping_task_user()
 
+bool oled_task_user(void) {
     // Turn off oled by user
     if (!user_config.oled_enabled) {
         oled_off();
@@ -256,19 +327,6 @@ bool oled_task_user(void) {
     } 
 
     if (is_keyboard_master()) {
-        // Turn off oled by user
-        /* if (!user_config.oled_enabled) { */
-        /*     oled_off(); */
-        /*     return false; */
-        /* } */
-
-        // Turn off oled when keyboard input is idle
-        /* if (user_config.oled_sleep_enabled) { */
-        /*     if (last_input_activity_elapsed() > OLED_SUSPEND_TIME) { */
-        /*         oled_off(); */
-        /*         return false; */
-        /*     } */
-        /* } */ 
         oled_render_left();
     }
     else {
