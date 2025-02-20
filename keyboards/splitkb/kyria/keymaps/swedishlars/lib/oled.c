@@ -350,9 +350,9 @@ void oled_render_game(void) {
     oled_advance_page(true);
     oled_write(PSTR("WASD        :  orange"), false);
     oled_advance_page(true);
-    oled_write(PSTR("E           :  green "), false);
+    oled_write(PSTR("Q           :  green "), false);
     oled_advance_page(true);
-    oled_write(PSTR("F           :  blue  "), false);
+    oled_write(PSTR("Space on tap:  cyan  "), false);
     oled_advance_pages(2, true);
     /* oled_advance_page(true); */
     /* oled_write(PSTR("B        :  rose  "), false); */
