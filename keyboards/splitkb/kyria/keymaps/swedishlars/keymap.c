@@ -1,7 +1,7 @@
 /* Copyright 2024 Lars Johansson (github.com/swedishlars)
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
- 
+
 #include QMK_KEYBOARD_H
 
 #include "lib/rgb.h"
@@ -16,7 +16,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // TODO remove caps lock, I do not need it?
 [_BASE] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |esc        |     Q     |     W     |     E      |     R     |     T     |                                                  |     Y     |     U     |     I     |     O     |     P     |backspace  | 
+// |esc        |     Q     |     W     |     E      |     R     |     T     |                                                  |     Y     |     U     |     I     |     O     |     P     |backspace  |
     KC_ESC,     KC_Q,       KC_W,       KC_E,        KC_R,       KC_T ,                                                         KC_Y,       KC_U ,      KC_I ,      KC_O ,      KC_P ,      KC_BSPC,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
 // |tab        |     A     |     S     |     D      |     F     |     G     |                                                  |     H     |     J     |     K     |     L     |    ;  :   |   '  @    |
@@ -33,7 +33,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Gaming layer
 [_GAME] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |           |     A     |     W     |            |           |           |                                                  |           |           |           |           |           |           | 
+// |           |     A     |     W     |            |           |           |                                                  |           |           |           |           |           |           |
     _______,    KC_A,       _______,    _______,     _______,    _______,                                                       _______,    _______,    _______,    _______,    _______,    _______,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
 // |           |     Q     |     S     |     D      |     D     |           |                                                  |           |           |           |           |           |           |
@@ -50,10 +50,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Numpad - follow standard pad layout as close as possible
 [_LOWER] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |delete     |/ div      |7          |8           |9          |backspace  |                                                  |           |           |mouse up   |           |           |insert     | 
+// |delete     |/ div      |7          |8           |9          |backspace  |                                                  |           |           |mouse up   |           |           |insert     |
     KC_DEL,     KC_SLSH,    KC_7,       KC_8,        KC_9,       KC_BSPC,                                                       _______,    _______,    MS_UP,      _______,    _______,    KC_INS,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |= equal    |* mult     |4          |5           |6          |- minus    |                                                  |wheel up   |mouse left |mouse down |mouse right|           |           |      
+// |= equal    |* mult     |4          |5           |6          |- minus    |                                                  |wheel up   |mouse left |mouse down |mouse right|           |           |
     KC_PEQL,    KC_ASTR,    KC_4,       KC_5,        KC_6,       KC_PMNS,                                                       MS_WHLU,    MS_LEFT,    MS_DOWN,    MS_UP,      MS_RGHT,    _______,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
 // |. dot      |0          |1          |2           |3          |- plus     |           |           |  |mouse 2    |mouse 3    |wheel down |           |           |           |           |           |
@@ -68,10 +68,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Symbols / nav keys
 [_RAISE] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |           |     !     |     "     |     £      |     $     |     %     |                                                  |     ^     |     &     |     *     |     (     |     )     |delete     | 
+// |           |     !     |     "     |     £      |     $     |     %     |                                                  |     ^     |     &     |     *     |     (     |     )     |delete     |
     _______,    KC_EXLM,    KC_AT,      KC_HASH ,    KC_DLR,     KC_PERC,                                                       KC_CIRC,    KC_AMPR,    KC_ASTR,    KC_LPRN,    KC_RPRN,    KC_DEL,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
-// |           |home       |page down  |page up     |end        |           |                                                  |left       |down       |up         |right      |     :     |           |      
+// |           |home       |page down  |page up     |end        |           |                                                  |left       |down       |up         |right      |     :     |           |
     _______,    KC_HOME,    KC_PGDN,    KC_PGUP,     KC_END,     _______,                                                       KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    KC_COLN,    _______,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
 // |           |           |           |            |           |           |           |           |  |           |           |alt + left |alt + down |alt + up   |alt + right|           |           |
@@ -83,10 +83,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 
-// Function / media / app keys 
+// Function / media / app keys
 [_FUNC] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |           |F1         |F2         |F3          |F4         |F5         |                                                  |F6         |F7         |F8         |F9         |F10        |F11        | 
+// |           |F1         |F2         |F3          |F4         |F5         |                                                  |F6         |F7         |F8         |F9         |F10        |F11        |
     _______,    KC_F1,      KC_F2,      KC_F3,       KC_F4,      KC_F5,                                                         KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
 // |           |app menu   |print scren|            |max win tgl|tmux term  |                                                  |           |           |           |           |           |F12        |
@@ -102,7 +102,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_ADJUST] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
-// |bootloader |           |           |            |toggle rgb |reset rgb  |                                                  |           |           |           |oled toggle|oled sleep |bootloader | 
+// |bootloader |           |           |            |toggle rgb |reset rgb  |                                                  |           |           |           |oled toggle|oled sleep |bootloader |
     QK_BOOT,    XXXXXXX,    XXXXXXX,    XXXXXXX,     RGB_TOG,    RGB_M_P,                                                       XXXXXXX,    XXXXXXX,    XXXXXXX,    KC_OTGL,    KC_OSLEEP,  QK_BOOT,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
 // |reboot     |           | pc sleep  |            |           |game layer |                                                  |           |           |           |           |           |reboot     |
@@ -149,7 +149,7 @@ void keyboard_post_init_user(void) {
     /* oled_help_timer = timer_read(); */
 
     // Custom eeprom autoshift init)
-    if (user_config.autoshift_enabled) { autoshift_enable(); } 
+    if (user_config.autoshift_enabled) { autoshift_enable(); }
     else { autoshift_disable(); }
 }
 
@@ -231,7 +231,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // Active modifiers will be checked by keylogger and displayed on oled.
     //
     if (oled_keylogger_enabled) {
-        // disregarding if keylogger is enabled 
+        // disregarding if keylogger is enabled
         switch (keycode) {
             case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
                 // Exept layer changes done from a layer.
@@ -240,11 +240,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // check if current layer is not base and break?
                 if (keycode == TG(_GAME) || keycode == TO(_BASE)) {
                     break;
-                } else { 
+                } else {
                     return true;
                 }
 
-            // Allow normal process of real mods. 
+            // Allow normal process of real mods.
             case MODIFIER_KEYCODE_RANGE:
                 return true;
 
@@ -268,11 +268,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 user_config.autoshift_enabled = !user_config.autoshift_enabled;
                 eeconfig_update_user(user_config.raw);
 
-                if (user_config.autoshift_enabled) { autoshift_enable(); } 
+                if (user_config.autoshift_enabled) { autoshift_enable(); }
                 else { autoshift_disable(); }
             }
             break;
-             
+
         // Toggle oled display on/off
         case KC_OTGL:
             if (record->event.pressed) {
@@ -303,8 +303,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
     set_layer_color(layer, led_min, led_max);
-    set_caps_led_color();   
-    
+    set_caps_led_color();
+
     // TODO this work if led index is on master side
     set_caps_word_led();
     return false;
@@ -324,7 +324,7 @@ bool oled_task_user(void) {
             oled_off();
             return false;
         }
-    } 
+    }
 
     if (is_keyboard_master()) {
         oled_render_left();
