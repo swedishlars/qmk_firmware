@@ -13,14 +13,14 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // TODO use tap-hold on KC_LCTL for something?
 // TODO do similar with LALT
-// TODO remove caps lock, I do not need it?
+// TODO remove caps lock, I do not need it. What to replace it with?
 [_BASE] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
 // |esc        |     Q     |     W     |     E      |     R     |     T     |                                                  |     Y     |     U     |     I     |     O     |     P     |backspace  |
-    KC_ESC,     KC_Q,       KC_W,       KC_E,        KC_R,       KC_T ,                                                         KC_Y,       KC_U ,      KC_I ,      KC_O ,      KC_P ,      KC_BSPC,
+    KC_ESC,     KC_Q,       KC_W,       KC_E,        KC_R,       KC_T ,                                                         KC_Y,       KC_U ,      KC_I ,      TD(SWE_O),  KC_P ,      KC_BSPC,
 // |------------------------------------------------------------------------|                                                  ,-----------------------------------------------------------------------.
 // |tab        |     A     |     S     |     D      |     F     |     G     |                                                  |     H     |     J     |     K     |     L     |    ;  :   |   '  @    |
-    KC_TAB,     KC_A,       KC_S,       KC_D,        KC_F,       KC_G ,                                                         KC_H,       KC_J ,      KC_K ,      KC_L ,      KC_SCLN,    KC_QUOT,
+    KC_TAB,     TD(SWE_A),  KC_S,       KC_D,        KC_F,       KC_G ,                                                         KC_H,       KC_J ,      KC_K ,      KC_L ,      KC_SCLN,    KC_QUOT,
 // |-----------+-----------+-----------+------------+-----------+-----------+-----------------------.  ,-----------------------+-----------+-----------+-----------+-----------+-----------+-----------|
 // |Left Shift |   Z       |   X       |     C      |   V       |   B       |  [ and {  |  \ and |  |  |  # and ~  |  ] and }  |     N     |   M       |   ,  <    | . >       |   /  ?    |cw/sft+ctl |
     KC_LSFT,    KC_Z,       KC_X,       KC_C,        KC_V,       KC_B,       KC_LBRC,    KC_NUBS,       KC_NUHS,    KC_RBRC,    KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,    TD(CW_SFT),
@@ -120,10 +120,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Declare persistent eeprom config
 user_config_t user_config;
 
-// TODO rm:
-// Oled help msg timer
-/* uint16_t oled_help_timer = 0; */
-
 
 void eeconfig_init_user(void) {
     user_config.raw = 0;
@@ -144,10 +140,6 @@ void keyboard_post_init_user(void) {
     // Initialise eeprom user config
     user_config.raw = eeconfig_read_user();
 
-    // start timer for displaying help msg.
-    // TODO use this for blinking logo?
-    /* oled_help_timer = timer_read(); */
-
     // Custom eeprom autoshift init)
     if (user_config.autoshift_enabled) { autoshift_enable(); }
     else { autoshift_disable(); }
@@ -160,8 +152,36 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TT(_LOWER):
         case TT(_RAISE):
             return 120;
+        case TD(SWE_A):
+        case TD(SWE_O):
+            return 250;
         default:
             return TAPPING_TERM;
+    }
+}
+
+
+// Configure keys that continue caps word. Includes tapdances for example.
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A ... KC_Z:
+        case KC_MINS:
+        case TD(SWE_A):
+        case TD(SWE_O):
+            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+            return true;
+
+        // Keycodes that continue Caps Word, without shifting.
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+            return true;
+
+        // Deactivate Caps Word.
+        default:
+            return false;
     }
 }
 
@@ -179,26 +199,50 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 
 // tap dance
-// Determine the tapdance state to return
+// --------------------------------------------------------------------------------------
+// Return an integer that corresponds to what kind of tap dance should be executed.
 td_state_t cur_dance(tap_dance_state_t *state) {
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) { return TD_SINGLE_TAP; }
+        // Key has not been interrupted, but the key is still held. Means you want to send a 'HOLD'.
         else { return TD_SINGLE_HOLD; }
+    }
+    // TD_DOUBLE_SINGLE_TAP is to distinguish between typing "pepper", and actually wanting a double tap
+    // action when hitting 'pp'. Suggested use case for this return value is when you want to send two
+    // keystrokes of the key, and not the 'double tap' action/macro.
+    else if (state->count == 2) {
+        if (state->interrupted) { return TD_DOUBLE_SINGLE_TAP; }
+        else if (state->pressed) { return TD_DOUBLE_HOLD; }
+        else { return TD_DOUBLE_TAP; }
+
+    }
+    // Assumes no one is trying to type the same letter three times (at least not quickly).
+    // If your tap dance key is 'KC_W', and you want to type "www." quickly - then you will need to add
+    // an exception here to return a 'TD_TRIPLE_SINGLE_TAP', and define that enum just like 'TD_DOUBLE_SINGLE_TAP'
+    if (state->count == 3) {
+        if (state->interrupted || !state->pressed) { return TD_TRIPLE_TAP; }
+        else { return TD_TRIPLE_HOLD; }
     }
     else { return TD_UNKNOWN; }
 }
 
-// Tap: turn on caps word. Hold: shift+ctrl
-// NOTE: to use caps_word_toggle(), add TD(KC) to caps_word_press_user()
+// Right Shift: Tap turns on caps word. Hold outputs shift+ctrl
+// TODO change this to just a normal shift on hold?
+// Depends if I need it for Maya?
+// ---------------------------------------------------------------------
+// Instance of td_tap_t for right shift tapdance
+static td_tap_t td_rshift = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
 void rshift_finished(tap_dance_state_t *state, void *user_data) {
-    td_state = cur_dance(state);
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            caps_word_on();
-            break;
+    td_rshift.state = cur_dance(state);
+    switch (td_rshift.state) {
+        case TD_SINGLE_TAP: caps_word_on(); break;
         case TD_SINGLE_HOLD:
             register_mods(MOD_BIT(KC_LSFT));
-            register_mods(MOD_BIT(KC_LCTL));
+            // register_mods(MOD_BIT(KC_LCTL));
             break;
         default:
             break;
@@ -206,21 +250,123 @@ void rshift_finished(tap_dance_state_t *state, void *user_data) {
 }
 
 void rshift_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            break;
+    switch (td_rshift.state) {
+        case TD_SINGLE_TAP: break;
         case TD_SINGLE_HOLD:
             unregister_mods(MOD_BIT(KC_LSFT));
-            unregister_mods(MOD_BIT(KC_LCTL));
+            // unregister_mods(MOD_BIT(KC_LCTL));
             break;
         default:
             break;
     }
 }
 
-tap_dance_action_t tap_dance_actions[] = {
-        [CW_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rshift_finished, rshift_reset)
+// Swedish letter a tapdance
+// ---------------------------------------------------------------------
+// Instance of td_tap_t for swedish a tapdance
+static td_tap_t td_swe_a = {
+    .is_press_action = true,
+    .state = TD_NONE
 };
+
+void swe_a_finished(tap_dance_state_t *state, void *user_data) {
+    td_swe_a.state = cur_dance(state);
+    switch (td_swe_a.state) {
+        case TD_SINGLE_TAP:  register_code(KC_A); break;
+        case TD_SINGLE_HOLD: register_code16(S(KC_A)); break;
+        // register unicode for swedish a with ring above
+        case TD_DOUBLE_TAP:
+            unicode_input_start();
+            register_hex(0x00e5);
+            unicode_input_finish();
+            break;
+        // register unicode for swedish capital A with ring above it.
+        case TD_DOUBLE_HOLD:
+            unicode_input_start();
+            register_hex(0x00c5);
+            unicode_input_finish();
+            break;
+        // When typing the word `buffer`, and you want to make sure that you send `ff`.
+        // In other words, you are typing two single taps.
+        case TD_DOUBLE_SINGLE_TAP: tap_code(KC_A); register_code(KC_A); break;
+        // register unicode for swedish a with two dots above
+        case TD_TRIPLE_TAP:
+            unicode_input_start();
+            register_hex(0x00e4);
+            unicode_input_finish();
+            break;
+        // register unicode for swedish capital A with two dots above
+        case TD_TRIPLE_HOLD:
+            unicode_input_start();
+            register_hex(0x00c4);
+            unicode_input_finish();
+            break;
+        default: break;
+    }
+}
+
+void swe_a_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_swe_a.state) {
+        case TD_SINGLE_TAP: unregister_code(KC_A); break;
+        case TD_SINGLE_HOLD: unregister_code16(S(KC_A)); break;
+        case TD_DOUBLE_TAP: break;
+        case TD_DOUBLE_HOLD: break;
+        case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_A); break;
+        case TD_TRIPLE_TAP: break;
+        case TD_TRIPLE_HOLD: break;
+        default: break;
+    }
+}
+
+// Swedish o tapdance
+// ---------------------------------------------------------------------
+// Instance of td_tap_t for swedish o tapdance
+static td_tap_t td_swe_o = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+void swe_o_finished(tap_dance_state_t *state, void *user_data) {
+    td_swe_o.state = cur_dance(state);
+    switch (td_swe_o.state) {
+        case TD_SINGLE_TAP:  register_code(KC_O); break;
+        case TD_SINGLE_HOLD: register_code16(S(KC_O)); break;
+        // register unicode for swedish o with dots above
+        case TD_DOUBLE_TAP:
+            unicode_input_start();
+            register_hex(0x00f6);
+            unicode_input_finish();
+            break;
+        // register unicode for swedish capital O with dots above it.
+        case TD_DOUBLE_HOLD:
+            unicode_input_start();
+            register_hex(0x00d6);
+            unicode_input_finish();
+            break;
+        // When typing the word `buffer`, and you want to make sure that you send `ff`.
+        // In other words, you are typing two single taps.
+        case TD_DOUBLE_SINGLE_TAP: tap_code(KC_O); register_code(KC_O); break;
+        default: break;
+    }
+}
+
+void swe_o_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_swe_o.state) {
+        case TD_SINGLE_TAP: unregister_code(KC_O); break;
+        case TD_SINGLE_HOLD: unregister_code16(S(KC_O)); break;
+        case TD_DOUBLE_TAP: break;
+        case TD_DOUBLE_HOLD: break;
+        case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_O); break;
+        default: break;
+    }
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+        [CW_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rshift_finished, rshift_reset),
+        [SWE_A] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_a_finished, swe_a_reset),
+        [SWE_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_o_finished, swe_o_reset)
+};
+// --------------------------------------------------------------------------------------
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -249,7 +395,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return true;
 
             // Allow normal process of mod combos like  S(KC_LCTL) = shift+ctrl
-            // NOTE this works but s hardcoded. Have not found a dynamic way.
+            // NOTE this works but is hardcoded. Have not found a dynamic way.
             case S(KC_LCTL):
                 return true;
 
@@ -304,8 +450,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
     set_layer_color(layer, led_min, led_max);
     set_caps_led_color();
-
-    // TODO this work if led index is on master side
     set_caps_word_led();
     return false;
 }

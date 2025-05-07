@@ -62,20 +62,20 @@ const char* get_keycode_desc(uint16_t keycode, uint8_t key_desc_mod) {
         if (key_desc_layer > KEYCODE_DEFAULT) {
             if (strlen(keycode_to_desc[key_desc_layer][keycode]) > 0) {
                 return keycode_to_desc[key_desc_layer][keycode];
-            } 
+            }
         }
 
         // check if modifier is enabled (shift), get modifier description if available
         if (strlen(keycode_to_desc[key_desc_mod][keycode]) > 0) {
             return keycode_to_desc[key_desc_mod][keycode];
-        } 
+        }
 
         // get default keycode description
         return keycode_to_desc[KEYCODE_DEFAULT][keycode];
     }
 
     return OLED_EMPTY_LINE;
-} 
+}
 
 // Store current key code
 char oled_key_code[OLED_KEYLOG_LENGTH] = {0};
@@ -96,59 +96,64 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
     // Get active real modifiers (actual mod keys pressed)
     const uint8_t mods = get_mods();
 
-    // Get quantum mods that are part of macros & modifier keycodes 
+    // Get quantum mods that are part of macros & modifier keycodes
     // examples: LALT(kc), KC_PERC
     uint8_t qk_mods = 0;
 
     // NOTE looks like I do not need this:
-    // Get active weak mods, mods that are part of macros & modifier keycodes like LALT(kc) 
+    // Get active weak mods, mods that are part of macros & modifier keycodes like LALT(kc)
     /* const uint8_t weak_mods = get_weak_mods(); */
     // Get oneshot mods
     /* const uint8_t oneshot_mods = get_oneshot_mods(); */
 
-    // Set keycode - if code is is in a higher 16 bit range, 
-    // convert it to basic 256 range by splitting into 
+    // Set keycode - if code is is in a higher 16 bit range,
+    // convert it to basic 256 range by splitting into
     // lowest 8 bits or highest 8 bits.
     // See keycodes.h for IS KEYCODE macros
     // See quantum_keycodes.h for GET keycode macros
     if (IS_QK_MODS(keycode)) {
         qk_mods = QK_MODS_GET_MODS(keycode);
         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
-    } 
+    }
     else if (IS_QK_MOD_TAP(keycode) && record->tap.count) {
         qk_mods = QK_MODS_GET_MODS(keycode);
         keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-    } 
+    }
 
     else if (IS_QK_LAYER_TAP(keycode) && record->tap.count) {
         keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-    } 
+    }
 
     // activate layer (TO) - convert to highest 8 bits
     else if (IS_QK_TO(keycode)) {
         keycode = ((keycode) >> 8);
-    } 
+    }
 
     // layer toggle (TG) - convert to lowest 8 bits
     else if (IS_QK_TOGGLE_LAYER(keycode)) {
         keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-    } 
+    }
 
     // quantum range - convert to lowest 8 bits
     // NOTE this results with reboot code index 0, so let's offset
     else if (IS_QK_QUANTUM(keycode)) {
         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode) + 1;
-    } 
+    }
 
     // rgb matrix range
     else if (IS_QK_LIGHTING(keycode)) {
         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
-    } 
+    }
 
     // user range keycode
     else if (IS_QK_USER(keycode)) {
         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
-    } 
+    }
+
+    // tapdance keycode - return tap dance index starting at 0 + offset so start is at 240.
+    else if (IS_QK_TAP_DANCE(keycode)) {
+        keycode = QK_TAP_DANCE_GET_INDEX(keycode) + 240;
+    }
 
     // store description for shift mod
     /* if ((mods | weak_mods | oneshot_mods | qk_mods) & MOD_MASK_SHIFT) { */
@@ -172,7 +177,7 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
     // Store all current active modifier descriptions.
     if (sizeof(active_mods)) {
         snprintf(oled_key_mod, OLED_KEYLOG_LENGTH, active_mods);
-    } 
+    }
     else {
         snprintf(oled_key_mod, OLED_KEYLOG_LENGTH, OLED_EMPTY_LINE);
     }
@@ -234,7 +239,7 @@ void oled_render_caps(void) {
     // TODO keep unless I ditch caps lock:
     /* led_t led_state = host_keyboard_led_state(); */
     /* if (!led_state.caps_lock) { */
-    
+
     // render caps word status
     if (!is_caps_word_on()) {
         oled_advance_page(true);
@@ -275,21 +280,21 @@ void oled_render_mods(void) {
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
         oled_write_raw(shift_logo, sizeof(shift_logo));
         oled_advance_chars(6, false);
-    } 
+    }
     else { oled_advance_chars(6, true); }
 
     // Ctrl modifier status
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL) {
         oled_write_raw(ctrl_logo, sizeof(ctrl_logo));
         oled_advance_chars(5, false);
-    } 
+    }
     else { oled_advance_chars(5, true); }
 
     // Alt modifier status
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_ALT) {
         oled_write_raw(alt_logo, sizeof(alt_logo));
         oled_advance_chars(5, false);
-    } 
+    }
     else { oled_advance_chars(5, true); }
 
     // Gui modifier status
@@ -297,7 +302,7 @@ void oled_render_mods(void) {
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_GUI) {
         oled_write_raw(gui_logo, sizeof(gui_logo));
         oled_advance_chars(5, false);
-    } 
+    }
     else { oled_advance_chars(5, true); }
 
     // empty line
@@ -517,7 +522,7 @@ void oled_render_boot(bool bootloader) {
         oled_write(PSTR("Ready for new        "), false);
         oled_write(PSTR("firmware...          "), false);
         oled_write(PSTR("                     "), false);
-    } 
+    }
     else {
         oled_write(PSTR("Rebooting...         "), false);
         oled_write(PSTR("                     "), false);

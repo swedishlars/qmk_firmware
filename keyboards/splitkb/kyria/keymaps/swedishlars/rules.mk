@@ -26,3 +26,6 @@ AUTO_SHIFT_ENABLE = yes
 # Using LIB_SRC as per docs
 LIB_SRC += lib/rgb.c
 LIB_SRC += lib/oled.c
+
+# Unicode for swedish letters
+UNICODE_ENABLE = yes

@@ -19,7 +19,7 @@
 // Reboot slave side if no communication from master within timeout
 #define SPLIT_WATCHDOG_ENABLE
 
-// Remove the auto-repeat ability of tapping and activate the hold function instead. 
+// Remove the auto-repeat ability of tapping and activate the hold function instead.
 #define QUICK_TAP_TERM 0
 
 // tap-hold threshold, default is 200
@@ -66,7 +66,7 @@
 
 // RGB
 // turn off effects when suspended
-#define RGB_MATRIX_SLEEP 
+#define RGB_MATRIX_SLEEP
 //  Diasble rgb after 5 minutes of inactivity. Configured in milliseconds
 #define RGB_MATRIX_TIMEOUT 300000
 
@@ -108,3 +108,5 @@
 #undef ENABLE_RGB_MATRIX_SOLID_SPLASH
 #undef ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
+// Unicode for linux for swedish letters
+#define UNICODE_SELECTED_MODES UNICODE_MODE_LINUX
