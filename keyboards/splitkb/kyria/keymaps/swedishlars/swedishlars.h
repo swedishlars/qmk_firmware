@@ -45,7 +45,7 @@ typedef union {
         bool oled_sleep_enabled : 1;
         bool autoshift_enabled : 1;
     };
-} user_config_t; 
+} user_config_t;
 
 extern user_config_t user_config;
 

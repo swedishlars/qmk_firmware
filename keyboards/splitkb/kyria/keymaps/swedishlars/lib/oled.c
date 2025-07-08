@@ -4,7 +4,6 @@
 #include "oled.h"
 #include "swedishlars.h"
 
-
 /* bool oled_startup_done = false; */
 bool oled_keylogger_enabled = false;
 
