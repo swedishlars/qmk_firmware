@@ -11,9 +11,10 @@
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-// TODO use tap-hold on KC_LCTL for something?
-// TODO do similar with LALT
-// TODO remove caps lock, I do not need it. What to replace it with?
+// TODO Use tap-hold on KC_LCTL for something? or add One Shot
+// TODO Use tap-hold on LALT for something? Or add One Shot.
+// TODO Use One Shot on LSFT: OS_LSFT
+// TODO remove caps lock, I do not need it. Use OneShotLayer (OSL(layer) for macros to send strings (names, addresses, words)
 [_BASE] = LAYOUT(
 // ,------------------------------------------------------------------------.                                                  ,-----------------------------------------------------------------------.
 // |esc        |     Q     |     W     |     E      |     R     |     T     |                                                  |     Y     |     U     |     I     |     O     |     P     |backspace  |
@@ -227,8 +228,7 @@ td_state_t cur_dance(tap_dance_state_t *state) {
 }
 
 // Right Shift: Tap turns on caps word. Hold outputs shift+ctrl
-// TODO change this to just a normal shift on hold?
-// Depends if I need it for Maya?
+// TODO change this to just a normal right shift on hold? Depends if I need it for Maya?
 // ---------------------------------------------------------------------
 // Instance of td_tap_t for right shift tapdance
 static td_tap_t td_rshift = {
@@ -370,20 +370,20 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // Key help/logger.
-    // Do not send key to host if keylogger help is enabled.
-    // Allow normal process of modifiers and dedicated layer change keys.
+    // Key logger that will display key function on Oled display.
+    // Do not send key to host if keylogger help is enabled, with a few exceptions.
+    // Allow normal process of:
+    //   1. modifiers
+    //   2. Dedicated layer change keys.
     // Otherwise the consectutive key press will not be handled.
     // Active modifiers will be checked by keylogger and displayed on oled.
-    //
     if (oled_keylogger_enabled) {
-        // disregarding if keylogger is enabled
         switch (keycode) {
+            // Allow normal process of layer change keys.
             case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
-                // Exept layer changes done from a layer.
+                // Except explicit layer changes done from a layer.
                 // Those should be checked by keylogger and displayed on oled.
-                // TODO This works but is very hardcoded. test again if I can
-                // check if current layer is not base and break?
+                // TODO This works but is hardcoded. Test again if I can check if current layer is not base and break?
                 if (keycode == TG(_GAME) || keycode == TO(_BASE)) {
                     break;
                 } else {
@@ -400,7 +400,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return true;
 
         }
-        // make sure key in not the keylog toggler
+        // Display key log on Oled and do not send key press to host (return false).
+        // But first, make sure key in not the keylog toggler.
         if (keycode != KC_KEYLOG) {
             add_keylog(keycode, record);
             return false;
