@@ -14,8 +14,10 @@ bool oled_startup_done = false;
 bool oled_keylogger_enabled = false;
 
 // custom audio
-float keylog_sound[][2] = SONG(KEYLOGGER_SONG);
-float adjust_sound[][2] = SONG(ADJUST_SOUND);
+// float keylog_sound[][2] = SONG(KEYLOGGER_SONG);
+float keylog_sound[][2] = SONG(VIOLIN_SOUND);
+// float adjust_sound[][2] = SONG(ADJUST_SOUND);
+float adjust_sound[][2] = SONG(AG_NORM_SOUND);
 
 
 // Deferred execution callback to clear and rotate display.
@@ -50,20 +52,20 @@ const char* get_keycode_desc(uint16_t keycode, uint8_t key_desc_mod) {
         if (key_desc_layer > KEYCODE_DEFAULT) {
             if (strlen(keycode_to_desc[key_desc_layer][keycode]) > 0) {
                 return keycode_to_desc[key_desc_layer][keycode];
-            } 
+            }
         }
 
         // check if modifier is enabled (shift), get modifier description if available
         if (strlen(keycode_to_desc[key_desc_mod][keycode]) > 0) {
             return keycode_to_desc[key_desc_mod][keycode];
-        } 
+        }
 
         // get default keycode description
         return keycode_to_desc[KEYCODE_DEFAULT][keycode];
     }
 
     return "          ";
-} 
+}
 
 // Store current key code
 char oled_key_code[OLED_KEYLOG_LENGTH] = {0};
@@ -85,7 +87,7 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
     // Get active real modifiers (actual mod keys pressed)
     const uint8_t mods = get_mods() | get_oneshot_mods() | get_weak_mods();
 
-    // Get active weak mods, mods that are part of macros & modifier keycodes like LALT(kc) 
+    // Get active weak mods, mods that are part of macros & modifier keycodes like LALT(kc)
     // NOTE: get_weak_mods() above does not seem to cover all of it.
     const uint8_t weak_mods = QK_MODS_GET_MODS(keycode);
 
@@ -110,7 +112,7 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
     // Pad string right aligned to 20 chars (double lines on oled)
     if (sizeof(active_mods)) {
         snprintf(oled_key_mod, OLED_KEYLOG_LENGTH + 10,"%20s", active_mods);
-    } 
+    }
     // Store empty 20 char string if there are not modifiers
     else {
         snprintf(oled_key_mod, OLED_KEYLOG_LENGTH, "                    ");
@@ -119,19 +121,19 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
     // Set keycode
     if (IS_QK_MOD_TAP(keycode) && record->tap.count) {
         keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-    } 
+    }
     else if (IS_QK_LAYER_TAP(keycode) && record->tap.count) {
         keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-    } 
+    }
     else if (IS_QK_MODS(keycode)) {
         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
-    } 
+    }
 
     // store keycode
     // NOTE If I get rid of if statement then I can render full range codes,
     if (keycode < ARRAY_SIZE(keycode_to_desc[KEYCODE_DEFAULT])) {
         snprintf(oled_key_code, OLED_KEYLOG_LENGTH, "kcode: %3d", keycode);
-    } 
+    }
 
     // store key description
     snprintf(oled_key_desc, OLED_KEYLOG_LENGTH, get_keycode_desc(keycode, key_desc_mod));
@@ -173,7 +175,7 @@ void oled_render_fade(void) {
 
     // define timer
     static uint16_t timer = 0;
-    
+
     if (timer_elapsed(timer) > 50) {
         timer = timer_read();
         reader = oled_read_raw(0);
@@ -196,7 +198,7 @@ void oled_render_fade(void) {
 void oled_startup_logo(void) {
     static uint16_t logo_timer;
     uint16_t timer = timer_elapsed(logo_timer);
-    
+
     if (timer < OLED_LOGO_TIME) {
         oled_write_raw(qmk_logo, sizeof(qmk_logo));
         return;
@@ -352,28 +354,28 @@ void oled_render_left(void) {
     oled_set_cursor(0, 6);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
         oled_write_raw(shift_logo, sizeof(shift_logo));
-    } 
+    }
     else { oled_write(PSTR("     "), false); }
 
     // Alt modifier status
     oled_set_cursor(5,6);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_ALT) {
         oled_write_raw(alt_logo, sizeof(alt_logo));
-    } 
+    }
     else { oled_write(PSTR("     "), false); }
 
     // Ctrl modifier status
     oled_set_cursor(0, 7);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL) {
         oled_write_raw(ctrl_logo, sizeof(ctrl_logo));
-    } 
+    }
     else { oled_write(PSTR("     "), false); }
 
     // Gui modifier status
     oled_set_cursor(5, 7);
     if ((get_mods() | get_oneshot_mods()) & MOD_MASK_GUI) {
         oled_write_raw(gui_logo, sizeof(gui_logo));
-    } 
+    }
     else { oled_write(PSTR("     "), false); }
 
     // NOTE need to be on master side. Require custom sync.
@@ -436,7 +438,7 @@ void oled_render_boot(bool bootloader) {
         oled_write(PSTR("Ready for "), false);
         oled_write(PSTR("new       "), false);
         oled_write(PSTR("Firmware.."), false);
-    } 
+    }
     else {
         oled_write(PSTR("Rebooting "), false);
         oled_write(PSTR("...       "), false);
@@ -486,7 +488,7 @@ bool process_record_user_oled(uint16_t keycode, keyrecord_t *record) {
                 return false;
         }
     }
-    
+
     return true;
 
 }

@@ -22,7 +22,7 @@
 // Reboot slave side if no communication from master within timeout
 #define SPLIT_WATCHDOG_ENABLE
 
-// Remove the auto-repeat ability of tapping and activate the hold function instead. 
+// Remove the auto-repeat ability of tapping and activate the hold function instead.
 #define QUICK_TAP_TERM 0
 
 // tap-hold threshold, default is 200
@@ -31,81 +31,73 @@
 // Toggle layer with 1 tap
 #define TAPPING_TOGGLE 1
 
-#ifdef OLED_ENABLE
-    #define SPLIT_OLED_ENABLE
-    #define OLED_UPDATE_INTERVAL 50
+#define SPLIT_OLED_ENABLE
+#define OLED_UPDATE_INTERVAL 50
 
-    // standard sofle 128x32 oled
-    /* #define OLED_DISPLAY_128X64 */
+// standard sofle 128x32 oled
+/* #define OLED_DISPLAY_128X64 */
 
-    // bigger 64x128 sh1107 oled
-    #define OLED_DISPLAY_64X128
-    #define OLED_IC OLED_IC_SH1107
+// bigger 64x128 sh1107 oled
+#define OLED_DISPLAY_64X128
+#define OLED_IC OLED_IC_SH1107
 
-    // set default brightness
-    /* #define OLED_BRIGHTNESS 128 */
-    /* #define OLED_BRIGHTNESS 96 */
-    #define OLED_BRIGHTNESS 92
+// set default brightness
+/* #define OLED_BRIGHTNESS 128 */
+/* #define OLED_BRIGHTNESS 96 */
+#define OLED_BRIGHTNESS 92
 
-    // Note: oled timeout is incompatible with oled off.
-    #define OLED_TIMEOUT 0
-#endif
+// Note: oled timeout is incompatible with oled off.
+#define OLED_TIMEOUT 0
 
 
-#ifdef POINTING_DEVICE_ENABLE
-    #define SPLIT_POINTING_ENABLE
-    #define POINTING_DEVICE_COMBINED
-    #define POINTING_DEVICE_GESTURES_CURSOR_GLIDE_ENABLE
-    #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
+#define SPLIT_POINTING_ENABLE
+#define POINTING_DEVICE_COMBINED
+#define POINTING_DEVICE_GESTURES_CURSOR_GLIDE_ENABLE
+#define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 
-    // Cirque trackpad
-    #define CIRQUE_PINNACLE_DIAMETER_MM 40
-    #define CIRQUE_PINNACLE_POSITION_MODE CIRQUE_PINNACLE_ABSOLUTE_MODE
-    /* #define CIRQUE_PINNACLE_TAP_ENABLE */
+// Cirque trackpad
+#define CIRQUE_PINNACLE_DIAMETER_MM 40
+#define CIRQUE_PINNACLE_POSITION_MODE CIRQUE_PINNACLE_ABSOLUTE_MODE
+/* #define CIRQUE_PINNACLE_TAP_ENABLE */
 
-    // NOTE: Azoteq iqs -tps65. It works
-    /* #   define AZOTEQ_IQS5XX_TPS65 */
-    /* #   define AZOTEQ_IQS5XX_WIDTH_MM 65 */
-    /* #   define AZOTEQ_IQS5XX_HEIGHT_MM 49 */
-    /* #   define AZOTEQ_IQS5XX_RESOLUTION_X 5120 */
-    /* #   define AZOTEQ_IQS5XX_RESOLUTION_Y 2048 */
-#endif
+// NOTE: Azoteq iqs -tps65. It works
+/* #   define AZOTEQ_IQS5XX_TPS65 */
+/* #   define AZOTEQ_IQS5XX_WIDTH_MM 65 */
+/* #   define AZOTEQ_IQS5XX_HEIGHT_MM 49 */
+/* #   define AZOTEQ_IQS5XX_RESOLUTION_X 5120 */
+/* #   define AZOTEQ_IQS5XX_RESOLUTION_Y 2048 */
 
 
-#ifdef HAPTIC_ENABLE
-    #define SPLIT_HAPTIC_ENABLE
-    #define DRV2605L_FB_ERM_LRA 1
-    #define DRV2605L_FB_BRAKEFACTOR 3 /* For 1x:0, 2x:1, 3x:2, 4x:3, 6x:4, 8x:5, 16x:6, Disable Braking:7 */
-    #define DRV2605L_FB_LOOPGAIN 1 /* For  Low:0, Medium:1, High:2, Very High:3 */
-    #define DRV2605L_RATED_VOLTAGE 2 //2Vrms per ELV1411A datasheet, which is the LRA used for the Pimoroni Haptic Bzzz driver DRV2605.
-    #define DRV2605L_V_PEAK 2.8 //Per QMK docs.
-    #define DRV2605L_V_RMS 2.0 //Per ELV1411A datasheet.
-    #define DRV2605L_F_LRA 150 //Resonant frequency per ELV1411A datasheet.
-    
-    // medium click
-    #define DRV2605L_DEFAULT_MODE DRV2605L_EFFECT_MEDIUM_CLICK_1_100
+ #define SPLIT_HAPTIC_ENABLE
+#define DRV2605L_FB_ERM_LRA 1
+#define DRV2605L_FB_BRAKEFACTOR 3 /* For 1x:0, 2x:1, 3x:2, 4x:3, 6x:4, 8x:5, 16x:6, Disable Braking:7 */
+#define DRV2605L_FB_LOOPGAIN 1 /* For  Low:0, Medium:1, High:2, Very High:3 */
+#define DRV2605L_RATED_VOLTAGE 2 //2Vrms per ELV1411A datasheet, which is the LRA used for the Pimoroni Haptic Bzzz driver DRV2605.
+#define DRV2605L_V_PEAK 2.8 //Per QMK docs.
+#define DRV2605L_V_RMS 2.0 //Per ELV1411A datasheet.
+#define DRV2605L_F_LRA 150 //Resonant frequency per ELV1411A datasheet.
 
-    // supposedly turns off haptic while suspended
-    #define HAPTIC_OFF_IN_LOW_POWER 1
+// medium click
+#define DRV2605L_DEFAULT_MODE DRV2605L_EFFECT_MEDIUM_CLICK_1_100
 
-    #define NO_HAPTIC_ALPHA
-    #define NO_HAPTIC_NUMERIC
-    #define NO_HAPTIC_PUNCTUATION
-    /* #define NO_HAPTIC_NAV */
-#endif
+// supposedly turns off haptic while suspended
+#define HAPTIC_OFF_IN_LOW_POWER 1
+
+#define NO_HAPTIC_ALPHA
+#define NO_HAPTIC_NUMERIC
+#define NO_HAPTIC_PUNCTUATION
+/* #define NO_HAPTIC_NAV */
 
 
-#ifdef AUDIO_ENABLE
-    // Liatris pin conversions. Use Liatris pins (13U for example)
-    // F4 = 29U - Works. Encoder top left pin. Use PWMD6, channel B
-    #undef AUDIO_PIN
-    #define AUDIO_PIN 29U
-    #define AUDIO_PWM_DRIVER PWMD6
-    #define AUDIO_PWM_CHANNEL RP2040_PWM_CHANNEL_B
-    #define NO_MUSIC_MODE
-    /* #define STARTUP_SONG SONG(STARTUP_SOUND) */
-    #define STARTUP_SONG SONG(CLOSE_ENCOUNTERS_SONG)
-#endif
+// Liatris pin conversions. Use Liatris pins (13U for example)
+// F4 = 29U - Works. Encoder top left pin. Use PWMD6, channel B
+#undef AUDIO_PIN
+#define AUDIO_PIN 29U
+#define AUDIO_PWM_DRIVER PWMD6
+#define AUDIO_PWM_CHANNEL RP2040_PWM_CHANNEL_B
+#define NO_MUSIC_MODE
+#define STARTUP_SONG SONG(STARTUP_SOUND)
+// #define STARTUP_SONG SONG(CLOSE_ENCOUNTERS_SONG)
 
 
 
@@ -113,7 +105,7 @@
     #define ENABLE_RGB_MATRIX_SOLID_COLOR
 
     // turn off effects when suspended
-    #define RGB_MATRIX_SLEEP 
+    #define RGB_MATRIX_SLEEP
     //  Diasble rgb after 5 minutes of inactivity. Configured in milliseconds
     #define RGB_MATRIX_TIMEOUT 300000
 
