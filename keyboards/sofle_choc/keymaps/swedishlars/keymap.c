@@ -108,20 +108,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // layer 4
 [_MOUSE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
-     _______,    KC_ACL0,    KC_ACL1,    KC_ACL2,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |           |accel 1    |           |           |           |           |                          |           |           |           |           |           |           |
+     _______,    MS_ACL0,    MS_ACL1,    MS_ACL2,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
      _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |alt+mouse2 |alt+mouse3 |alt+mouse1 |           |wheel up   |                          |           |           |           |           |           |           |
-     _______,    A(KC_BTN2), A(KC_BTN3), A(KC_BTN1), _______,    KC_WH_U,                               _______,    _______,    _______,    _______,    _______,    _______,
+     _______,    A(MS_BTN2), A(MS_BTN3), A(MS_BTN1), _______,    MS_WHLU,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |wheel down |           |  |           |           |           |           |           |           |           |
-     _______,    _______,    _______,    _______,    _______,    KC_WH_D,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
+     _______,    _______,    _______,    _______,    _______,    MS_WHLD,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
  //                         |           |           |           |           |  Space    |  | rgb mode  |           |           |           |           |
-                             _______,    _______,    _______,    KC_BTN3,    KC_BTN1,       KC_BTN2,    _______,    _______,    _______,    _______
+                             _______,    _______,    _______,    MS_BTN3,    MS_BTN1,       MS_BTN2,    _______,    _______,    _______,    _______
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
@@ -132,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      QK_BOOT,    TO(_QWERTY),TO(_LOWER), TO(_RAISE), TO(_NUMPAD),TO(_MOUSE),                            TO(_ADJUST),XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |oled sleep |oled tgl   |           | clear mem |
-     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RGB_TOG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    KC_OSLEEP,  KC_OTGL,    XXXXXXX,    EE_CLR,
+     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RM_TOGG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    KC_OSLEEP,  KC_OTGL,    XXXXXXX,    EE_CLR,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           | audio tog | sys sleep |           |           |           |                          | haptic tg |           |           |           |           |           |
      XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               HF_TOGG,    XXXXXXX,    KC_KEYLOG,  XXXXXXX,    XXXXXXX,    XXXXXXX,
@@ -141,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
  //                         |           |           |           |           |           |  |           |           |           | rgb -     |  bright + |
-                             XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    RGB_VAD,    RGB_VAI
+                             XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    RM_VALD,    RM_VALU
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 
 ),
@@ -207,7 +207,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // TODO add audio & haptic for rest of adjust layer keys (audio, rgb, sys sleep, oled)
     switch (keycode) {
         // allow normal process of modifiers and layer change
-        // disregarding if keylogger is enabled 
+        // disregarding if keylogger is enabled
         // TODO This did not work well with logger:
         // QK_MODS ... QK_LAYER_TAP_TOGGLE_MAX to include both mods and layers
         /* case QK_MODS ... QK_LAYER_TAP_TOGGLE_MAX: */
@@ -250,7 +250,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
 
     // Set LED for Caps Lock
-     set_caps_led_color();   
+     set_caps_led_color();
     return false;
 }
 
@@ -277,7 +277,7 @@ bool oled_task_user(void) {
                 oled_off();
                 return false;
             }
-        } 
+        }
         oled_render_left();
     }
     else {
