@@ -1,22 +1,35 @@
+# NOTE I get strange behaviours (kb sending volume decrease etc)
+# with info.json config, so keeping my configurations here.
+
 # Convert to Liatris MCU
 CONVERT_TO=liatris
 
-# NOTE I get strange behaviours (kb sending volume decrease etc)
-# with info.json config, so keeping my configurations here.
 VIA_ENABLE = no
 ENCODER_ENABLE = no
 
-LTO_ENABLE = yes
+LTO_ENABLE = no  # check that this does not cause compile issues, I turned it off for Kyria
 EXTRAKEY_ENABLE = yes
 
-# mouse keys needed for track pad
 MOUSEKEY_ENABLE = yes
+
+OLED_ENABLE = yes
+
+RGB_MATRIX_ENABLE = yes
+RGBLIGHT_ENABLE = no
+
+TAP_DANCE_ENABLE = yes
+KEY_OVERRIDE_ENABLE = yes
+CAPS_WORD_ENABLE = yes
+AUTO_SHIFT_ENABLE = yes
+
+# Key override to convert swedish layout to english
+KEY_OVERRIDE_ENABLE = yes
+
+# Unicode for swedish letters
+UNICODE_ENABLE = yes
 
 # enable deferred execution of callbacks
 DEFERRED_EXEC_ENABLE = yes
-
-# Oled
-OLED_ENABLE = yes
 
 # Track Pad
 POINTING_DEVICE_ENABLE = yes
@@ -30,10 +43,11 @@ HAPTIC_DRIVER = drv2605l
 AUDIO_ENABLE = yes
 AUDIO_DRIVER = pwm_hardware
 
-# Enable console for debugging
-# CONSOLE_ENABLE = yes
-
+# TODO add keylogger.c, audio.c, tapdance.c?
 # Using LIB_SRC as per docs
 LIB_SRC += lib/rgb.c
 LIB_SRC += lib/oled.c
 LIB_SRC += lib/pointing_device.c
+
+# TODO test:
+LIB_SRC += lib/keylogger.c

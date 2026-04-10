@@ -3,20 +3,42 @@
 
 #include "oled.h"
 #include "swedishlars.h"
-
-
-// NOTE To implement drashna oled brightness adjust would require custom sync
-// qadd8, qsub8 func
-/* #include "lib/lib8tion/lib8tion.h" */
-
+// TODO use swedishlars.h instead?
+#include "keylogger.h"
 
 bool oled_startup_done = false;
-bool oled_keylogger_enabled = false;
+// TODO orig uncomment:
+// bool oled_keylogger_enabled = false;
 
-// custom audio
-// float keylog_sound[][2] = SONG(KEYLOGGER_SONG);
+
+// Advance multiple chars at once.
+void oled_advance_chars(uint8_t chars, bool clear_char) {
+    for (uint8_t i = 0; i < chars; i++) {
+        if (clear_char) {
+            oled_write(PSTR(" "), false);
+        }
+        else {
+            oled_advance_char();
+        }
+    }
+}
+
+
+// Advance multiple pages (lines) at once.
+void oled_advance_pages(uint8_t pages, bool clear_page) {
+    for (uint8_t i = 0; i < pages; i++) {
+        if (clear_page) {
+            oled_advance_page(true);
+        }
+        else {
+            oled_advance_page(false);
+        }
+    }
+}
+
+
+// audio
 float keylog_sound[][2] = SONG(VIOLIN_SOUND);
-// float adjust_sound[][2] = SONG(ADJUST_SOUND);
 float adjust_sound[][2] = SONG(AG_NORM_SOUND);
 
 
@@ -26,140 +48,6 @@ uint32_t oled_startup(uint32_t trigger_time, void *cb_arg) {
     oled_clear();
     oled_startup_done = true;
     return 0;
-}
-
-// KEY LOGGER
-// --------------------------------------------------------------------------
-// Get a description of keycode that can be rendered on oled.
-// First check if there is a layer enabled which has a description override.
-// Then check if shift is held and there is a shifted keycode description.
-// If none of the above is true, return a default keycode description.
-const char* get_keycode_desc(uint16_t keycode, uint8_t key_desc_mod) {
-    // Set keycode description override for layer
-    uint8_t key_desc_layer = KEYCODE_DEFAULT;
-
-    switch (get_highest_layer(layer_state)) {
-        case _LOWER:
-            key_desc_layer = KEYCODE_LOWER;
-            break;
-        case _RAISE:
-            key_desc_layer = KEYCODE_RAISE;
-            break;
-    }
-
-    if (keycode < ARRAY_SIZE(keycode_to_desc[KEYCODE_DEFAULT])) {
-        // check if layer is enabled, get layer code description if available
-        if (key_desc_layer > KEYCODE_DEFAULT) {
-            if (strlen(keycode_to_desc[key_desc_layer][keycode]) > 0) {
-                return keycode_to_desc[key_desc_layer][keycode];
-            }
-        }
-
-        // check if modifier is enabled (shift), get modifier description if available
-        if (strlen(keycode_to_desc[key_desc_mod][keycode]) > 0) {
-            return keycode_to_desc[key_desc_mod][keycode];
-        }
-
-        // get default keycode description
-        return keycode_to_desc[KEYCODE_DEFAULT][keycode];
-    }
-
-    return "          ";
-}
-
-// Store current key code
-char oled_key_code[OLED_KEYLOG_LENGTH] = {0};
-
-// Store current active modifiers
-// Use 20 char array (double line on oled)
-char oled_key_mod[OLED_KEYLOG_LENGTH + 10] = {0};
-
-// Store current key description
-char oled_key_desc[OLED_KEYLOG_LENGTH] = {0};
-
-void add_keylog(uint16_t keycode, keyrecord_t *record) {
-    // Set keycode description override for modifier
-    uint8_t key_desc_mod = KEYCODE_DEFAULT;
-
-    // temp store any active modifiers
-    char active_mods[OLED_KEYLOG_LENGTH + 10] = {0};
-
-    // Get active real modifiers (actual mod keys pressed)
-    const uint8_t mods = get_mods() | get_oneshot_mods() | get_weak_mods();
-
-    // Get active weak mods, mods that are part of macros & modifier keycodes like LALT(kc)
-    // NOTE: get_weak_mods() above does not seem to cover all of it.
-    const uint8_t weak_mods = QK_MODS_GET_MODS(keycode);
-
-    // Temp store description for all active modifiers
-    // Concatenate 5 char strings so oled renders max 2 mods per line
-    if ((mods & MOD_MASK_SHIFT) || (weak_mods & MOD_MASK_SHIFT)) {
-        strcat(active_mods, "SHFT+");
-        key_desc_mod = KEYCODE_SHIFT;
-    }
-
-    // Temp store description for alt mod
-    if ((mods & MOD_MASK_ALT) || (weak_mods & MOD_MASK_ALT)) {
-        strcat(active_mods, " Alt+");
-    }
-
-    // Temp store description for ctrl mod
-    if ((mods & MOD_MASK_CTRL) || (weak_mods & MOD_MASK_CTRL)) {
-        strcat(active_mods, "Ctrl+");
-    }
-
-    // Store all current active modifier descriptions.
-    // Pad string right aligned to 20 chars (double lines on oled)
-    if (sizeof(active_mods)) {
-        snprintf(oled_key_mod, OLED_KEYLOG_LENGTH + 10,"%20s", active_mods);
-    }
-    // Store empty 20 char string if there are not modifiers
-    else {
-        snprintf(oled_key_mod, OLED_KEYLOG_LENGTH, "                    ");
-    }
-
-    // Set keycode
-    if (IS_QK_MOD_TAP(keycode) && record->tap.count) {
-        keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-    }
-    else if (IS_QK_LAYER_TAP(keycode) && record->tap.count) {
-        keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-    }
-    else if (IS_QK_MODS(keycode)) {
-        keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
-    }
-
-    // store keycode
-    // NOTE If I get rid of if statement then I can render full range codes,
-    if (keycode < ARRAY_SIZE(keycode_to_desc[KEYCODE_DEFAULT])) {
-        snprintf(oled_key_code, OLED_KEYLOG_LENGTH, "kcode: %3d", keycode);
-    }
-
-    // store key description
-    snprintf(oled_key_desc, OLED_KEYLOG_LENGTH, get_keycode_desc(keycode, key_desc_mod));
-}
-
-
-// Renders keylog to oled
-// NOTE only works on master side
-void oled_render_keylog(uint8_t line) {
-    oled_set_cursor(0, line);
-    if (oled_keylogger_enabled) {
-        oled_write_raw(keylogger_logo, sizeof(keylogger_logo));
-        oled_set_cursor(0, line + 1);
-        oled_write(oled_key_code, false);
-
-        // This will write 20 char (double line)
-        oled_write(oled_key_mod, false);
-        oled_write(oled_key_desc, false);
-    }
-    else {
-        oled_write(PSTR("          "), false);
-        oled_write(PSTR("          "), false);
-        oled_write(PSTR("          "), false);
-        oled_write(PSTR("          "), false);
-        oled_write(PSTR("          "), false);
-    }
 }
 
 
@@ -194,6 +82,203 @@ void oled_render_fade(void) {
 }
 
 
+// TODO mv to keylogger.c
+// KEY LOGGER
+// --------------------------------------------------------------------------
+// Get a description of keycode that can be rendered on oled.
+// First check if there is a layer enabled which has a description override.
+// Then check if shift is held and there is a shifted keycode description.
+// If none of the above is true, return a default keycode description.
+/*
+const char* get_keycode_desc(uint16_t keycode, uint8_t key_desc_mod) {
+    // Set keycode description override for layer
+    uint8_t key_desc_layer = KEYCODE_DEFAULT;
+
+    switch (get_highest_layer(layer_state)) {
+        case _LOWER:
+            key_desc_layer = KEYCODE_LOWER;
+            break;
+        case _RAISE:
+            key_desc_layer = KEYCODE_RAISE;
+            break;
+    }
+
+    if (keycode < ARRAY_SIZE(keycode_to_desc[KEYCODE_DEFAULT])) {
+        // check if layer is enabled, get layer code description if available
+        if (key_desc_layer > KEYCODE_DEFAULT) {
+            if (strlen(keycode_to_desc[key_desc_layer][keycode]) > 0) {
+                return keycode_to_desc[key_desc_layer][keycode];
+            }
+        }
+
+        // check if modifier is enabled (shift), get modifier description if available
+        if (strlen(keycode_to_desc[key_desc_mod][keycode]) > 0) {
+            return keycode_to_desc[key_desc_mod][keycode];
+        }
+
+        // get default keycode description
+        return keycode_to_desc[KEYCODE_DEFAULT][keycode];
+    }
+
+    return OLED_EMPTY_LINE;
+}
+*/
+
+// TODO mv to keylogger.c
+/*
+// Store current key code
+char oled_key_code[OLED_KEYLOG_LENGTH] = {0};
+
+// Store current active modifiers
+char oled_key_mod[OLED_KEYLOG_LENGTH] = {0};
+
+// Store current key description
+char oled_key_desc[OLED_KEYLOG_LENGTH] = {0};
+*/
+
+
+// TODO mv to keylogger.c
+/*
+void add_keylog(uint16_t keycode, keyrecord_t *record) {
+    // Set keycode description array override for modifier
+    uint8_t key_desc_mod = KEYCODE_DEFAULT;
+
+    // temp store any active modifiers
+    char active_mods[OLED_KEYLOG_LENGTH] = {0};
+
+    // Get active real modifiers (actual mod keys pressed)
+    const uint8_t mods = get_mods();
+
+    // Get quantum mods that are part of macros & modifier keycodes
+    // examples: LALT(kc), KC_PERC
+    uint8_t qk_mods = 0;
+
+    // Set keycode - if code is is in a higher 16 bit range,
+    // convert it to basic 256 range by splitting into
+    // lowest 8 bits or highest 8 bits.
+    // See keycodes.h for IS KEYCODE macros
+    // See quantum_keycodes.h for GET keycode macros
+    if (IS_QK_MODS(keycode)) {
+        qk_mods = QK_MODS_GET_MODS(keycode);
+        keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
+    }
+    else if (IS_QK_MOD_TAP(keycode) && record->tap.count) {
+        qk_mods = QK_MODS_GET_MODS(keycode);
+        keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+    }
+
+    else if (IS_QK_LAYER_TAP(keycode) && record->tap.count) {
+        keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+    }
+
+    // activate layer (TO) - convert to highest 8 bits
+    else if (IS_QK_TO(keycode)) {
+        keycode = ((keycode) >> 8);
+    }
+
+    // layer toggle (TG) - convert to lowest 8 bits
+    else if (IS_QK_TOGGLE_LAYER(keycode)) {
+        keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+    }
+
+    // quantum range - convert to lowest 8 bits
+    // NOTE this results with reboot code index 0, so let's offset
+    else if (IS_QK_QUANTUM(keycode)) {
+        keycode = QK_MODS_GET_BASIC_KEYCODE(keycode) + 1;
+    }
+
+    // rgb matrix range
+    else if (IS_QK_LIGHTING(keycode)) {
+        keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
+    }
+
+    // user range keycode
+    else if (IS_QK_USER(keycode)) {
+        keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
+    }
+
+    // tapdance keycode - return tap dance index starting at 0 + offset so start is at 240.
+    else if (IS_QK_TAP_DANCE(keycode)) {
+        keycode = QK_TAP_DANCE_GET_INDEX(keycode) + 240;
+    }
+
+    // store description for shift mod
+    if ((mods | qk_mods) & MOD_MASK_SHIFT) {
+        strcat(active_mods, "Shift+");
+        key_desc_mod = KEYCODE_SHIFT;
+    }
+
+    // store description for alt mod
+    if ((mods | qk_mods) & MOD_MASK_ALT) {
+        strcat(active_mods, "Alt+");
+    }
+
+    // store description for ctrl mod
+    if ((mods | qk_mods) & MOD_MASK_CTRL) {
+        strcat(active_mods, "Ctrl+");
+    }
+
+    // Store all current active modifier descriptions.
+    if (sizeof(active_mods)) {
+        snprintf(oled_key_mod, OLED_KEYLOG_LENGTH, active_mods);
+    }
+    else {
+        snprintf(oled_key_mod, OLED_KEYLOG_LENGTH, OLED_EMPTY_LINE);
+    }
+
+    // store keycode TODO should have 10 char length!!
+    snprintf(oled_key_code, OLED_KEYLOG_LENGTH, "kcd: %3d", keycode);
+
+    // store key description
+    snprintf(oled_key_desc, OLED_KEYLOG_LENGTH, get_keycode_desc(keycode, key_desc_mod));
+}
+*/
+
+
+// Renders keylog to oled
+// NOTE only works on master side
+bool play_forward = true;
+
+void oled_render_keylog(void) {
+    // TODO make func?
+    static uint16_t timer = 0;
+    static uint8_t  frame = 0;
+
+    if (timer_elapsed(timer) > 50) {
+        if (frame == 0) {
+            play_forward = true;
+        }
+        if (frame == 11) {
+            play_forward = false;
+        }
+        if (play_forward) {
+            frame++;
+        }
+        else {
+            frame--;
+        }
+        timer = timer_read();
+    }
+
+    // TODO do I need _ln version?
+    oled_write_ln(PSTR(keylogger_logo[frame]), false);
+    oled_advance_page(false);
+
+    // render keycode
+    oled_write_ln(oled_key_code, false);
+    oled_advance_page(false);
+
+    // render key description
+    oled_write_ln(PSTR("Key Desc:"), false);
+    oled_advance_page(true);
+    oled_write_ln(oled_key_mod, false);
+    oled_write_ln(oled_key_desc, false);
+
+    // clear remaining display
+    oled_advance_page(false);
+}
+
+
 // Keyboard startup logo
 void oled_startup_logo(void) {
     static uint16_t logo_timer;
@@ -209,38 +294,120 @@ void oled_startup_logo(void) {
 }
 
 
-void oled_render_base(uint8_t line) {
-    oled_set_cursor(0, line);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
+// Caps status
+void oled_caps_status(void) {
+    // TODO keep unless I ditch caps lock:
+    /* led_t led_state = host_keyboard_led_state(); */
+    /* if (!led_state.caps_lock) { */
+
+    // render caps word status
+    if (!is_caps_word_on()) {
+        oled_advance_page(true);
+        return;
+    }
+
+    // TODO make func?
+    static uint16_t timer = 0;
+    static uint8_t  frame = 0;
+
+    if (timer_elapsed(timer) > 50) {
+        if (frame == 0) {
+            play_forward = true;
+        }
+        if (frame == 7) {
+            play_forward = false;
+        }
+        if (play_forward) {
+            frame++;
+        }
+        else {
+            frame--;
+        }
+        timer = timer_read();
+    }
+
+        oled_write_raw(caps_logo[frame], sizeof(caps_logo[0]));
+        oled_advance_page(false);
 }
 
-void oled_render_base_help(uint8_t line) {
-    oled_set_cursor(0, line);
+
+void oled_render_mods(void) {
+    // Shift modifier status
+    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
+        oled_write_raw(shift_logo, sizeof(shift_logo));
+        oled_advance_chars(5, false);
+    }
+    else { oled_advance_chars(5, true); }
+
+    // Alt modifier status
+    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_ALT) {
+        oled_write_raw(alt_logo, sizeof(alt_logo));
+        oled_advance_chars(5, false);
+    }
+    else { oled_advance_chars(5, true); }
+
+    // Ctrl modifier status
+    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL) {
+        oled_write_raw(ctrl_logo, sizeof(ctrl_logo));
+        oled_advance_chars(5, false);
+    }
+    else { oled_advance_chars(5, true); }
+
+    // Gui modifier status
+    oled_advance_chars(5, false);
+    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_GUI) {
+        oled_write_raw(gui_logo, sizeof(gui_logo));
+        oled_advance_chars(5, false);
+    }
+    else { oled_advance_chars(5, true); }
+
+    // empty line
+    oled_advance_page(false);
+}
+
+
+void oled_render_settings(void) {
+    // auto shift status
+    oled_write(PSTR("A-SHIFT  "), false);
+    oled_write(PSTR(get_autoshift_state() ? "Y" : "N"), false);
+    oled_advance_page(false);
+
+    // Oled sleep status
+    oled_write(PSTR("OLED Zzz "), false);
+    oled_write(PSTR(user_config.oled_sleep_enabled ? "Y" : "N"), false);
+    oled_advance_page(false);
+
+    // rgb status
+    oled_write(PSTR("RGB      "), false);
+    oled_write(PSTR(rgb_matrix_is_enabled() ? "Y" : "N"), false);
+    oled_advance_page(false);
+
+    // audio status
+    oled_write(PSTR("AUDIO    "), false);
+    oled_write(PSTR(audio_is_on() ? "Y" : "N"), false);
+    oled_advance_page(false);
+
+    // haptic status
+    oled_write(PSTR("HAPTIC   "), false);
+    oled_write(PSTR(haptic_get_enable() ? "Y" : "N"), false);
+    oled_advance_page(false);
+}
+
+void oled_render_base(void) {
+    oled_advance_pages(2, true);
     oled_write(PSTR("NumPad:   "), false);
     oled_write(PSTR("(Hold)    "), false);
     oled_write(PSTR("CapsLock  "), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Adjust:   "), false);
     oled_write(PSTR("Lower +   "), false);
     oled_write(PSTR("Raise     "), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Key help: "), false);
     oled_write(PSTR("Adjust + k"), false);
-    oled_write(PSTR("          "), false);
 }
 
-void oled_render_lower(uint8_t line) {
-    oled_set_cursor(0, line);
+void oled_render_lower(void) {
     oled_write(PSTR("Orange:   "), false);
     oled_write(PSTR("F keys    "), false);
     oled_write(PSTR("          "), false);
@@ -316,96 +483,42 @@ void oled_render_adjust(uint8_t line) {
 
 
 void oled_render_left(void) {
-    // Led status
-    led_t led_state = host_keyboard_led_state();
-    oled_write_raw(leds_logo, sizeof(leds_logo));
-    oled_set_cursor(7, 0);
-    oled_write_raw(rgb_matrix_is_enabled() ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
-
-    // Oled sleep status
-    oled_set_cursor(0, 1);
-    oled_write_raw(oled_sleep_logo, sizeof(oled_sleep_logo));
-    oled_set_cursor(7, 1);
-    oled_write_raw(user_config.oled_sleep_enabled ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
-
-    // audio status
-    oled_set_cursor(0, 2);
-    oled_write_raw(audio_logo, sizeof(audio_logo));
-    oled_set_cursor(7, 2);
-    oled_write_raw(audio_is_on() ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
-
-    // haptic status
-    oled_set_cursor(0, 3);
-    oled_write_raw(haptic_logo, sizeof(haptic_logo));
-    oled_set_cursor(7, 3);
-    oled_write_raw(haptic_get_enable() ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
-
-    // Caps status
-    oled_set_cursor(0, 4);
-    oled_write_raw(caps_logo, sizeof(caps_logo));
-    oled_set_cursor(7, 4);
-    oled_write_raw(led_state.caps_lock ? on_btn_logo : off_btn_logo, sizeof(on_btn_logo));
-
-    // bottom banner
-    oled_set_cursor(0, 5);
-    oled_write_raw(bottom_banner_logo, sizeof(bottom_banner_logo));
-
-    // Shift modifier status
-    oled_set_cursor(0, 6);
-    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
-        oled_write_raw(shift_logo, sizeof(shift_logo));
-    }
-    else { oled_write(PSTR("     "), false); }
-
-    // Alt modifier status
-    oled_set_cursor(5,6);
-    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_ALT) {
-        oled_write_raw(alt_logo, sizeof(alt_logo));
-    }
-    else { oled_write(PSTR("     "), false); }
-
-    // Ctrl modifier status
-    oled_set_cursor(0, 7);
-    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL) {
-        oled_write_raw(ctrl_logo, sizeof(ctrl_logo));
-    }
-    else { oled_write(PSTR("     "), false); }
-
-    // Gui modifier status
-    oled_set_cursor(5, 7);
-    if ((get_mods() | get_oneshot_mods()) & MOD_MASK_GUI) {
-        oled_write_raw(gui_logo, sizeof(gui_logo));
-    }
-    else { oled_write(PSTR("     "), false); }
-
-    // NOTE need to be on master side. Require custom sync.
-    /* oled_set_cursor(0, 8); */
-    /* oled_write(PSTR("Oled light"), false); */
-    /* oled_write_ln(get_u8_str(oled_get_brightness(), ' '), false); */
-
     // keylogger
-    oled_render_keylog(11);
+    if (oled_keylogger_enabled) {
+        oled_render_keylog();
+        oled_advance_pages(7, true);
+    }
+    else {
+        // TODO rename
+        oled_render_settings();
+
+        // Caps status
+        oled_caps_status();
+
+        // render active modifiers
+        oled_render_mods();
+
+        // oled_advance_page(true);
+        oled_advance_pages(2, true);
+    }
 }
 
 
-// render info for current layer
 void oled_render_right(void) {
     oled_write_raw(layer_logo, sizeof(layer_logo));
-    oled_set_cursor(0, 2);
+    oled_advance_pages(2, false);
 
+    // render info for current layer
     switch (get_highest_layer(layer_state)) {
-        case _QWERTY:
+        case _BASE:
             oled_write_raw(layer_base_logo, sizeof(layer_base_logo));
-
-            if (timer_elapsed(oled_help_timer) < OLED_HELP_TIME) {
-                oled_render_base_help(5);
-            } else {
-                oled_render_base(5);
-            }
+            oled_advance_pages(2, false);
+            oled_render_base();
             break;
         case _LOWER:
             oled_write_raw(layer_lower_logo, sizeof(layer_lower_logo));
-            oled_render_lower(5);
+            oled_advance_pages(2, false);
+            oled_render_lower();
             break;
         case _RAISE:
             oled_write_raw(layer_raise_logo, sizeof(layer_raise_logo));
@@ -445,51 +558,5 @@ void oled_render_boot(bool bootloader) {
     }
     oled_render_dirty(true);
     oled_scroll_left();
-}
-
-
-bool process_record_user_oled(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) {
-        switch (keycode) {
-
-            // toggle oled sleep
-            case KC_OSLEEP:
-                PLAY_SONG(adjust_sound);
-                haptic_set_mode(1);
-                haptic_play();
-                user_config.oled_sleep_enabled = !user_config.oled_sleep_enabled;
-                eeconfig_update_user(user_config.raw);
-                break;
-
-            // Toggle oled display on/off
-            case KC_OTGL:
-                PLAY_SONG(adjust_sound);
-                haptic_set_mode(1);
-                haptic_play();
-                user_config.oled_enabled = !user_config.oled_enabled;
-                eeconfig_update_user(user_config.raw);
-                break;
-
-            // NOTE: Increase oled brightness example
-            // This require custom sync for slave side
-            /* case KC_OLED_INC: */
-            /*     user_config.oled_brightness = qadd8(user_config.oled_brightness, OLED_BRIGTHNESS_STEP); */
-            /*     oled_set_brightness(user_config.oled_brightness); */
-            /*     eeconfig_update_user(user_config.raw); */
-            /*     break; */
-
-            // toggle keylogger
-            // TODO Need a visual queue that it is enabled
-            case KC_KEYLOG:
-                PLAY_SONG(keylog_sound);
-                haptic_set_mode(1);
-                haptic_play();
-                oled_keylogger_enabled = !oled_keylogger_enabled;
-                return false;
-        }
-    }
-
-    return true;
-
 }
 

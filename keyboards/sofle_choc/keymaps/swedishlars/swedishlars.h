@@ -11,6 +11,7 @@
 #define DESK_R C(G(KC_RIGHT))
 
 // momentarily activate layer when held
+#define CAPS_ADJUST LT(_ADJUST, KC_CAPS)
 #define LT_NUMP LT(_NUMPAD,KC_CAPS)
 
 // actions
@@ -24,21 +25,21 @@
 #define KC_TMUX LCA(KC_D)
 //-------------------------------------------------------------------------------------
 
+// TODO split out into own header?
 enum custom_keycodes {
-    KC_QWERTY = SAFE_RANGE,
-    KC_LOWER,
-    KC_RAISE,
-    KC_ADJUST,
-    KC_KEYLOG,
-    KC_OSLEEP,
-    KC_OTGL,
-    /* KC_OLED_INC, */
-    /* KC_OLED_DEC */
+    /* KC_KEYLOG, // TODO rename KL_TOGL */
+    KC_KEYLOG = SAFE_RANGE,
+    KC_OSLEEP, // TODO rename OL_SLEEP
+    KC_OTGL,   // TODO rename OL_TOGL
+    AS_TOGL,   // Custom autoshift
+    SW_SCLN,    // Custom SEMICOLON: converts Swedish to US layout
+    SW_GRV,     // Custom GRAVE: converts Swedish to US layout
+    SW_BSLS,     // Custom BACKSLASH: converts Swedish to US layout
+    SW_EQL     // Custom EQUAL: converts Swedish to US layout
 };
 
 enum sofle_layers {
-    _DEFAULT = 0,
-    _QWERTY = 0,
+    _BASE = 0,
     _LOWER,
     _RAISE,
     _NUMPAD,
@@ -51,12 +52,12 @@ enum sofle_layers {
 typedef union {
     uint32_t raw;
     struct {
-        //uint8_t oled_brightness : 8;
         bool oled_enabled : 1;
         bool oled_sleep_enabled : 1;
         bool haptic_enabled : 1;
+        bool autoshift_enabled : 1;
     };
-} user_config_t; 
+} user_config_t;
 
 extern user_config_t user_config;
 
