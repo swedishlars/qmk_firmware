@@ -43,11 +43,10 @@ HAPTIC_DRIVER = drv2605l
 AUDIO_ENABLE = yes
 AUDIO_DRIVER = pwm_hardware
 
-# TODO add keylogger.c, audio.c, tapdance.c?
+# TODO add audio.c?
 # Using LIB_SRC as per docs
 LIB_SRC += lib/rgb.c
 LIB_SRC += lib/oled.c
 LIB_SRC += lib/pointing_device.c
-
-# TODO test:
+LIB_SRC += lib/tapdance.c
 LIB_SRC += lib/keylogger.c

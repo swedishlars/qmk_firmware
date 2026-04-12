@@ -15,8 +15,8 @@
 #include "swedishlars.h"
 #include "lib/rgb.h"
 #include "lib/oled.h"
-#include "lib/tapdance.h"
 #include "lib/pointing_device.h"
+#include "lib/tapdance.h"
 #include "lib/keylogger.h"
 
 
@@ -38,19 +38,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_ESC,     KC_1,       KC_2,       KC_3,       KC_4,       KC_5,                                  KC_6,       KC_7,       KC_8,       KC_9,       KC_0,       KC_BSPC,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | tab/swtc  |    Q      |    W      |    E      |    R      |    T      |                          |    Y      |    U      |    I      |    O      |    P      | ` and ~   |
-  // KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,                                  KC_Y,       KC_U,       KC_I,       TD(SWE_O),  KC_P,       KC_NUHS,
      KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,                                  KC_Y,       KC_U,       KC_I,       TD(SWE_O),  KC_P,       SW_GRV,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | caps/num  |    A      |    S      |    D      |    F      |   G       |                          |    H      |    J      |    K      |    L      | ; and :   | ' and "   |
-  // LT_NUMP,    TD(SWE_A),  KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       KC_SCLN,    KC_QUOT,
-     LT_NUMP,    TD(SWE_A),  KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       SW_SCLN,    SE_QUOT,
+     LT_FUNC,    TD(SWE_A),  KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       SW_SCLN,    SE_QUOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // | lshift    |    Z      |    X      |    C      |    V      |    B      |           |  |           |    N      |    M      | , and <   | . and >   | / and ?   | caps word |
-  // KC_LSFT,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,       KC_NO,          KC_NO,     KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,    TD(CW_SFT),
      KC_LSFT,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,       KC_NO,          KC_NO,     KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_PSLS,    TD(CW_SFT),
  // .-----------+-----------+-----------+-----------+-----------------------|-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
  //                         | \ and |   |left ctl   |left alt   | lower     | space     |  | enter     |  raise    |right alt  | - and _   | = and +   |
-                          // KC_NUBS,    KC_LCTL,     KC_LALT,   TT(_LOWER), KC_SPC,        KC_ENT,     TT(_RAISE), KC_RALT,    KC_MINS,    KC_EQL
                              SW_BSLS,    KC_LCTL,     KC_LALT,   TT(_LOWER), KC_SPC,        KC_ENT,     TT(_RAISE), KC_RALT,    SE_MINS,    SW_EQL
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
@@ -61,37 +57,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Add numpad, swe å, ä, ö?
 [_LOWER] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |           | F1        | F2        | F3        | F4        | F5        |                          | F6        | F7        | F8        |F9         | F10       |frw del    |
-     _______,    KC_F1,      KC_F2,      KC_F3,      KC_F4,      KC_F5,                                 KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_DEL,
+ // |           |delete     |backspace  |/ div      |* mult     |           |                          |           |           |           |           |           |frw del    |
+     _______,    KC_DEL,     KC_BSPC,    KC_SLSH,    KC_ASTR,    _______,                               _______,    _______,    _______,    _______,    _______,    KC_DEL,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           | F11       | F12       |           |           | terminal  |                          |           |           | [ and {   | ] and }   |print scren|           |
-     _______,    KC_F11,     KC_F12,     _______,    _______,    KC_TERM,                               _______,    _______,    KC_LBRC,    SE_ODIA,    KC_PSCR,    _______,
+ // |           |= equal    |7          |8          |9          |- minus    |                          |           |           | [ and {   |Ö          |print scren|           |
+     _______,    KC_PEQL,    KC_7,       KC_8,       KC_9,       KC_PMNS,                               _______,    _______,    KC_LBRC,    SE_ODIA,    KC_PSCR,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           | app menu  |           | tmux term |max win tgl|page up    |                          | left      | down      | up        |  right    |           |           |
-     SE_ADIA,    SE_ARNG,    _______,    KC_TMUX,    LCA(KC_F),  KC_PGUP,                               KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
+ // | Ä         | Å         |4          |5          |6          |- plus     |                          | left      | down      | up        |  right    |           |           |
+     SE_ADIA,    SE_ARNG,    KC_4,       KC_5,       KC_6,       KC_PPLS,                               KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
- // | lshift+ctl|           |           |           |           |page down  |           |  |           |           |           |           |           |           | rshift    |
-     S(KC_LCTL), _______,    _______,    _______,    _______,    KC_PGDN,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
+ // |= equal    |0          |1          |2          |3          |enter      |           |  |           |           |           |           |           |           | rshift    |
+     KC_PEQL,    KC_0,       KC_1,       KC_2,       KC_3,       KC_ENT,     _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------+-----------'
- //                         |           |           |           |           |           |  |           |           |           |           |           |
-                             _______,    _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______
+ //                         |           |0          |. dot      |           |           |  |           |           |           |           |           |
+                             _______,    KC_0,       KC_DOT,     _______,    _______,       _______,    _______,    _______,    _______,    _______
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
-// func?
+// symbols / nav keys
 [_RAISE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |           | alt+F1    | alt+F2    | alt+F3    | alt+F4    | alt+F5    |                          | alt+F6    | alt+F7    | alt+F8    | alt+F9    | alt+F10   |insert     |
-     _______,    A(KC_F1),     A(KC_F2),   A(KC_F3),   A(KC_F4),   A(KC_F5),                              A(KC_F6),   A(KC_F7),   A(KC_F8),   A(KC_F9),   A(KC_F10),  KC_INS,
+ // |           | alt+F1    | alt+F2    | alt+F3    | alt+F4    | alt+F5    |                          | alt+F6    | alt+F7    | alt+F8    | {         | ]         | insert    |
+     _______,    A(KC_F1),   A(KC_F2),   A(KC_F3),   SE_DLR,     SE_EURO,                               A(KC_F6),   A(KC_F7),   A(KC_F8),   SE_LBRC,    SE_RBRC,    KC_INS,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |    ¬      | alt+F11   | alt+F12   |           |           |           |                          |           |           |    {      |    }      | play      |           |
-     S(KC_GRV),  A(KC_F11),  A(KC_F12),  _______,    _______,    _______,                               _______,    _______,    KC_LCBR,    KC_RCBR,    KC_MPLY,    _______,
+ // |           |           |           |           |           |           |                          |           |           |    {      |    }      | play      |           |
+     _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    KC_LCBR,    SE_LCBR,    SE_RCBR,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |           |           |           |                          | alt+left  | alt+down  | alt+up    | alt+right |           |           |
-     _______,    _______,    _______,    _______,    _______,    KC_HOME,                               A(KC_LEFT), A(KC_DOWN), A(KC_UP), A(KC_RGHT),    _______,    _______,
+ // |           |home       |page down  |page up    |end        |           |                          |left       |down       |up         |right      |           |           |
+     _______,    KC_HOME,    KC_PGDN,    KC_PGUP,    KC_END,     _______,                               KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
- // |           | undo      | cut       |copy       |paste      |           |           |  |           |           |           |           |           |           |           |
-     _______,    KC_UNDO,    KC_CUT,     KC_COPY,    KC_PASTE,   KC_END,     _______,       _______,    _______,    KC_MUTE,    KC_MPRV,    KC_MNXT,    _______,    _______,
+ // |           |undo       |cut        |copy       |paste      |           |           |  |           |alt + left |alt + down |alt + up   |alt + right|           |           |
+     _______,    KC_UNDO,    KC_CUT,     KC_COPY,    KC_PASTE,   _______,    _______,       _______,    A(KC_LEFT), A(KC_DOWN), A(KC_UP),   A(KC_RGHT), _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------+-----------'
  //                         |           |           |           |           |           |  |           |           |           | vol -     | vol+l     |
                              _______,    _______,    _______,    _______,    _______,       _______,    _______,    _______,    KC_VOLD,    KC_VOLU
@@ -99,22 +95,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // TODO Rename to _MEDIA or _FUNC. Move numpad on LOWER
-[_NUMPAD] = LAYOUT(
+[_FUNC] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |           |     1     |     2     |     3     |     $     |     %     |                          |    ^      |     &     |     *     |     (     |     )     |           |
-     KC_0,       KC_1,       KC_2,       KC_3,       KC_DLR,     KC_PERC,                               KC_CIRC,    KC_AMPR,    KC_ASTR,     KC_LPRN,    KC_RPRN,    _______,
+ // |           |F1         |F2         |F3         |F4         |F5         |                          |F6         |F7         |F8         |F9         |F10        |F11           |
+     _______,    KC_F1,       KC_F2,       KC_F3,       KC_F4,     KC_F5,                               KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |     4     |     5     |     6     |     (     |     )     |                          |           |           |           |           |           |           |
-     _______,    KC_4,       KC_5,       KC_6,       KC_LPRN,    KC_RPRN,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |           |           |           |           |max win tgl|tmux term  |                          |           |           |           |           |print scren|F12           |
+     _______,    _______,    _______,    _______,       LCA(KC_F),  KC_TMUX,                               _______,    _______,    _______,    _______,    KC_PSCR,    KC_F12,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |     7     |     8     |     9     |     -     |     +     |                          |           |           |           |           |     :     |           |
-     _______,    KC_7,       KC_8,       KC_9,       KC_PMNS,    KC_PPLS,                               _______,    _______,    _______,    _______,    KC_COLN,    _______,
+ // |           |app menu   |           |           |           |           |                          |           |           |           |           |     :     |           |
+     _______,    KC_APP,     _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    KC_COLN,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |     =     |     /     |     *     |           |  |           |           |           |     ,     |    .      |     /     |           |
-     _______,    _______,    _______,    KC_PEQL,    KC_PSLS,    KC_PAST,    _______,        _______,   _______,    _______,    _______,    _______,    _______,    _______,
+ // |           |           |           |     =     |     /     |bash term  |           |  |           |play/pause |mute       |previous   |next       |           |           |
+     _______,    _______,    _______,    KC_PEQL,    KC_PSLS,    KC_TERM,    _______,        _______,   KC_MPLY,    KC_MUTE,    KC_MPRV,    KC_MNXT,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------+-----------+-----------+-----------+-----------+-----------+-----------'
- //                         |           |           |           |           |           |  |           |           |           |  - minus  |  + plus   |
-                             _______,    KC_COLN,    KC_BSPC,    KC_ENT,     _______,        _______,   _______,    _______,    KC_PMNS,    KC_PPLS
+ //                         |           |           |           |           |           |  |           |           |           |vol -      |vol +      |
+                             _______,    KC_COLN,    KC_BSPC,    KC_ENT,     _______,        _______,   _______,    _______,    KC_VOLD,    KC_VOLU
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
@@ -132,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // |           |           |           |           |           |wheel down |           |  |           |           |           |           |           |           |           |
      _______,    _______,    _______,    _______,    _______,    MS_WHLD,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
- //                         |           |           |           |           |  Space    |  | rgb mode  |           |           |           |           |
+ //                         |           |           |           |mouse 3    |mouse 1    |  |mouse 2    |           |           |           |           |
                              _______,    _______,    _______,    MS_BTN3,    MS_BTN1,       MS_BTN2,    _______,    _______,    _______,    _______
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
@@ -141,7 +137,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           |  base lyr |  lower    |  raise    |  numpad   |  mouse    |                          |adjust     |           |           |           |           |  reboot   |
-     QK_BOOT,    TO(_BASE),TO(_LOWER), TO(_RAISE), TO(_NUMPAD),TO(_MOUSE),                            TO(_ADJUST),XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
+     QK_BOOT,    TO(_BASE),  TO(_LOWER), TO(_RAISE), TO(_FUNC),  TO(_MOUSE),                            TO(_ADJUST),XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | clear mem |           |           |           |  rgb togg |rgb default|                          |           |           |oled sleep |oled tgl   |           | clear mem |
      EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RM_TOGG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    KC_OSLEEP,  KC_OTGL,    XXXXXXX,    EE_CLR,
@@ -203,9 +199,6 @@ void eeconfig_init_user(void) {
 }
 
 
-// Oled help msg timer
-// uint16_t oled_help_timer = 0;
-
 // Oled rotation on master side should be 0, while slave is flipped 180
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
@@ -234,9 +227,6 @@ void keyboard_post_init_user(void) {
     // left trackpad -use for vertical/horizontal scrolling
     pointing_device_set_cpi_on_side(true, 500);
     pointing_device_set_cpi_on_side(false, 500);
-
-    // start timer for displaying help msg.
-    // oled_help_timer = timer_read();
 }
 
 
@@ -309,7 +299,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case _ADJUST:
         PLAY_SONG(click_sound);
-        // TODO do I need to set this everytime?
         haptic_set_mode(1);
         haptic_play();
         break;
@@ -322,6 +311,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 // tap dance
 // --------------------------------------------------------------------------------------
 // Return an integer that corresponds to what kind of tap dance should be executed.
+/* TODO orig, rm works in tapdance.c
 td_state_t cur_dance(tap_dance_state_t *state) {
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) { return TD_SINGLE_TAP; }
@@ -346,16 +336,23 @@ td_state_t cur_dance(tap_dance_state_t *state) {
     }
     else { return TD_UNKNOWN; }
 }
+*/
+
 
 // Right Shift: Tap turns on caps word. Hold outputs shift+ctrl
 // TODO change this to just a normal right shift on hold? Depends if I need it for Maya?
 // ---------------------------------------------------------------------
+// TODO orig, test mv to tapdance.c. WORKS
+/*
 // Instance of td_tap_t for right shift tapdance
 static td_tap_t td_rshift = {
     .is_press_action = true,
     .state = TD_NONE
 };
+*/
 
+// TODO orig, test mv to tapdance.c WORKS
+/*
 void rshift_finished(tap_dance_state_t *state, void *user_data) {
     td_rshift.state = cur_dance(state);
     switch (td_rshift.state) {
@@ -368,7 +365,10 @@ void rshift_finished(tap_dance_state_t *state, void *user_data) {
             break;
     }
 }
+*/
 
+// TODO orig, test mv to tapdance.c WORKS
+/*
 void rshift_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_rshift.state) {
         case TD_SINGLE_TAP: break;
@@ -380,15 +380,21 @@ void rshift_reset(tap_dance_state_t *state, void *user_data) {
             break;
     }
 }
+*/
+
 
 // Swedish letter a tapdance
 // ---------------------------------------------------------------------
+// TODO orig, test mv to tapdance.c WORKS
+/*
 // Instance of td_tap_t for swedish a tapdance
 static td_tap_t td_swe_a = {
     .is_press_action = true,
     .state = TD_NONE
 };
-
+*/
+// TODO orig, test mv to tapdance.c WORKS
+/*
 void swe_a_finished(tap_dance_state_t *state, void *user_data) {
     td_swe_a.state = cur_dance(state);
     switch (td_swe_a.state) {
@@ -424,7 +430,9 @@ void swe_a_finished(tap_dance_state_t *state, void *user_data) {
         default: break;
     }
 }
-
+*/
+// TODO orig, test mv to tapdance.c WORKS
+/*
 void swe_a_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_swe_a.state) {
         case TD_SINGLE_TAP: unregister_code(KC_A); break;
@@ -437,15 +445,21 @@ void swe_a_reset(tap_dance_state_t *state, void *user_data) {
         default: break;
     }
 }
+*/
+
 
 // Swedish o tapdance
 // ---------------------------------------------------------------------
+// TODO orig, test mv to tapdance.c WORKS
+/*
 // Instance of td_tap_t for swedish o tapdance
 static td_tap_t td_swe_o = {
     .is_press_action = true,
     .state = TD_NONE
 };
-
+*/
+// TODO orig, test mv to tapdance.c WORKS
+/*
 void swe_o_finished(tap_dance_state_t *state, void *user_data) {
     td_swe_o.state = cur_dance(state);
     switch (td_swe_o.state) {
@@ -469,7 +483,9 @@ void swe_o_finished(tap_dance_state_t *state, void *user_data) {
         default: break;
     }
 }
-
+*/
+// TODO orig, test mv to tapdance.c WORKS
+/*
 void swe_o_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_swe_o.state) {
         case TD_SINGLE_TAP: unregister_code(KC_O); break;
@@ -480,6 +496,7 @@ void swe_o_reset(tap_dance_state_t *state, void *user_data) {
         default: break;
     }
 }
+*/
 
 tap_dance_action_t tap_dance_actions[] = {
         [CW_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rshift_finished, rshift_reset),
@@ -501,7 +518,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // keep track of if shift is registered
     static bool is_shifted;
 
-    // TODO orig:
     // Process oled keycodes
     //process_record_user_oled(keycode, record);
 
@@ -513,40 +529,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // Otherwise the consectutive key press will not be handled.
     // Active modifiers will be checked by keylogger and displayed on oled.
     if (oled_keylogger_enabled) {
-        /*
-        switch (keycode) {
-            // Allow normal process of layer change keys.
-            case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
-                // Except explicit layer changes done from a layer.
-                // Those should be checked by keylogger and displayed on oled.
-                // TODO This works but is hardcoded. Test again if I can check if current layer is not base and break?
-                // TODO orig:
-                // if (keycode == TG(_GAME) || keycode == TO(_BASE)) {
-                if  (keycode == TO(_BASE)) {
-                    break;
-                } else {
-                    return true;
-                }
-
-            // Allow normal process of real mods.
-            case MODIFIER_KEYCODE_RANGE:
-                return true;
-
-            // Allow normal process of mod combos like  S(KC_LCTL) = shift+ctrl
-            // NOTE this works but is hardcoded. Have not found a dynamic way.
-            case S(KC_LCTL):
-                return true;
-
-        }
-        // Display key log on Oled and do not send key press to host (return false).
-        // But first, make sure key in not the keylog toggler.
-        if (keycode != KC_KEYLOG) {
-            add_keylog(keycode, record);
-            return false;
-        }
-    */
-        // TODO make func return int 0-3 to represent 0-cont. 1-return false, 2-return true?
-        // or keep if (keycode != KC_KEYLOG)?
         uint8_t process_option = process_record_keylogger(keycode, record);
         switch (process_option) {
             case 1:

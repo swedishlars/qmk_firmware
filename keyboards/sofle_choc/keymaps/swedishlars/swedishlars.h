@@ -12,7 +12,7 @@
 
 // momentarily activate layer when held
 #define CAPS_ADJUST LT(_ADJUST, KC_CAPS)
-#define LT_NUMP LT(_NUMPAD,KC_CAPS)
+#define LT_FUNC LT(_FUNC,KC_CAPS)
 
 // actions
 #define KC_UNDO C(KC_Z)
@@ -42,7 +42,7 @@ enum sofle_layers {
     _BASE = 0,
     _LOWER,
     _RAISE,
-    _NUMPAD,
+    _FUNC,
     _MOUSE,
     _ADJUST
 };

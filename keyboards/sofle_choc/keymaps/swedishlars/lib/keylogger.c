@@ -149,7 +149,6 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
 }
 
 
-// bool process_record_keylogger(uint16_t keycode, keyrecord_t *record) {
 uint8_t process_record_keylogger(uint16_t keycode, keyrecord_t *record) {
     // Return should tell what caller (calling function) should do:
     // 0 - continue.
@@ -168,28 +167,23 @@ uint8_t process_record_keylogger(uint16_t keycode, keyrecord_t *record) {
             if  (keycode == TO(_BASE)) {
                 break;
             } else {
-                // return true;
                 return 2;
             }
 
         // Allow normal process of real mods.
         case MODIFIER_KEYCODE_RANGE:
-            // return true;
             return 2;
 
         // Allow normal process of mod combos like  S(KC_LCTL) = shift+ctrl
         // NOTE this works but is hardcoded. Have not found a dynamic way.
         case S(KC_LCTL):
-            // return true;
             return 2;
     }
     // Display key log on Oled and do not send key press to host (return false).
     // But first, make sure key in not the keylog toggler.
     if (keycode != KC_KEYLOG) {
         add_keylog(keycode, record);
-        // return false;
         return 1;
     }
-    // return true;
     return 0;
 }

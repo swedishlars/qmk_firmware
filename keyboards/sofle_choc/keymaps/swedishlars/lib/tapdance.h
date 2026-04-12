@@ -3,6 +3,9 @@
 
 #pragma once
 
+// TODO check if needed for tapdance.c
+#include "quantum.h"
+
 // Tap Dance keycodes
 enum td_keycodes {
     CW_SFT,     // Tap: toggle caps word. Hold: send shift+ctrl
