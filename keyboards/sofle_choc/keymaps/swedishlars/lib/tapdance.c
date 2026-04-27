@@ -1,9 +1,10 @@
-// Copyright 2024 Lars Johansson (github.com/swedishlars)
-// SPDX-License-Identifier: GPL-2.0-or-later
+/* Copyright 2024 Lars Johansson (github.com/swedishlars)
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
  #include "tapdance.h"
 
-// TODO this works!
+
 // Return an integer that corresponds to what kind of tap dance should be executed.
 td_state_t cur_dance(tap_dance_state_t *state) {
     if (state->count == 1) {

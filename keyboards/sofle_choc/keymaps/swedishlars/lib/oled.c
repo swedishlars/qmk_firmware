@@ -392,7 +392,7 @@ void oled_render_right(void) {
         case _MOUSE:
             oled_render_mouse();
             break;
-        case _ADJUST:
+        case _CONF:
             oled_render_adjust();
             break;
         default:

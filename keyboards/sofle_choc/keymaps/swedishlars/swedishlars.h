@@ -11,7 +11,7 @@
 #define DESK_R C(G(KC_RIGHT))
 
 // momentarily activate layer when held
-#define CAPS_ADJUST LT(_ADJUST, KC_CAPS)
+#define CAPS_ADJUST LT(_CONF, KC_CAPS)
 #define LT_FUNC LT(_FUNC,KC_CAPS)
 
 // actions
@@ -44,7 +44,7 @@ enum sofle_layers {
     _RAISE,
     _FUNC,
     _MOUSE,
-    _ADJUST
+    _CONF
 };
 
 
