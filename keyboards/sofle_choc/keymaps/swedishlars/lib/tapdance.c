@@ -33,7 +33,6 @@ td_state_t cur_dance(tap_dance_state_t *state) {
 
 
 // Right Shift: Tap turns on caps word. Hold outputs shift+ctrl
-// TODO change this to just a normal right shift on hold? Depends if I need it for Maya?
 // ---------------------------------------------------------------------
 // Instance of td_tap_t for right shift tapdance
 static td_tap_t td_rshift = {
@@ -47,7 +46,6 @@ void rshift_finished(tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP: caps_word_on(); break;
         case TD_SINGLE_HOLD:
             register_mods(MOD_BIT(KC_LSFT));
-            // register_mods(MOD_BIT(KC_LCTL));
             break;
         default:
             break;
@@ -59,7 +57,6 @@ void rshift_reset(tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP: break;
         case TD_SINGLE_HOLD:
             unregister_mods(MOD_BIT(KC_LSFT));
-            // unregister_mods(MOD_BIT(KC_LCTL));
             break;
         default:
             break;

@@ -2,36 +2,24 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-// TODO do I need?
-// #include <stdio.h>
-
 #include QMK_KEYBOARD_H
 
 #include "keymap_swedish.h"
 
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
 #include "lib/lib8tion/lib8tion.h"
-
 #include "swedishlars.h"
 #include "lib/rgb.h"
 #include "lib/oled.h"
 #include "lib/pointing_device.h"
+#include "lib/audio.h"
 #include "lib/tapdance.h"
 #include "lib/keylogger.h"
 
 
-// TODO make haptic func?
-// TODO add fullscreen, quit app
-
-// custom sounds
-float click_sound[][2] = SONG(TERMINAL_SOUND);
-
-
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-// TODO Use tap-hold on KC_LCTL for something? or add One Shot
-// TODO Use tap-hold on LALT for something? Or add One Shot.
-// TODO Use One Shot on LSFT: OS_LSFT
 // TODO remove caps lock, I do not need it. Use OneShotLayer (OSL(layer) for macros to send strings (names, addresses, words)
+// TODO do I need R_ALT?
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_BASE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // | esc       |    1      |    2      |   3       |    4      |   5       |                          |    6      |    7      |    8      |    9      |    0      | back      |
@@ -47,11 +35,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_LSFT,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,       KC_NO,          KC_NO,     KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_PSLS,    TD(CW_SFT),
  // .-----------+-----------+-----------+-----------+-----------------------|-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
  //                         | \ and |   |left ctl   |left alt   | lower     | space     |  | enter     |  raise    |right alt  | - and _   | = and +   |
-                             SW_BSLS,    KC_LCTL,     KC_LALT,   TT(_LOWER), KC_SPC,        KC_ENT,     TT(_RAISE), KC_RALT,    SE_MINS,    SW_EQL
+                             SW_BSLS,    KC_LCTL,     KC_LALT,   MO(_LOWER), KC_SPC,        KC_ENT,     MO(_RAISE), KC_RALT,    SE_MINS,    SW_EQL
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
-// TODO add gaming layer
+[_GAME] = LAYOUT(
+ // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
+ // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
+     _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
+ // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
+     _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
+ // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
+     _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
+ // |           |           |           |           |           |           |           |  |           |           |           |           |           |           |           |
+     _______,    _______,    _______,    _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
+ // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
+ //                         |           |           |           |           |           |  |           |           |           |           |           |
+                             _______,    _______,    _______,    _______,    _______,       _______,    _______,    _______,    _______,    _______
+ //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
+),
 
 // numpad, swe å, ä, ö
 [_LOWER] = LAYOUT(
@@ -99,11 +104,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // |           |F1         |F2         |F3         |F4         |F5         |                          |F6         |F7         |F8         |F9         |F10        |F11           |
      _______,    KC_F1,       KC_F2,       KC_F3,       KC_F4,     KC_F5,                               KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |           |max win tgl|wezterm    |                          |           |           |           |           |print scren|F12           |
-     _______,    _______,    _______,    _______,    LCA(KC_F),  KC_TMUX,                               _______,    _______,    _______,    _______,    KC_PSCR,    KC_F12,
+ // |           |           |           |           |           |wezterm    |                          |           |           |           |           |print scren|F12           |
+     _______,    _______,    _______,    _______,    _______,    KC_TMUX,                               _______,    _______,    _______,    _______,    KC_PSCR,    KC_F12,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |app menu   |           |           |           |           |                          |           |           |           |           |           |           |
-     _______,    KC_APP,     _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |           |app menu   |           |           |max win tgl|           |                          |           |           |           |           |           |           |
+     _______,    KC_APP,     _______,    _______,    C(KC_F),    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |           |           |     =     |     /     |bash term  |           |  |           |play/pause |mute       |previous   |next       |           |           |
      _______,    _______,    _______,    KC_PEQL,    KC_PSLS,    KC_TERM,    _______,        _______,   KC_MPLY,    KC_MUTE,    KC_MPRV,    KC_MNXT,    _______,    _______,
@@ -142,7 +147,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RM_TOGG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    KC_OSLEEP,  KC_OTGL,    XXXXXXX,    EE_CLR,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |toggl audio|pc sleep   |           |           |           |                          |togl haptic|           |keylogger  |           |           |           |
-     XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               HF_TOGG,    XXXXXXX,    KC_KEYLOG,  XXXXXXX,    XXXXXXX,    XXXXXXX,
+     XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    TG(_GAME),                             HF_TOGG,    XXXXXXX,    KC_KEYLOG,  XXXXXXX,    XXXXXXX,    XXXXXXX,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |           |           |  |           |           |           |           |           |           |auto shift |
      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    AS_TOGL,
@@ -285,11 +290,10 @@ bool caps_word_press_user(uint16_t keycode) {
 
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // TODO enable when I have a gaming layer
     // Turn off auto shift for gaming layer
-    // if (user_config.autoshift_enabled && IS_LAYER_OFF_STATE(state, _GAME)) {
-    //     autoshift_enable();
-    // } else { autoshift_disable(); }
+    if (user_config.autoshift_enabled && IS_LAYER_OFF_STATE(state, _GAME)) {
+        autoshift_enable();
+    } else { autoshift_disable(); }
 
     // tri-layer, tap to toggle, hold to activate momentarily
     state = update_tri_layer_state(state, _LOWER, _RAISE, _CONF);
@@ -318,9 +322,8 @@ tap_dance_action_t tap_dance_actions[] = {
 // store current modifier state for later ref
 uint8_t mod_state;
 
-// TODO test set here? do I need to declare bool?
-// TODO enable:
-bool oled_keylogger_enabled = false;
+// global that determines if keylogger is enabled
+bool keylogger_enabled = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     mod_state = get_mods();
@@ -332,13 +335,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     //process_record_user_oled(keycode, record);
 
     // Key logger that will display key function on Oled display.
-    // Do not send key to host if keylogger help is enabled, with a few exceptions.
-    // Allow normal process of:
-    //   1. modifiers
-    //   2. Dedicated layer change keys.
-    // Otherwise the consectutive key press will not be handled.
-    // Active modifiers will be checked by keylogger and displayed on oled.
-    if (oled_keylogger_enabled) {
+    if (keylogger_enabled) {
         uint8_t process_option = process_record_keylogger(keycode, record);
         switch (process_option) {
             case 1:
@@ -348,15 +345,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    // TODO add audio & haptic for rest of adjust layer keys (audio, rgb, sys sleep, oled)
     switch (keycode) {
         // Custom eeprom autoshift toggle
         case AS_TOGL:
             if (record->event.pressed) {
                 user_config.autoshift_enabled = !user_config.autoshift_enabled;
                 eeconfig_update_user(user_config.raw);
-                if (user_config.autoshift_enabled) { autoshift_enable(); }
-                else { autoshift_disable(); }
+                if (user_config.autoshift_enabled) {
+                    autoshift_enable();
+                    PLAY_SONG(caps_on_sound);
+                }
+                else {
+                    autoshift_disable();
+                    PLAY_SONG(caps_off_sound);
+                }
+                haptic_play();
             }
             break;
 
@@ -365,6 +368,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 user_config.oled_enabled = !user_config.oled_enabled;
                 eeconfig_update_user(user_config.raw);
+                if (user_config.oled_enabled) { PLAY_SONG(oled_on_sound); }
+                else { PLAY_SONG(oled_off_sound); }
+                haptic_play();
             }
             break;
 
@@ -373,13 +379,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 user_config.oled_sleep_enabled = !user_config.oled_sleep_enabled;
                 eeconfig_update_user(user_config.raw);
+                if (user_config.oled_sleep_enabled) { PLAY_SONG(oledsleep_on_sound); }
+                else { PLAY_SONG(oledsleep_off_sound); }
+                haptic_play();
+            }
+            break;
+
+        // toggle haptic
+        case HF_TOGG:
+            if (record->event.pressed) {
+                if (haptic_get_enable()) { PLAY_SONG(haptic_on_sound); }
+                else { PLAY_SONG(haptic_off_sound); }
+                haptic_play();
             }
             break;
 
         // toggle keylogger
         case KC_KEYLOG:
             if (record->event.pressed) {
-                oled_keylogger_enabled = !oled_keylogger_enabled;
+                keylogger_enabled = !keylogger_enabled;
+                if (keylogger_enabled) { PLAY_SONG(keylogger_on_sound); }
+                else { PLAY_SONG(keylogger_off_sound); }
+                haptic_play();
             }
             return false;
             break;
@@ -462,24 +483,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
     set_layer_color(layer, led_min, led_max);
-
-    // TODO orig rm:
-    // ----------------------------------------------------
-    // for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-    //     for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-    //         // get led index
-    //         uint8_t index = g_led_config.matrix_co[row][col];
-    //         // get keycode
-    //         uint16_t kc = keymap_key_to_keycode(layer, (keypos_t){col,row});
-    //         // set rgb based on layer & key function
-    //         if (index >= led_min && index < led_max) {
-    //             set_layer_color(layer, index, kc);
-    //         }
-    //     }
-    // }
-    // ----------------------------------------------------
-
-    set_caps_led_color();
+    set_caps_led();
     set_caps_word_led();
     return false;
 }

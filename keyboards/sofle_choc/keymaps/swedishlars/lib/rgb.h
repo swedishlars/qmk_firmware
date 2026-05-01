@@ -87,35 +87,13 @@ typedef struct PACKED {
     uint8_t b;
 } HSVB;
 
-// TODO orig rm:
-// array of per key led hsv + breathe cycle time
-// typedef struct PACKED {
-//     HSVB    hsvb[RGB_MATRIX_LED_COUNT];
-// } led_color_t;
-
-
 // Per key led hsv + breathe cycle time
 typedef struct PACKED {
     HSVB    hsvb;
 } led_color_t;
 
-// TODO rm:
-// array of per layer and key hsv + breathe cycle time
-// extern const led_color_t PROGMEM ledcolors[];
-
-// TODO do I need extern?
-extern const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT];
-
-// TODO rm:
-// rgb to key index conversion.
-// Array index order represents rgb index.
-// value represents key index.
-// extern const uint8_t PROGMEM rgb_matrix_index[];
-
 void set_led_color( uint8_t index, HSVB hsvb, bool use_matrix_value);
-// TODO orig rm:
-// void set_layer_color( uint8_t layer, uint8_t index, uint16_t keycode);
 void set_layer_color(uint8_t layer, uint8_t led_min, uint8_t led_max);
 
-void set_caps_led_color(void);
+void set_caps_led(void);
 void set_caps_word_led(void);

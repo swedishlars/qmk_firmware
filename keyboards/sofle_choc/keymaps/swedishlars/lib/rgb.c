@@ -10,53 +10,8 @@
 #include "lib/lib8tion/lib8tion.h"
 
 
-// rgb to key index conversion. Array index order represents rgb index.
-// value represents key index. Example:
-// First array element [0] is first LED in rgb matrix on key index 5.
-// Here's what it looks like on keymap:
-// .-----------------------------------------------.                  ,-----------------------------------------------.
-// | esc   |  1    |  2    |  3    |  4    |  5    |                  |  6    |  7    |  8    |  9    |  0    | back  |    KEY:
-//   [28]    [21]    [20]    [11]    [10]    [0]                        [29]    [39]    [40]    [49]    [50]    [57]    // 0-5 , 6-11
-// |-------+-------+-------+-------+---------------|                  |-------+-------+-------+-------+-------+-------|
-// | tab   |  Q    |  W    |  E    |  R    |  T    |                  |  Y    |  U    |  I    |  O    |  P    |  #    |
-//   [27]    [22]    [19]    [12]    [9]     [1]                        [30]    [38]    [41]    [48]    [51]    [56]    // 12-17 , 18-23
-// |-------+--------+------+-------+-------+-------|                  |-------+-------+-------+-------+---------------|
-// | caps  |  A    |  S    |  D    |  F    |  G    |                  |  H    |  J    |  K    |  L    |  ;    |  '    |
-//   [26]    [23]    [18]    [13]    [8]     [2]                        [31]    [37]    [42]    [47]    [52]    [55]    // 24-29 , 30-35
-// |-------+-------+-------+------+----+----+------+-------.  .-------+-------+-------+-------+-------+-------+-------|
-// | lshift|  Z    |  X    |  C    |  V    |  B    |       |  |       |  N    |  M    |  ,    |  .    |  /    | rshift|
-//   [25]    [24]    [17]    [14]    [7]     [3]                        [32]    [36]    [43]    [46]    [53]    [54]    // 36-41 , 42-47
-// .---------------+-------+-------+-------+-------|-------   |---------------+-------+-------+-------+-------+-------'
-//                 | lgui  | L ctl | L alt | lower | space |  | enter | raise | R alt | R ctl | R gui |
-//                   [16]    [15]    [6]     [5]     [4]        [33]    [34]    [35]    [44]    [45]                    // 48-52 , 53-57
-//                 |_______|_______|_______|_______|_______|  |_______|_______|_______|_______|_______|
-
-/*
-const uint8_t PROGMEM rgb_matrix_index[58] ={
-    // led index 0 - 5         // led index  6 - 11
-    5, 17, 29, 41, 52, 51,     50, 40, 28, 16, 4, 3,
-
-    // led index 12 - 17       // led index 18 - 23
-    15, 27, 39, 49, 48, 38,    26, 14, 2, 1, 13, 25,
-
-    // led index 24 -29        // led index 30 - 35
-    37, 36, 24, 12, 0, 6,      18, 30, 42, 53, 54, 55,
-
-    // led index 36 - 41       // led index 42 - 47
-    43, 31, 19, 7, 8, 20,      32, 44, 56, 57, 45, 33,
-
-    // led index 48 - 52      // led index 53 - 57
-    21, 9, 10, 22, 34,        46, 47, 35, 23, 11
-};
-*/
-
 // Per layer, per key rgb maps
 const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
-// TODO orig rm:
-//const led_color_t PROGMEM ledcolors[] = {
-
-// BASE TODO orig rm:
-//[0] = {{
 [_BASE] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,-----------------------------------------------------------.
      // | esc     |    1    |    2    |   3     |    4    |   5     |                          |    6    |    7    |    8    |    9    |    0    | back    |
@@ -74,12 +29,27 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //           | \ and | |left ctl     |left alt  | lower      / space    /      \ enter    \  raise     |right alt | - and _     | = and +  |
                    L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,            L_DRED,    L_DRED,    L_DRED,    L_DRED,       L_DRED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
-// TODO orig:
-//}},
 ),
 
-// LOWER
-//[1] = {{
+[_GAME] = RGB_MATRIX_LAYOUT(
+     // .-----------------------------------------------------------.                          ,-----------------------------------------------------------.
+     // | esc     |    1    |    2    |   3     |    4    |   5     |                          |    6    |    7    |    8    |    9    |    0    | back    |
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
+     // | tab     |    Q    |    W    |    E    |    R    |    T    |                          |    Y    |    U    |    I    |    O    |    P    |   #     |
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,  L_DRED,                               L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
+     // | caps/num|    A    |    S    |    D    |    F    |   G     |                          |    H    |    J    |    K    |    L    |    ;    |   '     |
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
+     // | lshift  |    Z    |    X    |         |         |    B    |          |    |          |    N    |    M    | , and < | . and>  | / and ? | rshift  |
+         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
+     //           | \ and | |left ctl     |left alt  | lower      / space    /      \ enter    \  raise     |right alt | - and _     | = and +  |
+                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,            L_DRED,    L_DRED,    L_DRED,    L_DRED,       L_DRED
+     //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
+),
+
 [_LOWER] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,-----------------------------------------------------------.
      // |         |delete   |backspace|/ div    |* mult   |         |                          |         |         |         |         |         |frw del  |
@@ -97,11 +67,8 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //           |    |     |0            |. dot     |            /          /      \          \            |          |             |          |
                    L_DRED,    L_DORA,       L_DCYA,    L_BRED,       L_DRED,             L_DRED,   L_DRED,    L_DRED,    L_DRED,       L_MRED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
-//}},
 ),
 
-// RAISE
-//[2] = {{
 [_RAISE] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |         |         | "       | £       | $       | €       |                          |         |         |         | [       | ]       |insert   |
@@ -119,11 +86,8 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //           |          |             |          |            /          /      \          \            |          | vol -       | vol +    |
                    L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,             L_DRED,   L_BRED,    L_DRED,    L_DGRE,       L_DGRE
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
-//}},
 ),
 
-// FUNC
-//[3] = {{
 [_FUNC] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |F1       |F2       |F2       |F3       |F4       |F5       |                          |F6       |F7       |F8       |F9       |F10      |F11      |
@@ -141,11 +105,8 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //           |          |             |          |            /  Space   /      \ Enter    \            |          |  - minus    | + plus   |
                    L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,             L_DRED,   L_DRED,    L_DRED,    L_DGRE,       L_DGRE
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
-//}},
 ),
 
-// MOUSE
-//[4] = {{
 [_MOUSE] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
@@ -163,11 +124,8 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //           |          |   ctrl      | alt      | mouse 3    /  mouse 1 /      \ mouse 2  \            |          |             |          |
                    L_DRED,    L_DRED,       L_DRED,    L_BORA,       L_BORA,             L_BORA,   L_DRED,    L_DRED,    L_DRED,       L_DRED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
-//}},
 ),
 
-// CONF
-//[5] = {{
 [_CONF] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |reboot    |base lyr|lower    |raise    |numpad   |mouse    |                          |switch   |         |         |         |         |reboot   |
@@ -185,7 +143,6 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
      //           |          |             |          |            /          /      \          \            |          |rgb brght-   |rgb brght+|
                    L__OFF,    L__OFF,       L__OFF,    L__OFF,       L__OFF,             L__OFF,   L__OFF,    L__OFF,    L_DCYA,       L_DCYA
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
-//}}
 )
 };
 
@@ -203,10 +160,8 @@ void set_caps_word_led(void) {
 }
 
 
-// TODO func for tapdance rshift hold (=shift+ctrl)
-
 // Set LED for Caps Lock
-void set_caps_led_color(void) {
+void set_caps_led(void) {
     if (host_keyboard_led_state().caps_lock) {
         HSVB hsvb = L_BRED;
         set_led_color(CAPS_LED_INDEX, hsvb, USE_RGB_MATRIX_VALUE_ON);
@@ -240,8 +195,6 @@ void set_led_color( uint8_t index, HSVB hsvb, bool use_matrix_value) {
 }
 
 // SET LED RGB & BREATHING CYCLE BASED ON LAYER AND KEYCODES
-// TODO orig:
-//void set_layer_color( uint8_t layer, uint8_t index, uint16_t keycode) {
 void set_layer_color( uint8_t layer, uint8_t led_min, uint8_t led_max) {
     // By default, use global LED brightness set by user
     bool use_curr_brightness = USE_RGB_MATRIX_VALUE_ON;
@@ -250,35 +203,5 @@ void set_layer_color( uint8_t layer, uint8_t led_min, uint8_t led_max) {
         HSVB hsvb = ledmaps[layer][index].hsvb;
         set_led_color(index, hsvb, use_curr_brightness);
     }
-
-    // TODO orig rm:
-    /*
-    //-------------------------------------------------------
-    HSVB hsvb = ledcolors[layer].hsvb[rgb_matrix_index[index]];
-
-    // flag if ledcolor is set for key without keycode
-    if (keycode == KC_NO) {
-        if (hsvb.v > 0) {
-            hsvb.h = 0;
-            hsvb.s = 0;
-            hsvb.v = 25;
-            hsvb.b = 30;
-        }
-    }
-
-    // flag if ledcolor is not set for keys with transparent keycode
-    // flag if ledcolor is not set for key with keycode.
-    else if (keycode >= KC_TRNS) {
-        if (hsvb.v == 0) {
-            hsvb.h = 0;
-            hsvb.s = 25;
-            hsvb.v = 25;
-            hsvb.b = 30;
-        }
-    }
-
-    set_led_color(index, hsvb, use_curr_brightness);
-    //-------------------------------------------------------
-    */
 }
 

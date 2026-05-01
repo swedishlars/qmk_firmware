@@ -3,17 +3,17 @@
 
 #pragma once
 
-// TODO test:
+// TODO needed?
 #include "quantum.h"
+
 // TODO use oled_max_chars(); instead
 #define KEYLOG_LENGTH 11
 
 // Oled empty line
 #define OLED_EMPTY_LINE "          "
 
-// TODO rename
 // global used to check if keylogger is enabled
-extern bool oled_keylogger_enabled;
+extern bool keylogger_enabled;
 
 // Store current key code
 extern char oled_key_code[KEYLOG_LENGTH];

@@ -40,6 +40,7 @@ enum custom_keycodes {
 
 enum sofle_layers {
     _BASE = 0,
+    _GAME,
     _LOWER,
     _RAISE,
     _FUNC,

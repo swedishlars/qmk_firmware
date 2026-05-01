@@ -2,9 +2,6 @@
 // TODO change to custom_keycodes.h once refactored
 #include "swedishlars.h"
 
-// TODO mv here?
-// bool oled_keylogger_enabled = false;
-
 
 // Get a description of keycode that can be rendered on oled.
 // First check if there is a layer enabled which has a description override.
@@ -149,22 +146,26 @@ void add_keylog(uint16_t keycode, keyrecord_t *record) {
 }
 
 
+// Key logger that will display key function on Oled display.
+// Do not send key to host if keylogger help is enabled, with a few exceptions.
+// Allow normal process of:
+//   1. modifiers
+//   2. Dedicated layer change keys.
+// Otherwise the consectutive key press will not be handled.
+// Active modifiers will be checked by keylogger and displayed on oled.
+// Return should tell what caller (calling function) should do:
+// 0 - continue.
+// 1 - return false.
+// 2 - return true.
+// uint8_t process_option;
 uint8_t process_record_keylogger(uint16_t keycode, keyrecord_t *record) {
-    // Return should tell what caller (calling function) should do:
-    // 0 - continue.
-    // 1 - return false.
-    // 2 - return true.
-    // uint8_t process_option;
-
     switch (keycode) {
         // Allow normal process of layer change keys.
         case QK_LAYER_TAP ... QK_LAYER_TAP_TOGGLE_MAX:
             // Except explicit layer changes done from a layer.
             // Those should be checked by keylogger and displayed on oled.
             // TODO This works but is hardcoded. Test again if I can check if current layer is not base and break?
-            // TODO orig:
-            // if (keycode == TG(_GAME) || keycode == TO(_BASE)) {
-            if  (keycode == TO(_BASE)) {
+            if (keycode == TG(_GAME) || keycode == TO(_BASE)) {
                 break;
             } else {
                 return 2;

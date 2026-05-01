@@ -43,7 +43,6 @@ HAPTIC_DRIVER = drv2605l
 AUDIO_ENABLE = yes
 AUDIO_DRIVER = pwm_hardware
 
-# TODO add audio.c?
 # Using LIB_SRC as per docs
 LIB_SRC += lib/rgb.c
 LIB_SRC += lib/oled.c
