@@ -4,7 +4,8 @@
 
 #include QMK_KEYBOARD_H
 
-#include "keymap_swedish.h"
+// this includes keymap_swedish.h
+#include "sendstring_swedish.h"
 
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
 #include "lib/lib8tion/lib8tion.h"
@@ -17,8 +18,6 @@
 #include "lib/keylogger.h"
 
 
-// TODO remove caps lock, I do not need it. Use OneShotLayer (OSL(layer) for macros to send strings (names, addresses, words)
-// TODO do I need R_ALT?
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_BASE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
@@ -29,7 +28,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,                                  KC_Y,       KC_U,       KC_I,       TD(SWE_O),  KC_P,       SW_GRV,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | caps/num  |    A      |    S      |    D      |    F      |   G       |                          |    H      |    J      |    K      |    L      | ; and :   | ' and "   |
-     LT_FUNC,    TD(SWE_A),  KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       SW_SCLN,    SE_QUOT,
+     TD(MCO_FN), TD(SWE_A),  KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       SW_SCLN,    SE_QUOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // | lshift    |    Z      |    X      |    C      |    V      |    B      |           |  |           |    N      |    M      | , and <   | . and >   | / and ?   | caps word |
      KC_LSFT,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,       KC_NO,          KC_NO,     KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_PSLS,    TD(CW_SFT),
@@ -121,33 +120,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MOUSE] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
  // |           |accel 1    |           |           |           |           |                          |           |           |           |           |           |           |
-     _______,    MS_ACL0,    MS_ACL1,    MS_ACL2,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
- // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
      _______,    _______,    _______,    _______,    _______,    _______,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
- // |           |alt+mouse2 |alt+mouse3 |alt+mouse1 |           |wheel up   |                          |           |           |           |           |           |           |
-     _______,    A(MS_BTN2), A(MS_BTN3), A(MS_BTN1), _______,    MS_WHLU,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |           |           |alt+mouse1 |alt+mouse2 |alt+mouse3 |           |                          |           |           |           |           |           |           |
+     _______,    _______,    A(MS_BTN1), A(MS_BTN2), A(MS_BTN3), _______,                               _______,    _______,    _______,    _______,    _______,    _______,
+ // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
+ // |           |           |mouse 1    |mouse 2    |mouse 3    |wheel up   |                          |           |           |           |           |           |           |
+     _______,    _______,    MS_BTN1,    MS_BTN2,    MS_BTN3,    MS_WHLU,                               _______,    _______,    _______,    _______,    _______,    _______,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |wheel down |           |  |           |           |           |           |           |           |           |
      _______,    _______,    _______,    _______,    _______,    MS_WHLD,    _______,       _______,    _______,    _______,    _______,    _______,    _______,    _______,
  // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
- //                         |           |           |           |mouse 3    |mouse 1    |  |mouse 2    |           |           |           |           |
-                             _______,    _______,    _______,    MS_BTN3,    MS_BTN1,       MS_BTN2,    _______,    _______,    _______,    _______
+ //                         |           |           |mouse 3    |mouse 2    |mouse 1    |  |           |           |           |           |           |
+                             _______,    _______,    MS_BTN3,    MS_BTN2,    MS_BTN1,       _______,    _______,    _______,    _______,    _______
+ //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
+),
+
+// One Shot Layer for macros, send strings (names, addresses, words)
+[_MACRO] = LAYOUT(
+ // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
+ // |           |           |           |           |           |           |                          |           |           |           |           |           |           |
+     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+ // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
+ // |           |           |           |Emmanouil  |           |           |                          |           |           |Ileana     |Ioanna     |Stravoskiad|           |
+     XXXXXXX,    XXXXXXX,    XXXXXXX,    SS_EMMA,    XXXXXXX,    XXXXXXX,                               XXXXXXX,    XXXXXXX,    SS_ILEA,    SS_IOAN,    SS_STRA,    XXXXXXX,
+ // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
+ // |           |           |swedishlars|           |           |@gmail.com |                          |Henry      |Johansson  |ileanastr  |Lars       |Gunnar     |Johansson  |
+     XXXXXXX,    XXXXXXX,    SS_SWEL,    XXXXXXX,    XXXXXXX,    SS_GMIL,                               SS_HENR,    SS_JOHA,    SS_ILST,    SS_LARS,    SS_GUNN,    SS_JOHA,
+ // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
+ // |           |           |           |           |           |           |           |  |           |henryemmano|           |           |larsileana |           |           |
+     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    SS_HEEM,    XXXXXXX,    XXXXXXX,    SS_LAIL,    XXXXXXX,    XXXXXXX,
+ // .-----------+-----------+-----------+-----------+-----------+-----------+-----------|  |-----------|-----------+-----------+-----------+-----------+-----------+-----------'
+ //                         |           |           |           |           |           |  |           |           |           |           |           |
+                             XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX
  //                         |___________|___________|___________|___________|___________|  |___________|___________|___________|___________|___________|
 ),
 
 // config
 [_CONF] = LAYOUT(
  // .-----------------------------------------------------------------------.                          ,-----------------------------------------------------------------------.
- // |bootloader |  base lyr |  lower    |  raise    |  numpad   |  mouse    |                          |adjust     |           |           |           |           |bootloader |
-     QK_BOOT,    TO(_BASE),  TO(_LOWER), TO(_RAISE), TO(_FUNC),  TO(_MOUSE),                            TO(_CONF),  XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
+ // |bootloader |           |           |           |           |           |                          |           |           |           |           |           |bootloader |
+     QK_BOOT,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,                               XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    QK_BOOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |clear mem  |           |           |           |toggle rgb |reset rgb  |                          |           |           |oled sleep |toggle oled|           |clear mem  |
-     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RM_TOGG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    KC_OSLEEP,  KC_OTGL,    XXXXXXX,    EE_CLR,
+     EE_CLR,     XXXXXXX,    XXXXXXX,    XXXXXXX,    RM_TOGG,    RGB_M_P,                               XXXXXXX,    XXXXXXX,    OL_SLEEP,   OL_TOGL,    XXXXXXX,    EE_CLR,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // |           |toggl audio|pc sleep   |           |           |           |                          |togl haptic|           |keylogger  |           |           |           |
-     XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    TG(_GAME),                             HF_TOGG,    XXXXXXX,    KC_KEYLOG,  XXXXXXX,    XXXXXXX,    XXXXXXX,
+     XXXXXXX,    AU_TOGG,    KC_SLEP,    XXXXXXX,    XXXXXXX,    TG(_GAME),                             HF_TOGG,    XXXXXXX,    KL_TOGL,    XXXXXXX,    XXXXXXX,    XXXXXXX,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // |           |           |           |           |           |           |           |  |           |           |           |           |           |           |auto shift |
      XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,       XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    AS_TOGL,
@@ -310,15 +329,16 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 
+// TODO rm SWE tapdances, not needed (and too slow)
 // tap dance
 tap_dance_action_t tap_dance_actions[] = {
+    [MCO_FN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, caps_finished, caps_reset),
     [CW_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rshift_finished, rshift_reset),
     [SWE_A] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_a_finished, swe_a_reset),
     [SWE_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_o_finished, swe_o_reset)
 };
 
 
-// TODO move to swedishlars.h?
 // store current modifier state for later ref
 uint8_t mod_state;
 
@@ -336,12 +356,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // Key logger that will display key function on Oled display.
     if (keylogger_enabled) {
-        uint8_t process_option = process_record_keylogger(keycode, record);
-        switch (process_option) {
-            case 1:
-                return false;
-            case 2:
-                return true;
+        if (record->event.pressed) {
+            uint8_t process_option = process_record_keylogger(keycode, record);
+            switch (process_option) {
+                case 0:
+                    break;
+                case 1:
+                    return false;
+                case 2:
+                    return true;
+            }
         }
     }
 
@@ -364,7 +388,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 
         // Toggle oled display on/off
-        case KC_OTGL:
+        case OL_TOGL:
             if (record->event.pressed) {
                 user_config.oled_enabled = !user_config.oled_enabled;
                 eeconfig_update_user(user_config.raw);
@@ -375,7 +399,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 
         // toggle oled sleep
-        case KC_OSLEEP:
+        case OL_SLEEP:
             if (record->event.pressed) {
                 user_config.oled_sleep_enabled = !user_config.oled_sleep_enabled;
                 eeconfig_update_user(user_config.raw);
@@ -395,7 +419,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 
         // toggle keylogger
-        case KC_KEYLOG:
+        case KL_TOGL:
             if (record->event.pressed) {
                 keylogger_enabled = !keylogger_enabled;
                 if (keylogger_enabled) { PLAY_SONG(keylogger_on_sound); }
@@ -404,6 +428,46 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             break;
+
+        case SS_ILST:
+            if (record->event.pressed) { SEND_STRING("ileanastr"); }
+            return false; break;
+        case SS_ILEA:
+            if (record->event.pressed) { SEND_STRING("Ileana"); }
+            return false; break;
+        case SS_IOAN:
+            if (record->event.pressed) { SEND_STRING("Ioanna"); }
+            return false; break;
+        case SS_STRA:
+            if (record->event.pressed) { SEND_STRING("Stravoskiadi"); }
+            return false; break;
+        case SS_HEEM:
+            if (record->event.pressed) { SEND_STRING("henryemmanouil"); }
+            return false; break;
+        case SS_HENR:
+            if (record->event.pressed) { SEND_STRING("Henry"); }
+            return false; break;
+        case SS_EMMA:
+            if (record->event.pressed) { SEND_STRING("Emmanouil"); }
+            return false; break;
+        case SS_SWEL:
+            if (record->event.pressed) { SEND_STRING("swedishlars"); }
+            return false; break;
+        case SS_LAIL:
+            if (record->event.pressed) { SEND_STRING("swedishlars"); }
+            return false; break;
+        case SS_LARS:
+            if (record->event.pressed) { SEND_STRING("Lars"); }
+            return false; break;
+        case SS_GUNN:
+            if (record->event.pressed) { SEND_STRING("Gunnar"); }
+            return false; break;
+        case SS_JOHA:
+            if (record->event.pressed) { SEND_STRING("Johansson"); }
+            return false; break;
+        case SS_GMIL:
+            if (record->event.pressed) { SEND_STRING("@gmail.com"); }
+            return false; break;
 
         // convert Swedish keycode to US key: ` and ~
         case SW_GRV:

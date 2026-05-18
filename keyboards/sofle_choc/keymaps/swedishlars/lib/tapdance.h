@@ -1,14 +1,15 @@
-// Copyright 2024 Lars Johansson (github.com/swedishlars)
-// SPDX-License-Identifier: GPL-2.0-or-later
+/* Copyright 2024 Lars Johansson (github.com/swedishlars)
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 #pragma once
 
-// TODO check if needed for tapdance.c
 #include "quantum.h"
 
 // Tap Dance keycodes
 enum td_keycodes {
     CW_SFT,     // Tap: toggle caps word. Hold: send shift+ctrl
+    MCO_FN,    // Tap: macro one shot layer. Hold: func layer.
     SWE_A,
     SWE_O
 };
@@ -38,6 +39,9 @@ td_state_t cur_dance(tap_dance_state_t *state);
 // finished and reset functions for each tapdance keycode
 void rshift_finished(tap_dance_state_t *state, void *user_data);
 void rshift_reset(tap_dance_state_t *state, void *user_data);
+
+void caps_finished(tap_dance_state_t *state, void *user_data);
+void caps_reset(tap_dance_state_t *state, void *user_data);
 
 void swe_a_finished(tap_dance_state_t *state, void *user_data);
 void swe_a_reset(tap_dance_state_t *state, void *user_data);

@@ -39,39 +39,53 @@
 // 150 seem to be max safe value.
 #define LED_MAX 150
 
-// LED colors
-// TODO add kyria colors
+// LED colors - prefix S_ means solid, B_ means blinking
 // First 3 values are Hue, Saturation, Value (value=brightness).
 // Last value sets breathing effect. 0 = no breathing. > 0 sets cycle time
-#define L_DRED { 0, 255, LED_MAX, 0 }
-#define L_MRED { 254, 240, LED_MAX, 0 }
-#define L_LRED { 254, 210, LED_MAX, 0 }
-#define L_BRED { 0, 255, LED_MAX, 30 }
+// red - default
+#define S__RED { 0, 255, LED_MAX, 0 }
+#define B__RED { 0, 255, LED_MAX, 30 }
 
-#define L_DORA { 6, 255, LED_MAX, 0 }
-#define L_LORA { 6, 248, LED_MAX, 0 }
-#define L_BORA { 6, 255, LED_MAX, 32 }
+// orange
+#define S_ORAN { 7, 248, LED_MAX, 0 }
+#define B_ORAN { 7, 248, LED_MAX, 32 }
 
-#define L_DYEL { 30, 255, LED_MAX, 0 }
-#define L_LYEL { 41, 255, LED_MAX, 0 }
-#define L_BYEL { 30, 255, LED_MAX, 34 }
+// yellow
+#define S_YELL { 30, 255, LED_MAX, 0 }
+#define B_YELL { 30, 255, LED_MAX, 34 }
 
-#define L_DGRE { 85, 255, LED_MAX, 0 }
-#define L_LGRE { 60, 255, LED_MAX, 0 }
-#define L_BGRE { 85, 255, LED_MAX, 36 }
+// lime - light green
+#define S_LIME { 65, 255, LED_MAX, 0 }
+#define B_LIME { 65, 255, LED_MAX, 35 }
 
-#define L_DCYA { 95, 255, LED_MAX, 0 }
-#define L_BCYA { 95, 255, LED_MAX, 38 }
+// green
+#define S_GREN { 85, 255, LED_MAX, 0 }
+#define B_GREN { 85, 255, LED_MAX, 36 }
 
-#define L_DBLU { 169, 255, LED_MAX, 0 }
-#define L_LBLU { 158, 255, LED_MAX, 0 }
-#define L_BBLU { 169, 255, LED_MAX, 42 }
+// cyan
+#define S_CYAN { 124, 255, LED_MAX, 0 }
+#define B_CYAN { 124, 255, LED_MAX, 38 }
 
-#define L_DVIO { 180, 255, LED_MAX, 0 }
-#define L_BVIO { 180, 255, LED_MAX, 44 }
+// sky blue
+#define S_SKYB { 156, 245, LED_MAX, 0 }
+#define B_SKYB { 156, 245, LED_MAX, 40 }
+
+// blue
+#define S_BLUE { 169, 255, LED_MAX, 0 }
+#define B_BLUE { 169, 255, LED_MAX, 42 }
+
+// violet
+#define S_VIOL { 180, 255, LED_MAX, 0 }
+#define B_VIOL { 180, 255, LED_MAX, 44 }
+
+// rose
+#define S_ROSE { 240, 210, LED_MAX, 0 }
+#define B_ROSE { 240, 210, LED_MAX, 46 }
+
+#define S_WHIT { 0, 0, LED_MAX, 0 }
+#define B_WHIT { 0, 0, LED_MAX, 50 }
 
 #define L__OFF { 0, 0, 0, 0 }
-
 
 // Use keyboard current brighness when setting LED HSV value.
 #define USE_RGB_MATRIX_VALUE_ON true

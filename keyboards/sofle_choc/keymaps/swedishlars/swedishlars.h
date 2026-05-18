@@ -1,7 +1,10 @@
-// Copyright 2024 Lars Johansson (github.com/swedishlars)
-// SPDX-License-Identifier: GPL-2.0-or-later
+/* Copyright 2024 Lars Johansson (github.com/swedishlars)
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 #pragma once
+
+#include "quantum.h"
 
 // Custom keycode names
 //-------------------------------------------------------------------------------------
@@ -11,7 +14,7 @@
 #define DESK_R C(G(KC_RIGHT))
 
 // momentarily activate layer when held
-#define CAPS_ADJUST LT(_CONF, KC_CAPS)
+// #define CAPS_ADJUST LT(_CONF, KC_CAPS)
 #define LT_FUNC LT(_FUNC,KC_CAPS)
 
 // actions
@@ -23,19 +26,30 @@
 // Apps
 #define KC_TERM LCA(KC_T)
 #define KC_TMUX LCA(KC_D)
-//-------------------------------------------------------------------------------------
 
-// TODO split out into own header?
+
 enum custom_keycodes {
-    /* KC_KEYLOG, // TODO rename KL_TOGL */
-    KC_KEYLOG = SAFE_RANGE,
-    KC_OSLEEP, // TODO rename OL_SLEEP
-    KC_OTGL,   // TODO rename OL_TOGL
-    AS_TOGL,   // Custom autoshift
-    SW_SCLN,    // Custom SEMICOLON: converts Swedish to US layout
-    SW_GRV,     // Custom GRAVE: converts Swedish to US layout
-    SW_BSLS,     // Custom BACKSLASH: converts Swedish to US layout
-    SW_EQL     // Custom EQUAL: converts Swedish to US layout
+    KL_TOGL = SAFE_RANGE, // keylogger toggle
+    OL_SLEEP,             // oled sleep
+    OL_TOGL,              // oled toggle
+    AS_TOGL,              // autoshift toggle
+    SS_ILST,              // send str: Ileanastr
+    SS_ILEA,              // send str: Ileana
+    SS_IOAN,              // send str: Ioanna
+    SS_STRA,              // send str: Stravoskiadi
+    SS_LAIL,              // send str: larsileana
+    SS_GMIL,              // send str: @gmail.com
+    SS_HEEM,              // send str: henryemmanouil
+    SS_HENR,              // send str: Henry
+    SS_EMMA,              // send str: Emmanouil
+    SS_SWEL,              // send str: swedishlars
+    SS_LARS,              // send str: Lars
+    SS_GUNN,              // send str: Gunnar
+    SS_JOHA,              // send str: Johansson
+    SW_SCLN,              // Custom SEMICOLON: converts Swedish to US layout
+    SW_GRV,               // Custom GRAVE: converts Swedish to US layout
+    SW_BSLS,              // Custom BACKSLASH: converts Swedish to US layout
+    SW_EQL                // Custom EQUAL: converts Swedish to US layout
 };
 
 enum sofle_layers {
@@ -45,6 +59,7 @@ enum sofle_layers {
     _RAISE,
     _FUNC,
     _MOUSE,
+    _MACRO,
     _CONF
 };
 

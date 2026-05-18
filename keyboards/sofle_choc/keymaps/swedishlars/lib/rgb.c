@@ -15,133 +15,152 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
 [_BASE] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,-----------------------------------------------------------.
      // | esc     |    1    |    2    |   3     |    4    |   5     |                          |    6    |    7    |    8    |    9    |    0    | back    |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // | tab     |    Q    |    W    |    E    |    R    |    T    |                          |    Y    |    U    |    I    |    O    |    P    |   #     |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,  L_DRED,                               L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,  S__RED,                               S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
      // | caps/num|    A    |    S    |    D    |    F    |   G     |                          |    H    |    J    |    K    |    L    |    ;    |   '     |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // | lshift  |    Z    |    X    |         |         |    B    |          |    |          |    N    |    M    | , and < | . and>  | / and ? | rshift  |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           | \ and | |left ctl     |left alt  | lower      / space    /      \ enter    \  raise     |right alt | - and _     | = and +  |
-                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,            L_DRED,    L_DRED,    L_DRED,    L_DRED,       L_DRED
+                   S__RED,    S__RED,       S__RED,    S__RED,       S__RED,            S__RED,    S__RED,    S__RED,    S__RED,       S__RED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 ),
 
 [_GAME] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,-----------------------------------------------------------.
      // | esc     |    1    |    2    |   3     |    4    |   5     |                          |    6    |    7    |    8    |    9    |    0    | back    |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // | tab     |    Q    |    W    |    E    |    R    |    T    |                          |    Y    |    U    |    I    |    O    |    P    |   #     |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,  L_DRED,                               L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S_ORAN,   S__RED,   S__RED,  S__RED,                               S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
      // | caps/num|    A    |    S    |    D    |    F    |   G     |                          |    H    |    J    |    K    |    L    |    ;    |   '     |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S_ORAN,   S_ORAN,   S_ORAN,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // | lshift  |    Z    |    X    |         |         |    B    |          |    |          |    N    |    M    | , and < | . and>  | / and ? | rshift  |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           | \ and | |left ctl     |left alt  | lower      / space    /      \ enter    \  raise     |right alt | - and _     | = and +  |
-                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,            L_DRED,    L_DRED,    L_DRED,    L_DRED,       L_DRED
+                   S__RED,    S__RED,       S__RED,    S__RED,       S__RED,            S__RED,    S__RED,    S__RED,    S__RED,       S__RED
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 ),
 
 [_LOWER] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,-----------------------------------------------------------.
      // |         |delete   |backspace|/ div    |* mult   |         |                          |         |         |         |         |         |frw del  |
-         L_DRED,   L_DBLU,   L_DBLU,   L_DGRE,   L_DGRE,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_MRED,
+         S__RED,   S_BLUE,   S_BLUE,   S_GREN,   S_GREN,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S_ROSE,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |= equal  |7        |8        |9        |- minus  |                          |         |         |         |Ö        |         |         |
-         L_DRED,    L_DCYA,   L_DORA,   L_DORA,   L_DORA,   L_DGRE,                              L_DRED,   L_DRED,   L_DRED,   L_MRED,   L_DRED,  L_DRED,
+         S__RED,    S_CYAN,   S_ORAN,   S_ORAN,   S_ORAN,   S_GREN,                              S__RED,   S__RED,   S__RED,   S_ROSE,   S__RED,  S__RED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
      // |Ä        |Å        |4        |5        |6        |+ plus   |                          | left    |  down   | up      | right   |         |         |
-         L_MRED,   L_MRED,   L_DORA,   L_DORA,   L_DORA,   L_DGRE,                              L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,   L_DRED,
+         S_ROSE,   S_ROSE,   S_ORAN,   S_ORAN,   S_ORAN,   S_GREN,                              S_BLUE,   S_BLUE,   S_BLUE,   S_BLUE,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |= equal  |0        |1        |2        |3        |enter    |          |    |          |alt+left |alt+down |alt+up   |alt+right|         |         |
-         L_DCYA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DBLU,                              L_LBLU,   L_LBLU,   L_LBLU,   L_LBLU,   L_DRED,   L_DRED,
+         S_CYAN,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   S_BLUE,                              S_SKYB,   S_SKYB,   S_SKYB,   S_SKYB,   S__RED,   S__RED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |    |     |0            |. dot     |            /          /      \          \            |          |             |          |
-                   L_DRED,    L_DORA,       L_DCYA,    L_BRED,       L_DRED,             L_DRED,   L_DRED,    L_DRED,    L_DRED,       L_MRED
+                   S__RED,    S_ORAN,       S_CYAN,    B__RED,       S__RED,             S__RED,   S__RED,    S__RED,    S__RED,       S_ROSE
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 ),
 
 [_RAISE] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |         |         | "       | £       | $       | €       |                          |         |         |         | [       | ]       |insert   |
-         L_DRED,   L_DRED,   L_LRED,   L_LRED,   L_LRED,   L_LRED,                              L_DRED,   L_DRED,   L_DRED,   L_LORA,   L_LORA,   L_LRED,
+         S__RED,   S__RED,   S_ROSE,   S_ROSE,   S_ROSE,   S_ROSE,                              S__RED,   S__RED,   S__RED,   S_ORAN,   S_ORAN,   S_ROSE,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |                          |         |         |         | {       | }       |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_LORA,   L_LORA,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S_ORAN,   S_ORAN,   S__RED,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
      // |         | home    |page down|page up  | end     |         |                          |left     |down     |up       |right    |         |         |
-         L_DRED,   L_DCYA,   L_DCYA,   L_DCYA,   L_DCYA,   L_DRED,                              L_DBLU,   L_DBLU,   L_DBLU,   L_DBLU,   L_DRED,   L_DRED,
+         S__RED,   S_CYAN,   S_CYAN,   S_CYAN,   S_CYAN,   S__RED,                              S_BLUE,   S_BLUE,   S_BLUE,   S_BLUE,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         | undo    | cut     |copy     |paste    |         |          |    |          |alt+left |alt+down |alt+up   |alt+right|         |         |
-         L_DRED,   L_LBLU,   L_LBLU,   L_LBLU,   L_LBLU,   L_DRED,                              L_LBLU,   L_LBLU,   L_LBLU,   L_LBLU,   L_DRED,   L_DRED,
+         S__RED,   S_VIOL,   S_VIOL,   S_VIOL,   S_VIOL,   S__RED,                              S_SKYB,   S_SKYB,   S_SKYB,   S_SKYB,   S__RED,   S__RED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |          |             |          |            /          /      \          \            |          | vol -       | vol +    |
-                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,             L_DRED,   L_BRED,    L_DRED,    L_DGRE,       L_DGRE
+                   S__RED,    S__RED,       S__RED,    S__RED,       S__RED,             S__RED,   B__RED,    S__RED,    S_GREN,       S_GREN
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 ),
 
 [_FUNC] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |F1       |F2       |F2       |F3       |F4       |F5       |                          |F6       |F7       |F8       |F9       |F10      |F11      |
-         L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,                              L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DORA,
+         S__RED,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,                              S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
-     // |         |         |         |         |max win  |wezterm  |                          |         |         |         |         |prnt scrn|F12      |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DCYA,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DCYA,   L_DORA,
+     // |         |         |         |         |         |wezterm  |                          |         |         |         |         |prnt scrn|F12      |
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S_BLUE,                              S__RED,   S__RED,   S__RED,   S__RED,   S_CYAN,   S_ORAN,
      // |---------+---------+---------+---------|---------+---------|                          |---------+---------|---------|---------|---------+---------|
-     // |         |app menu |         |         |         |         |                          |         |         |         |         |         |         |
-         L_DRED,   L_DVIO,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+     // |         |app menu |         |         |max win  |         |                          |         |         |         |         |         |         |
+         S__RED,   S_VIOL,   S__RED,   S__RED,   S_CYAN,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |bash term|          |    |          |play/paus|mute     |prev     |next     |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,                              L_DGRE,   L_DGRE,   L_DGRE,   L_DGRE,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S_BLUE,                              S_GREN,   S_GREN,   S_GREN,   S_GREN,   S__RED,   S__RED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |          |             |          |            /  Space   /      \ Enter    \            |          |  - minus    | + plus   |
-                   L_DRED,    L_DRED,       L_DRED,    L_DRED,       L_DRED,             L_DRED,   L_DRED,    L_DRED,    L_DGRE,       L_DGRE
+                   S__RED,    S__RED,       S__RED,    S__RED,       S__RED,             S__RED,   S__RED,    S__RED,    S_GREN,       S_GREN
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 ),
 
 [_MOUSE] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
-         L_DRED,   L_DYEL,   L_DYEL,   L_DYEL,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   B_CYAN,   B_CYAN,   B_CYAN,   S__RED,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |                          |         |         |         |         |         |         |
-         L_DRED,   L_BCYA,   L_BCYA,   L_BCYA,   L_DRED,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   B_BLUE,   B_BLUE,   B_BLUE,   S_ORAN,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |          |    |          |         |         |         |         |         |         |
-         L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DBLU,                              L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,
+         S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S_ORAN,                              S__RED,   S__RED,   S__RED,   S__RED,   S__RED,   S__RED,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |          |   ctrl      | alt      | mouse 3    /  mouse 1 /      \ mouse 2  \            |          |             |          |
-                   L_DRED,    L_DRED,       L_DRED,    L_BORA,       L_BORA,             L_BORA,   L_DRED,    L_DRED,    L_DRED,       L_DRED
+                   S__RED,    S__RED,       B_BLUE,    B_BLUE,       B_BLUE,             S__RED,   S__RED,    S__RED,    S__RED,       S__RED
+     //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
+),
+
+[_MACRO] = RGB_MATRIX_LAYOUT(
+     // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
+     // |         |        |         |         |         |         |                          |         |         |         |         |         |          |
+         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+     // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
+     // |         |         |         |Emmanouil|         |         |                          |         |         |Ileana   |Ioanna   |Stravoski|         |
+         L__OFF,   L__OFF,   L__OFF,   S_CYAN,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   B_VIOL,   S_VIOL,   S_VIOL,   L__OFF,
+     // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
+     // |         |         |swdshlars|         |         |@gmil.com|                          |Henry     |Johnsson|ileanastr|Lars     |Gunnar   |Johansson|
+         L__OFF,   L__OFF,   S_ORAN,   L__OFF,   L__OFF,   B_YELL,                              B_CYAN,   S_CYAN,    S_VIOL,   B_ORAN,   S_ORAN,   S_ORAN,
+     // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
+     // |         |         |         |         |         |         |          |    |          |henryemma|         |         |lrsileana|         |         |
+         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              S_CYAN,   L__OFF,   L__OFF,   S_ORAN,   L__OFF,   L__OFF,
+     // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
+     //           |          |             |          |            /          /      \          \            |          |             |          |
+                   L__OFF,    L__OFF,       L__OFF,    L__OFF,       L__OFF,             L__OFF,   L__OFF,    L__OFF,    L__OFF,       L__OFF
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 ),
 
 [_CONF] = RGB_MATRIX_LAYOUT(
      // .-----------------------------------------------------------.                          ,------------------------------------------------ ----------.
-     // |reboot    |base lyr|lower    |raise    |numpad   |mouse    |                          |switch   |         |         |         |         |reboot   |
-         L_BRED,   L_BGRE,   L_BGRE,   L_BGRE,   L_BGRE,   L_BGRE,                              L_BGRE,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BRED,
+     // |reboot    |        |         |         |         |         |                          |         |         |         |         |         |reboot   |
+         B__RED,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   B__RED,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |clear mem|         |         |         |rgb togg |rgb deflt|                          |         |         |oled slp |oled tgl |         |clear mem|
-         L_BYEL,   L__OFF,   L__OFF,   L__OFF,   L_BCYA,   L_DCYA,                              L__OFF,   L__OFF,   L_DVIO,   L_BVIO,   L__OFF,   L_BYEL,
+         B_YELL,   L__OFF,   L__OFF,   L__OFF,   B_CYAN,   S_CYAN,                              L__OFF,   L__OFF,   S_VIOL,   B_VIOL,   L__OFF,   B_YELL,
      // |---------+---------+---------+---------+---------+---------|                          |---------+---------+---------+---------+---------+---------|
      // |         |Audio tgl|sys sleep|         |         |         |                          |haptic tg|         |         |         |         |         |
-         L__OFF,   L_BVIO,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,                              L_BORA,   L__OFF,   L_BORA,   L__OFF,   L__OFF,   L__OFF,
+         L__OFF,   B_ROSE,   B_BLUE,   L__OFF,   L__OFF,   L__OFF,                              B_LIME,   L__OFF,   B_ORAN,   L__OFF,   L__OFF,   L__OFF,
      // |---------+---------+---------+---------+---------+---------+----------.    .----------|---------+---------+---------+---------+---------+---------|
      // |         |         |         |         |         |         |          |    |          |         |         |         |         |         |         |
-         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
+         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,                              L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   B_GREN,
      // .---------+-------------------------------------------------/----------/    \----------\-------------------------------------------------+---------'
      //           |          |             |          |            /          /      \          \            |          |rgb brght-   |rgb brght+|
-                   L__OFF,    L__OFF,       L__OFF,    L__OFF,       L__OFF,             L__OFF,   L__OFF,    L__OFF,    L_DCYA,       L_DCYA
+                   L__OFF,    L__OFF,       L__OFF,    L__OFF,       L__OFF,             L__OFF,   L__OFF,    L__OFF,    S_CYAN,       S_CYAN
      //           |__________|_____________|__________|__________/__________/          \__________\__________|__________|_____________|__________|
 )
 };
@@ -152,7 +171,7 @@ const led_color_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT] = {
 // slave side will not work
 void set_caps_word_led(void) {
     if (is_caps_word_on()) {
-        HSVB hsvb = L_BGRE;
+        HSVB hsvb = B_GREN;
         set_led_color(LSHIFT_LED_INDEX, hsvb, USE_RGB_MATRIX_VALUE_ON);
         // NOTE so this will not work:
         set_led_color(RSHIFT_LED_INDEX, hsvb, USE_RGB_MATRIX_VALUE_ON);
@@ -163,7 +182,7 @@ void set_caps_word_led(void) {
 // Set LED for Caps Lock
 void set_caps_led(void) {
     if (host_keyboard_led_state().caps_lock) {
-        HSVB hsvb = L_BRED;
+        HSVB hsvb = B__RED;
         set_led_color(CAPS_LED_INDEX, hsvb, USE_RGB_MATRIX_VALUE_ON);
     }
 }

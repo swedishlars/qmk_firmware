@@ -3,7 +3,6 @@
 
 #include "oled.h"
 #include "swedishlars.h"
-// TODO use swedishlars.h instead?
 #include "keylogger.h"
 
 bool oled_startup_done = false;
@@ -34,11 +33,6 @@ void oled_advance_pages(uint8_t pages, bool clear_page) {
 }
 
 
-// audio
-float keylog_sound[][2] = SONG(VIOLIN_SOUND);
-float adjust_sound[][2] = SONG(AG_NORM_SOUND);
-
-
 // Deferred execution callback to clear and rotate display.
 // Returns 0 to indicate it should not be repeated.
 uint32_t oled_startup(uint32_t trigger_time, void *cb_arg) {
@@ -61,7 +55,8 @@ void oled_render_fade(void) {
     // define timer
     static uint16_t timer = 0;
 
-    if (timer_elapsed(timer) > 50) {
+    // if (timer_elapsed(timer) > 50) {
+    if (timer_elapsed(timer) > 10) {
         timer = timer_read();
         reader = oled_read_raw(0);
 
@@ -84,10 +79,8 @@ void oled_render_fade(void) {
 bool play_forward = true;
 
 void oled_render_keylog(void) {
-    // TODO make func?
     static uint16_t timer = 0;
     static uint8_t  frame = 0;
-
     if (timer_elapsed(timer) > 50) {
         if (frame == 0) {
             play_forward = true;
@@ -107,16 +100,16 @@ void oled_render_keylog(void) {
     oled_advance_pages(2, true);
 
     // render keycode
-    oled_write(oled_key_code, false);
+    oled_write(keylog_keycode, false);
     oled_advance_pages(2, true);
 
     // render key description
     oled_write(PSTR("Key Desc:"), false);
     oled_advance_pages(2, true);
     // TODO if 3 or mods are registered, then it does not fit on one row.
-    oled_write(oled_key_mod, false);
+    oled_write(keylog_keymod, false);
     oled_advance_page(true);
-    oled_write(oled_key_desc, false);
+    oled_write(keylog_keydesc, false);
 }
 
 
@@ -137,7 +130,7 @@ void oled_startup_logo(void) {
 
 // Caps status
 void oled_caps_status(void) {
-    // TODO keep unless I ditch caps lock:
+    // NOTE use for caps lock:
     /* led_t led_state = host_keyboard_led_state(); */
     /* if (!led_state.caps_lock) { */
 
@@ -147,10 +140,8 @@ void oled_caps_status(void) {
         return;
     }
 
-    // TODO make func?
     static uint16_t timer = 0;
     static uint8_t  frame = 0;
-
     if (timer_elapsed(timer) > 50) {
         if (frame == 0) {
             play_forward = true;
@@ -166,7 +157,6 @@ void oled_caps_status(void) {
         }
         timer = timer_read();
     }
-
         oled_write_raw(caps_logo[frame], sizeof(caps_logo[0]));
         oled_advance_page(false);
 }
@@ -211,35 +201,37 @@ void oled_config_status(void) {
     // auto shift status
     oled_write(PSTR("A-SHIFT  "), false);
     oled_write(PSTR(get_autoshift_state() ? "Y" : "N"), false);
-    oled_advance_page(false);
+    oled_advance_page(true);
 
     // Oled sleep status
     oled_write(PSTR("OLED Zzz "), false);
     oled_write(PSTR(user_config.oled_sleep_enabled ? "Y" : "N"), false);
-    oled_advance_page(false);
+    oled_advance_page(true);
 
     // rgb status
     oled_write(PSTR("RGB      "), false);
     oled_write(PSTR(rgb_matrix_is_enabled() ? "Y" : "N"), false);
-    oled_advance_page(false);
+    oled_advance_page(true);
 
     // audio status
     oled_write(PSTR("AUDIO    "), false);
     oled_write(PSTR(audio_is_on() ? "Y" : "N"), false);
-    oled_advance_page(false);
+    oled_advance_page(true);
 
     // haptic status
     oled_write(PSTR("HAPTIC   "), false);
     oled_write(PSTR(haptic_get_enable() ? "Y" : "N"), false);
-    oled_advance_page(false);
+    oled_advance_page(true);
 }
 
 void oled_render_base(void) {
     oled_write(PSTR(" B A S E  "), false);
     oled_advance_page(true);
     oled_write(PSTR("FUNCTION: "), false);
-    oled_write(PSTR("Hold Caps-"), false);
-    oled_write(PSTR("Lock      "), false);
+    oled_write(PSTR("hold capsL"), false);
+    oled_advance_page(true);
+    oled_write(PSTR("MACROS:   "), false);
+    oled_write(PSTR("tap capsL "), false);
     oled_advance_page(true);
     oled_write(PSTR("CONFIG:   "), false);
     oled_write(PSTR("Lower +   "), false);
@@ -251,103 +243,110 @@ void oled_render_base(void) {
 
 void oled_render_game(void) {
     oled_write(PSTR(" G A M E  "), false);
-    oled_advance_page(true);
+    oled_advance_pages(2, true);
     oled_write(PSTR("Auto shift"), false);
     oled_write(PSTR("turned off"), false);
-    oled_write(PSTR("          "), false);
     oled_advance_page(true);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_advance_page(true);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_pages(6, true);
 }
 
 void oled_render_lower(void) {
     oled_write(PSTR("L O W E R "), false);
-    oled_advance_page(true);
+    oled_advance_pages(2, true);
     oled_write(PSTR("Orange:   "), false);
     oled_write(PSTR("F keys    "), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Rose:     "), false);
     oled_write(PSTR("alt. keys "), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Blue:     "), false);
     oled_write(PSTR("navigation"), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Green: PC "), false);
     oled_write(PSTR("commands  "), false);
 }
 
 void oled_render_raise(void) {
     oled_write(PSTR("R A I S E "), false);
-    oled_advance_page(true);
+    oled_advance_pages(2, true);
     oled_write(PSTR("Yellow:   "), false);
     oled_write(PSTR("Alt+F keys"), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Rose:     "), false);
     oled_write(PSTR("alt. keys "), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Blue:     "), false);
     oled_write(PSTR("navigation"), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_page(true);
     oled_write(PSTR("Green:    "), false);
     oled_write(PSTR("media keys"), false);
 }
 
 void oled_render_func(void) {
     oled_write(PSTR(" F U N C  "), false);
-    oled_advance_page(true);
-    // oled_write(PSTR("----------"), false);
-    oled_write(PSTR("          "), false);
+    oled_advance_pages(2, true);
     oled_write(PSTR("Orange:   "), false);
-    oled_write(PSTR("Num keys  "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("Rose:     "), false);
-    oled_write(PSTR("alt. keys "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_advance_pages(3, true);
+    oled_write(PSTR("Func keys "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Blue: apps"), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Green:    "), false);
+    oled_write(PSTR("media     "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Cyan: sys "), false);
 }
 
 void oled_render_mouse(void) {
     oled_write(PSTR("M O U S E "), false);
+    oled_advance_pages(2, true);
+    oled_write(PSTR("Left Pad: "), false);
+    oled_write(PSTR("scrolling "), false);
     oled_advance_page(true);
-    oled_write(PSTR("Left pad: "), false);
-    oled_write(PSTR("Scrolling "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("Right pad:"), false);
-    oled_write(PSTR("Mouse     "), false);
-    oled_write(PSTR("          "), false);
+    oled_write(PSTR("Right Pad:"), false);
+    oled_write(PSTR("mouse     "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Blue:     "), false);
+    oled_write(PSTR("mouse btns"), false);
+    oled_advance_page(true);
     oled_write(PSTR("Orange:   "), false);
-    oled_write(PSTR("Mouse btns"), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("Yellow:   "), false);
-    oled_write(PSTR("Mouse dpi "), false);
+    oled_write(PSTR("mouseWheel"), false);
 }
 
-void oled_render_adjust(void) {
-    oled_write(PSTR(" C O N F  "), false);
+void oled_render_macro(void) {
+    oled_write(PSTR("M A C R O "), false);
+    oled_advance_pages(2, true);
+    oled_write(PSTR("Violet:   "), false);
+    oled_write(PSTR("Ileana ..."), false);
     oled_advance_page(true);
+    oled_write(PSTR("Orange:   "), false);
+    oled_write(PSTR("Lars ...  "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Cyan:     "), false);
+    oled_write(PSTR("Henry ... "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Yellow:   "), false);
+    oled_write(PSTR("gmail.com "), false);
+}
+void oled_render_config(void) {
+    oled_write(PSTR(" C O N F  "), false);
+    oled_advance_pages(2, true);
     oled_write(PSTR("Key help  "), false);
-    oled_write(PSTR("press: K  "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
-    oled_write(PSTR("          "), false);
+    oled_write(PSTR("press K   "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("Game Layr:"), false);
+    oled_write(PSTR("press G   "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("RGB Light:"), false);
+    oled_write(PSTR("cyan      "), false);
+    oled_advance_page(true);
+    oled_write(PSTR("A-Shift:  "), false);
+    oled_write(PSTR("green     "), false);
 }
 
 void oled_render_undef(void) {
     oled_write(PSTR("UNDEFINED "), false);
-    oled_advance_page(true);
-    oled_write(PSTR("something "), false);
+    oled_advance_pages(2, true);
+    oled_write(PSTR("Something "), false);
     oled_write(PSTR("is wrong  "), false);
     oled_write(PSTR("...       "), false);
     oled_advance_pages(6, true);
@@ -392,8 +391,11 @@ void oled_render_right(void) {
         case _MOUSE:
             oled_render_mouse();
             break;
+        case _MACRO:
+            oled_render_macro();
+            break;
         case _CONF:
-            oled_render_adjust();
+            oled_render_config();
             break;
         default:
             oled_render_undef();

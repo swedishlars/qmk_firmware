@@ -3,6 +3,7 @@
  */
 
  #include "tapdance.h"
+#include "swedishlars.h"
 
 
 // Return an integer that corresponds to what kind of tap dance should be executed.
@@ -31,10 +32,44 @@ td_state_t cur_dance(tap_dance_state_t *state) {
     else { return TD_UNKNOWN; }
 }
 
+// Caps lock: Tap to switch to MACRO layer for one keypress, OSL(_MACRO). Hold for _FUNC layer.
+// ---------------------------------------------------------------------
+// Instance of td_tap_t for this tapdance
+static td_tap_t td_caps = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+void caps_finished(tap_dance_state_t *state, void *user_data) {
+    td_caps.state = cur_dance(state);
+    switch (td_caps.state) {
+        case TD_SINGLE_TAP:
+            set_oneshot_layer(_MACRO, ONESHOT_START);
+            break;
+        case TD_SINGLE_HOLD:
+            layer_on(_FUNC);
+            break;
+        default:
+            break;
+    }
+}
+
+void caps_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_caps.state) {
+        case TD_SINGLE_TAP:
+            clear_oneshot_layer_state(ONESHOT_PRESSED);
+            break;
+        case TD_SINGLE_HOLD:
+            layer_off(_FUNC);
+            break;
+        default:
+            break;
+    }
+}
 
 // Right Shift: Tap turns on caps word. Hold outputs shift+ctrl
 // ---------------------------------------------------------------------
-// Instance of td_tap_t for right shift tapdance
+// Instance of td_tap_t for this tapdance
 static td_tap_t td_rshift = {
     .is_press_action = true,
     .state = TD_NONE

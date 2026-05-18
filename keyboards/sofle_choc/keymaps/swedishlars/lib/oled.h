@@ -9,7 +9,8 @@
 #define OLED_HELP_TIME 10000
 
 // How long to display startup logo
-#define OLED_LOGO_TIME 2000
+// #define OLED_LOGO_TIME 2000
+#define OLED_LOGO_TIME 1200
 
 // Turn off oled when there is no input activity
 #define OLED_SUSPEND_TIME 60000
@@ -195,19 +196,18 @@ static const char PROGMEM gui_logo[] = {
 0xff, 0x81, 0x81, 0xbf, 0xbf, 0xbf, 0x81, 0xff, 0xbd, 0x81, 0xbd, 0xff, 0x00, 0x00, 0x00, 0x00
 };
 
-// TODO check if length needs to be 128
-static const char PROGMEM keylogger_logo[][128] = {
-    "         ",
-    "    O    ",
-    "   LOG   ",
-    "  YLOGG  ",
-    " EYLOGGE ",
-    "KEYLOGGER",
-    "KEYLOGGER",
-    "KEYLOGGER",
-    "KEYLOGGER",
-    "KEYLOGGER",
-    "KEYLOGGER",
-    "KEYLOGGER",
+static const char PROGMEM keylogger_logo[][11] = {
+    "          ",
+    "    O     ",
+    "   LOG    ",
+    "  YLOGG   ",
+    " EYLOGGE  ",
+    "KEYLOGGER ",
+    "KEYLOGGER ",
+    "KEYLOGGER ",
+    "KEYLOGGER ",
+    "KEYLOGGER ",
+    "KEYLOGGER ",
+    "KEYLOGGER ",
 };
 

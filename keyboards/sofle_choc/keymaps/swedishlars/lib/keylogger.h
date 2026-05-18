@@ -3,26 +3,23 @@
 
 #pragma once
 
-// TODO needed?
 #include "quantum.h"
 
-// TODO use oled_max_chars(); instead
 #define KEYLOG_LENGTH 11
-
-// Oled empty line
-#define OLED_EMPTY_LINE "          "
+#define KEYLOG_EMPTY_LINE "          "
 
 // global used to check if keylogger is enabled
 extern bool keylogger_enabled;
 
 // Store current key code
-extern char oled_key_code[KEYLOG_LENGTH];
+extern char keylog_keycode[KEYLOG_LENGTH];
 
 // Store current active modifiers
-extern char oled_key_mod[KEYLOG_LENGTH];
+extern char keylog_keymod[KEYLOG_LENGTH];
 
+// rename keylogger_keydesc
 // Store current key description
-extern char oled_key_desc[KEYLOG_LENGTH];
+extern char keylog_keydesc[KEYLOG_LENGTH];
 
 void add_keylog(uint16_t keycode, keyrecord_t *record);
 
@@ -32,8 +29,9 @@ uint8_t process_record_keylogger(uint16_t keycode, keyrecord_t *record);
 enum keycode_desc_index {
     KEYCODE_DEFAULT,
     KEYCODE_SHIFT,
-    KEYCODE_LOWER,
-    KEYCODE_RAISE
+    KEYCODE_FUNC,
+    KEYCODE_RAISE,
+    KEYCODE_MACRO
 };
 
 // Key code descriptions - array index represents keycode
@@ -88,13 +86,26 @@ static const char PROGMEM keycode_to_desc[][256][KEYLOG_LENGTH] = {
     },
 
 // Key description overrides per layer
-[KEYCODE_LOWER] = {
+[KEYCODE_RAISE] = {
+    [53] =  "(Neg Symb)"
+    },
+
+[KEYCODE_FUNC] = {
     [7]  =  "d (tmux)  ",
     [9]  =  "f (maxwin)",
     [23] =  "t (Term)  "
     },
 
-[KEYCODE_RAISE] = {
-    [53] =  "(Neg Symb)"
+[KEYCODE_MACRO] = {
+    [9]  =  "@gmail.com",
+    [68] =  "ileanastr ",
+    [69] =  "Ileana    ",
+    [73]  =  "gmail.com",
+    [74]  =  "henrmanil",
+    [75]  =  "Henry    ",
+    [76]  =  "Emmanouil",
+    [77]  =  "swedshlrs",
+    [79]  =  "Gunnar   ",
+    [80]  =  "Johansson"
     }
 };
