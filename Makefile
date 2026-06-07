@@ -43,8 +43,9 @@ QMK_BIN := qmk
 
 # Try to determine userspace from qmk config, if set. Handle direct query on qmk_cli>=1.1.7
 # falling back to legacy method of only supporting user.overlay_dir config
+# sort is used to buffer 'qmk env' output and avoid BrokenPipeError errors
 export override QMK_USERSPACE := $(shell \
-    $(QMK_BIN) env | grep -q QMK_USERSPACE \
+    $(QMK_BIN) env | sort | grep -q QMK_USERSPACE \
         && $(QMK_BIN) env QMK_USERSPACE \
         || $(QMK_BIN) config -ro user.overlay_dir | cut -d= -f2 | sed -e 's@^None$$@@g')
 
@@ -299,6 +300,7 @@ endef
 define BUILD_TEST
     TEST_PATH := $1
     TEST_NAME := $$(notdir $$(TEST_PATH))
+    TEST_ID := $$(patsubst ./tests/%,%,$$(TEST_PATH))
     TEST_FULL_NAME := $$(subst /,_,$$(patsubst $$(ROOT_DIR)tests/%,%,$$(TEST_PATH)))
     MAKE_TARGET := $2
     COMMAND := $1
@@ -312,7 +314,7 @@ define BUILD_TEST
         TEST_MSG := $$(MSG_TEST)
         $$(TEST_FULL_NAME)_COMMAND := \
             printf "$$(TEST_MSG)\n"; \
-            $$(TEST_EXECUTABLE); \
+            $$(TEST_EXECUTABLE) --gtest_color=$$(COLOR); \
             if [ $$$$? -gt 0 ]; \
                 then error_occurred=1; \
             fi; \
