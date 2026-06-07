@@ -10,8 +10,8 @@
 enum td_keycodes {
     CW_SFT,     // Tap: toggle caps word. Hold: send shift+ctrl
     MCO_FN,    // Tap: macro one shot layer. Hold: func layer.
-    SWE_A,
-    SWE_O
+    // SWE_A,
+    // SWE_O
 };
 
 // Define a type containing as many tapdance tap/hold states as you need
@@ -43,8 +43,8 @@ void rshift_reset(tap_dance_state_t *state, void *user_data);
 void caps_finished(tap_dance_state_t *state, void *user_data);
 void caps_reset(tap_dance_state_t *state, void *user_data);
 
-void swe_a_finished(tap_dance_state_t *state, void *user_data);
-void swe_a_reset(tap_dance_state_t *state, void *user_data);
+// void swe_a_finished(tap_dance_state_t *state, void *user_data);
+// void swe_a_reset(tap_dance_state_t *state, void *user_data);
 
-void swe_o_finished(tap_dance_state_t *state, void *user_data);
-void swe_o_reset(tap_dance_state_t *state, void *user_data);
+// void swe_o_finished(tap_dance_state_t *state, void *user_data);
+// void swe_o_reset(tap_dance_state_t *state, void *user_data);

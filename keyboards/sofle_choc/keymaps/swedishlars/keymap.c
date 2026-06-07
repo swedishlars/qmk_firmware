@@ -25,10 +25,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_ESC,     KC_1,       KC_2,       KC_3,       KC_4,       KC_5,                                  KC_6,       KC_7,       KC_8,       KC_9,       KC_0,       KC_BSPC,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | tab/swtc  |    Q      |    W      |    E      |    R      |    T      |                          |    Y      |    U      |    I      |    O      |    P      | ` and ~   |
-     KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,                                  KC_Y,       KC_U,       KC_I,       TD(SWE_O),  KC_P,       SW_GRV,
+     KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,                                  KC_Y,       KC_U,       KC_I,       KC_O,       KC_P,       SW_GRV,
  // |-----------+-----------+-----------+-----------+-----------+-----------|                          |-----------+-----------+-----------+-----------+-----------+-----------|
  // | caps/num  |    A      |    S      |    D      |    F      |   G       |                          |    H      |    J      |    K      |    L      | ; and :   | ' and "   |
-     TD(MCO_FN), TD(SWE_A),  KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       SW_SCLN,    SE_QUOT,
+     TD(MCO_FN), KC_A,       KC_S,       KC_D,       KC_F,       KC_G,                                  KC_H,       KC_J,       KC_K,       KC_L,       SW_SCLN,    SE_QUOT,
  // |-----------+-----------+-----------+-----------+-----------+-----------+-----------.  .-----------|-----------+---------- +-----------+-----------+-----------+-----------|
  // | lshift    |    Z      |    X      |    C      |    V      |    B      |           |  |           |    N      |    M      | , and <   | . and >   | / and ?   | caps word |
      KC_LSFT,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,       KC_NO,          KC_NO,     KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_PSLS,    TD(CW_SFT),
@@ -258,9 +258,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TT(_LOWER):
         case TT(_RAISE):
             return 120;
-        case TD(SWE_A):
-        case TD(SWE_O):
-            return 250;
+        // case TD(SWE_A):
+        // case TD(SWE_O):
+        //     return 250;
         default:
             return TAPPING_TERM;
     }
@@ -286,8 +286,8 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_A ... KC_Z:
         // case KC_MINS:
         case KC_SLSH:
-        case TD(SWE_A):
-        case TD(SWE_O):
+        // case TD(SWE_A):
+        // case TD(SWE_O):
         case SE_ARNG:
         case SE_ADIA:
         case SE_ODIA:
@@ -334,8 +334,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 tap_dance_action_t tap_dance_actions[] = {
     [MCO_FN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, caps_finished, caps_reset),
     [CW_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rshift_finished, rshift_reset),
-    [SWE_A] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_a_finished, swe_a_reset),
-    [SWE_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_o_finished, swe_o_reset)
+    // [SWE_A] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_a_finished, swe_a_reset),
+    // [SWE_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, swe_o_finished, swe_o_reset)
 };
 
 

@@ -32,7 +32,7 @@ td_state_t cur_dance(tap_dance_state_t *state) {
     else { return TD_UNKNOWN; }
 }
 
-// Caps lock: Tap to switch to MACRO layer for one keypress, OSL(_MACRO). Hold for _FUNC layer.
+// Capslock: Tap to switch to MACRO layer for one keypress, OSL(_MACRO). Hold for _FUNC layer.
 // ---------------------------------------------------------------------
 // Instance of td_tap_t for this tapdance
 static td_tap_t td_caps = {
@@ -102,101 +102,101 @@ void rshift_reset(tap_dance_state_t *state, void *user_data) {
 // Swedish letter a tapdance
 // ---------------------------------------------------------------------
 // Instance of td_tap_t for swedish a tapdance
-static td_tap_t td_swe_a = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
+// static td_tap_t td_swe_a = {
+//     .is_press_action = true,
+//     .state = TD_NONE
+// };
 
-void swe_a_finished(tap_dance_state_t *state, void *user_data) {
-    td_swe_a.state = cur_dance(state);
-    switch (td_swe_a.state) {
-        case TD_SINGLE_TAP:  register_code(KC_A); break;
-        case TD_SINGLE_HOLD: register_code16(S(KC_A)); break;
-        // register unicode for swedish a with ring above
-        case TD_DOUBLE_TAP:
-            unicode_input_start();
-            register_hex(0x00e5);
-            unicode_input_finish();
-            break;
-        // register unicode for swedish capital A with ring above it.
-        case TD_DOUBLE_HOLD:
-            unicode_input_start();
-            register_hex(0x00c5);
-            unicode_input_finish();
-            break;
-        // When typing the word `buffer`, and you want to make sure that you send `ff`.
-        // In other words, you are typing two single taps.
-        case TD_DOUBLE_SINGLE_TAP: tap_code(KC_A); register_code(KC_A); break;
-        // register unicode for swedish a with two dots above
-        case TD_TRIPLE_TAP:
-            unicode_input_start();
-            register_hex(0x00e4);
-            unicode_input_finish();
-            break;
-        // register unicode for swedish capital A with two dots above
-        case TD_TRIPLE_HOLD:
-            unicode_input_start();
-            register_hex(0x00c4);
-            unicode_input_finish();
-            break;
-        default: break;
-    }
-}
+// void swe_a_finished(tap_dance_state_t *state, void *user_data) {
+//     td_swe_a.state = cur_dance(state);
+//     switch (td_swe_a.state) {
+//         case TD_SINGLE_TAP:  register_code(KC_A); break;
+//         case TD_SINGLE_HOLD: register_code16(S(KC_A)); break;
+//         // register unicode for swedish a with ring above
+//         case TD_DOUBLE_TAP:
+//             unicode_input_start();
+//             register_hex(0x00e5);
+//             unicode_input_finish();
+//             break;
+//         // register unicode for swedish capital A with ring above it.
+//         case TD_DOUBLE_HOLD:
+//             unicode_input_start();
+//             register_hex(0x00c5);
+//             unicode_input_finish();
+//             break;
+//         // When typing the word `buffer`, and you want to make sure that you send `ff`.
+//         // In other words, you are typing two single taps.
+//         case TD_DOUBLE_SINGLE_TAP: tap_code(KC_A); register_code(KC_A); break;
+//         // register unicode for swedish a with two dots above
+//         case TD_TRIPLE_TAP:
+//             unicode_input_start();
+//             register_hex(0x00e4);
+//             unicode_input_finish();
+//             break;
+//         // register unicode for swedish capital A with two dots above
+//         case TD_TRIPLE_HOLD:
+//             unicode_input_start();
+//             register_hex(0x00c4);
+//             unicode_input_finish();
+//             break;
+//         default: break;
+//     }
+// }
 
-void swe_a_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_swe_a.state) {
-        case TD_SINGLE_TAP: unregister_code(KC_A); break;
-        case TD_SINGLE_HOLD: unregister_code16(S(KC_A)); break;
-        case TD_DOUBLE_TAP: break;
-        case TD_DOUBLE_HOLD: break;
-        case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_A); break;
-        case TD_TRIPLE_TAP: break;
-        case TD_TRIPLE_HOLD: break;
-        default: break;
-    }
-}
+// void swe_a_reset(tap_dance_state_t *state, void *user_data) {
+//     switch (td_swe_a.state) {
+//         case TD_SINGLE_TAP: unregister_code(KC_A); break;
+//         case TD_SINGLE_HOLD: unregister_code16(S(KC_A)); break;
+//         case TD_DOUBLE_TAP: break;
+//         case TD_DOUBLE_HOLD: break;
+//         case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_A); break;
+//         case TD_TRIPLE_TAP: break;
+//         case TD_TRIPLE_HOLD: break;
+//         default: break;
+//     }
+// }
 
 
 // Swedish o tapdance
 // ---------------------------------------------------------------------
 // Instance of td_tap_t for swedish o tapdance
-static td_tap_t td_swe_o = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
+// static td_tap_t td_swe_o = {
+//     .is_press_action = true,
+//     .state = TD_NONE
+// };
 
-void swe_o_finished(tap_dance_state_t *state, void *user_data) {
-    td_swe_o.state = cur_dance(state);
-    switch (td_swe_o.state) {
-        case TD_SINGLE_TAP:  register_code(KC_O); break;
-        case TD_SINGLE_HOLD: register_code16(S(KC_O)); break;
-        // register unicode for swedish o with dots above
-        case TD_DOUBLE_TAP:
-            unicode_input_start();
-            register_hex(0x00f6);
-            unicode_input_finish();
-            break;
-        // register unicode for swedish capital O with dots above it.
-        case TD_DOUBLE_HOLD:
-            unicode_input_start();
-            register_hex(0x00d6);
-            unicode_input_finish();
-            break;
-        // When typing the word `buffer`, and you want to make sure that you send `ff`.
-        // In other words, you are typing two single taps.
-        case TD_DOUBLE_SINGLE_TAP: tap_code(KC_O); register_code(KC_O); break;
-        default: break;
-    }
-}
+// void swe_o_finished(tap_dance_state_t *state, void *user_data) {
+//     td_swe_o.state = cur_dance(state);
+//     switch (td_swe_o.state) {
+//         case TD_SINGLE_TAP:  register_code(KC_O); break;
+//         case TD_SINGLE_HOLD: register_code16(S(KC_O)); break;
+//         // register unicode for swedish o with dots above
+//         case TD_DOUBLE_TAP:
+//             unicode_input_start();
+//             register_hex(0x00f6);
+//             unicode_input_finish();
+//             break;
+//         // register unicode for swedish capital O with dots above it.
+//         case TD_DOUBLE_HOLD:
+//             unicode_input_start();
+//             register_hex(0x00d6);
+//             unicode_input_finish();
+//             break;
+//         // When typing the word `buffer`, and you want to make sure that you send `ff`.
+//         // In other words, you are typing two single taps.
+//         case TD_DOUBLE_SINGLE_TAP: tap_code(KC_O); register_code(KC_O); break;
+//         default: break;
+//     }
+// }
 
-void swe_o_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_swe_o.state) {
-        case TD_SINGLE_TAP: unregister_code(KC_O); break;
-        case TD_SINGLE_HOLD: unregister_code16(S(KC_O)); break;
-        case TD_DOUBLE_TAP: break;
-        case TD_DOUBLE_HOLD: break;
-        case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_O); break;
-        default: break;
-    }
-}
-
+// void swe_o_reset(tap_dance_state_t *state, void *user_data) {
+//     switch (td_swe_o.state) {
+//         case TD_SINGLE_TAP: unregister_code(KC_O); break;
+//         case TD_SINGLE_HOLD: unregister_code16(S(KC_O)); break;
+//         case TD_DOUBLE_TAP: break;
+//         case TD_DOUBLE_HOLD: break;
+//         case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_O); break;
+//         default: break;
+//     }
+// }
+//
