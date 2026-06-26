@@ -20,7 +20,7 @@
 // LIB USED FOR  LED INDICATOR BREATHING EFFECT
 #include "lib/lib8tion/lib8tion.h"
 
-// LED colors 
+// LED colors
 // First 3 values are Hue, Saturation, Value (value=brightness).
 // Last value sets breathing effect. 0 = no breathing. > 0 sets cycle time
 #define L_DRED { 0, 255, 255, 0 }
@@ -62,7 +62,7 @@
 // Override keyboard current brighness when setting LED HSV value.
 #define USE_RGB_MATRIX_VALUE_OFF false
 
-// RGB HSV + breathe cycle time 
+// RGB HSV + breathe cycle time
 typedef struct PACKED {
 uint8_t h;
 uint8_t s;
@@ -139,27 +139,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL
         TO(0),    TD(AF1),  TD(AF2),  TD(AF3),  TD(AF4),  TD(AF5),  TD(AF6),  TD(AF7),  TD(AF8),  TD(AF9),  TD(AF10), TD(AF11), TD(AF12), _______,  _______,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]                   INSERT
-        _______,  LCA(KC_Q),_______,  _______,  _______,  LCA(KC_T),_______,  KC_WH_U,  _______,  _______,  KC_MPLY,  _______,  _______,            KC_HOME,
+        _______,  LCA(KC_Q),_______,  _______,  _______,  LCA(KC_T),_______,  MS_WHLU,  _______,  _______,  KC_MPLY,  _______,  _______,            KC_HOME,
     //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER     PG UP
-        _______,  _______,  KC_MSTP,  LCA(KC_D),LCA(KC_F),_______,  KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  _______,  _______,  _______,  _______,  _______,
+        _______,  _______,  KC_MSTP,  LCA(KC_D),LCA(KC_F),_______,  MS_LEFT,  MS_DOWN,  MS_UP,    MS_RGHT,  _______,  _______,  _______,  _______,  _______,
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         ?         SHIFT     UP        PG DOWN
-        _______,  _______,  _______,  _______,  _______,  _______,  KC_BTN2,  KC_WH_D,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  _______,  KC_VOLU,  _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  MS_BTN2,  MS_WHLD,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  _______,  KC_VOLU,  _______,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT
-        _______,  TD(LR1),  TD(LR2),                                KC_BTN1,                      TD(LR3),  _______,            KC_MPRV,  KC_VOLD,  KC_MNXT
+        _______,  TD(LR1),  TD(LR2),                                MS_BTN1,                      TD(LR3),  _______,            KC_MPRV,  KC_VOLD,  KC_MNXT
     ),
 
     // RGB LAYER
     [2] = LAYOUT_65_iso_blocker(
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL
-        TG(2),    RGB_M_P,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_VAD,  RGB_VAI,  KC_NO,    KC_NO,
+        TG(2),    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RM_VALD,  RM_VALU,  KC_NO,    KC_NO,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]                   INSERT
-        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_TOG,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,              KC_NO,
+        KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    RM_TOGG,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,              KC_NO,
     //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #         ENTER     PG UP
-        KC_NO,    KC_NO,    RGB_SAI,  KC_NO,    KC_NO,    KC_NO,    RGB_HUI,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
+        KC_NO,    KC_NO,    RM_SATU,  KC_NO,    KC_NO,    KC_NO,    RM_HUEU,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,    KC_NO,
     //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         ?         SHIFT     UP        PG DOWN
-        KC_NO,    KC_NO,    KC_NO,    RGB_SAD,  KC_NO,    KC_NO,    KC_NO,    RGB_HUD,  RGB_MOD,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    RGB_SPI,  KC_NO,
+        KC_NO,    KC_NO,    KC_NO,    RM_SATD,  KC_NO,    KC_NO,    KC_NO,    RM_HUED,  RM_NEXT,  KC_NO,    KC_NO,    KC_NO,    KC_NO,    RM_VALU,  KC_NO,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT
-        KC_NO,    KC_NO,    KC_NO,                                  KC_NO,                        KC_NO,    KC_NO,              RGB_RMOD, RGB_SPD,  RGB_MOD
+        KC_NO,    KC_NO,    KC_NO,                                  KC_NO,                        KC_NO,    KC_NO,              RM_PREV, RM_VALD,  RM_NEXT
     ),
 
     // ADVANCED LAYER
@@ -191,13 +191,13 @@ const uint8_t PROGMEM ledcolors[][RGB_MATRIX_LED_COUNT][4] = {
         L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DRED,   L_DYEL,   L_DYEL,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT   59-67 = 9 leds
         L_LGRE,   L_LGRE,   L_LGRE,                                 L_DRED,                       L_LGRE,   L_LGRE,             L_DYEL,   L_LYEL,   L_DYEL,
-    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64                      68-73 = 6 leds underglow 
+    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64                      68-73 = 6 leds underglow
         L__OFF,             L__OFF,                       L__OFF,             L__OFF,                       L__OFF,             L__OFF
     },
 
     // FN LAYER
     [1] = {
-    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL 
+    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL
         L_BRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L_DRED,   L_DRED,   L_DRED,   L_DRED,   L_DORA,   L_DORA,   L_DORA,   L_DORA,   L__OFF,   L__OFF,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER     INSERT
         L__OFF,   L_DVIO,   L__OFF,   L__OFF,   L__OFF,   L_LGRE,   L__OFF,   L_DMAG,   L__OFF,   L__OFF,   L_DCYA,   L__OFF,   L__OFF,   L__OFF,   L_DORA,
@@ -207,7 +207,7 @@ const uint8_t PROGMEM ledcolors[][RGB_MATRIX_LED_COUNT][4] = {
         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_DRED,   L_DMAG,   L_DCYA,   L_DCYA,   L_DCYA,   L__OFF,   L__OFF,   L_DCYA,   L__OFF,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT
         L__OFF,   L_BRED,   L_DGRE,                                 L_DRED,                       L__OFF,   L__OFF,             L_DCYA,   L_DCYA,   L_DCYA,
-    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
+    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64
         L_BRED,             L_BRED,                       L_BRED,             L_BRED,                       L_BRED,             L_BRED
     },
 
@@ -223,7 +223,7 @@ const uint8_t PROGMEM ledcolors[][RGB_MATRIX_LED_COUNT][4] = {
         L__OFF,   L__OFF,   L__OFF,   L_BVIO,   L__OFF,   L__OFF,   L__OFF,   L_BMAG,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BAZU,   L__OFF,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT
         L__OFF,   L__OFF,   L__OFF,                                 L__OFF,                       L__OFF,   L__OFF,             L_BBLU,   L_BAZU,   L_BBLU,
-    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
+    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64
         L_BBLU,             L_BBLU,                       L_BBLU,             L_BBLU,                       L_BBLU,             L_BBLU
     },
 
@@ -239,12 +239,12 @@ const uint8_t PROGMEM ledcolors[][RGB_MATRIX_LED_COUNT][4] = {
         L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L_BBLU,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,
     //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT
         L__OFF,   L__OFF,   L__OFF,                                 L__OFF,                       L__OFF,   L__OFF,             L__OFF,   L__OFF,   L__OFF,
-    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64 
+    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64
         L_BYEL,             L_BYEL,                       L_BYEL,             L_BYEL,                       L_BYEL,             L_BYEL
     }
 };
 
-// TAPPING TERM PER KEY - determines timeout for what is a tap and what is a hold 
+// TAPPING TERM PER KEY - determines timeout for what is a tap and what is a hold
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // fn layer
@@ -281,7 +281,7 @@ void set_led_color( uint8_t ledindex, HSVB hsv, bool use_matrix_value) {
     // uint16_t time = scale16by8(g_rgb_timer, rgb_matrix_config.speed / 8);
     uint8_t val = hsv.v;
 
-    // if the brightness of the led is set to 0 in the map, the value is not overriden by matrix effect, 
+    // if the brightness of the led is set to 0 in the map, the value is not overriden by matrix effect,
     // allowing the led to appear turned off. Else, set brightness to current rgb matrix value.
     if (val != 0 && use_matrix_value) {
         val = rgb_matrix_get_val();
@@ -304,7 +304,7 @@ void set_led_color( uint8_t ledindex, HSVB hsv, bool use_matrix_value) {
 void set_layer_color( uint8_t layer) {
     for (uint8_t i = 0; i < RGB_MATRIX_LED_COUNT; i++) {
         // Get hsv + breathing cycle for current led index
-        HSVB hsvb = { 
+        HSVB hsvb = {
             .h = pgm_read_byte(&ledcolors[layer][i][0]),
             .s = pgm_read_byte(&ledcolors[layer][i][1]),
             .v = pgm_read_byte(&ledcolors[layer][i][2]),
@@ -376,7 +376,7 @@ td_state_t cur_dance(tap_dance_state_t *state) {
         // Key has not been interrupted, but the key is still held.
         // Means you want to send a 'HOLD'.
         else return TD_SINGLE_HOLD;
-    } 
+    }
     else if (state->count == 2) return TD_DOUBLE_TAP;
     else if (state->count == 3) return TD_TRIPLE_TAP;
     else return TD_UNKNOWN;
@@ -446,7 +446,7 @@ void td_lr_holdmo_reset(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP: unregister_code(pair->kc); break;
         case TD_TRIPLE_TAP: unregister_code(pair->kc); break;
         case TD_UNKNOWN: break;
-        case TD_NONE: break; 
+        case TD_NONE: break;
     }
     td_lr_holdmo_tapstate.state = TD_NONE;
 }
@@ -479,7 +479,7 @@ void td_lr_holdon_reset(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP: unregister_code(pair->kc); break;
         case TD_TRIPLE_TAP: unregister_code(pair->kc); break;
         case TD_UNKNOWN: break;
-        case TD_NONE: break; 
+        case TD_NONE: break;
     }
     td_lr_holdon_tapstate.state = TD_NONE;
 }
@@ -518,7 +518,7 @@ void td_alt_reset(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP: unregister_code(keycode); break;
         case TD_TRIPLE_TAP: unregister_code(keycode); break;
         case TD_UNKNOWN: break;
-        case TD_NONE: break; 
+        case TD_NONE: break;
     }
     td_alt_tap_state.state = TD_NONE;
 }

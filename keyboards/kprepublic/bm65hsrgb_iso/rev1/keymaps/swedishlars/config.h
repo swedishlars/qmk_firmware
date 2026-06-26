@@ -1,7 +1,7 @@
 // default rgb mode
 // NOTE: I need to undefine this cosntant so I can set my own startup rgb mode
-#undef RGB_MATRIX_STARTUP_MODE 
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR
+#undef RGB_MATRIX_DEFAULT_MODE
+#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
 
 // TODO test suspend rgb. Does not work unfortunately.
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true
@@ -13,7 +13,7 @@
 #undef ENABLE_RGB_MATRIX_GRADIENT_UP_DOWN
 #undef ENABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT
 #undef ENABLE_RGB_MATRIX_BREATHING
-/* #undef ENABLE_RGB_MATRIX_BAND_SAT */
+#undef ENABLE_RGB_MATRIX_BAND_SAT
 #undef ENABLE_RGB_MATRIX_BAND_VAL
 #undef ENABLE_RGB_MATRIX_BAND_PINWHEEL_SAT
 #undef ENABLE_RGB_MATRIX_BAND_PINWHEEL_VAL
@@ -32,14 +32,14 @@
 #undef ENABLE_RGB_MATRIX_RAINBOW_PINWHEELS
 #undef ENABLE_RGB_MATRIX_RAINDROPS
 #undef ENABLE_RGB_MATRIX_JELLYBEAN_RAINDROPS
-/* #undef ENABLE_RGB_MATRIX_HUE_BREATHING */
+#undef ENABLE_RGB_MATRIX_HUE_BREATHING
 #undef ENABLE_RGB_MATRIX_HUE_PENDULUM
 #undef ENABLE_RGB_MATRIX_HUE_WAVE
 #undef ENABLE_RGB_MATRIX_PIXEL_FRACTAL
 #undef ENABLE_RGB_MATRIX_PIXEL_FLOW
 #undef ENABLE_RGB_MATRIX_PIXEL_RAIN
-/* #undef ENABLE_RGB_MATRIX_TYPING_HEATMAP */
-/* #undef ENABLE_RGB_MATRIX_DIGITAL_RAIN */
+#undef ENABLE_RGB_MATRIX_TYPING_HEATMAP
+#undef ENABLE_RGB_MATRIX_DIGITAL_RAIN
 #undef ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE
 #undef ENABLE_RGB_MATRIX_SOLID_REACTIVE
 #undef ENABLE_RGB_MATRIX_SOLID_REACTIVE_WIDE
@@ -50,7 +50,7 @@
 #undef ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS
 #undef ENABLE_RGB_MATRIX_SPLASH
 #undef ENABLE_RGB_MATRIX_MULTISPLASH
-/* #undef ENABLE_RGB_MATRIX_SOLID_SPLASH */
+#undef ENABLE_RGB_MATRIX_SOLID_SPLASH
 #undef ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
 
@@ -85,7 +85,7 @@
 
 /* #define MOUSEKEY_WHEEL_DELAY 0                   // Delay between pressing a wheel key and wheel movement, default 300. */
 /* #define MOUSEKEY_WHEEL_INTERVAL 2                // Time between wheel movements, default 100. */
-/* #define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 1       // Initial number of movements of the mouse wheel, default 16. */ 
+/* #define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 1       // Initial number of movements of the mouse wheel, default 16. */
 /* #define MOUSEKEY_WHEEL_BASE_MOVEMENTS 300        // Maximum number of movements at which acceleration stops, default 32 */
 /* #define MOUSEKEY_WHEEL_DECELERATED_MOVEMENTS 1   //Decelerated wheel movements, default 8 */
 /* #define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 300 // Accelerated wheel movements, default 48 */
