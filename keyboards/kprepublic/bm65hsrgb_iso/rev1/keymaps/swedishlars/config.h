@@ -1,13 +1,41 @@
+/* Copyright 2024 Lars Johansson (github.com/swedishlars)
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
+#pragma once
+
+// Minimize firmware - I am using less than 8 layers in total
+#define LAYER_STATE_8BIT
+
+// Remove the auto-repeat ability of tapping and activate the hold function instead.
+#define QUICK_TAP_TERM 0
+
+// tap-hold threshold, default is 200
+#define TAPPING_TERM 140
+
+// use per key tap-hold thresholds
+#define TAPPING_TERM_PER_KEY
+
+// Toggle layer with 1 tap
+#define TAPPING_TOGGLE 1
+
+// Caps word
+/* #define BOTH_SHIFTS_TURNS_ON_CAPS_WORDS */
+/* #define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD */
+#define CAPS_WORD_INVERT_ON_SHIFT
+
+// Auto shift
+#define AUTO_SHIFT_TIMEOUT 200
+
+// RGB
+// turn off effects when suspended
+#define RGB_MATRIX_SLEEP
+//  Diasble rgb after 5 minutes of inactivity. Configured in milliseconds
+#define RGB_MATRIX_TIMEOUT 300000
 // default rgb mode
-// NOTE: I need to undefine this cosntant so I can set my own startup rgb mode
+#define ENABLE_RGB_MATRIX_SOLID_COLOR
 #undef RGB_MATRIX_DEFAULT_MODE
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
-
-// TODO test suspend rgb. Does not work unfortunately.
-#define RGB_DISABLE_WHEN_USB_SUSPENDED true
-
-//  Diasble rgb after 10 minutes of inactivity. Configured in milliseconds
-#define RGB_DISABLE_TIMEOUT 600000
 
 #undef ENABLE_RGB_MATRIX_ALPHAS_MODS
 #undef ENABLE_RGB_MATRIX_GRADIENT_UP_DOWN
@@ -53,12 +81,6 @@
 #undef ENABLE_RGB_MATRIX_SOLID_SPLASH
 #undef ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
-
-// Set tap dance timeout limit in milliseconds
-#define TAPPING_TERM 200
-#define TAPPING_TERM_PER_KEY
-
-
 // Mouse keys
 // Accelerated mode settings
 #define MOUSEKEY_DELAY 0                            // Delay between pressing a movement key and cursor movement, default 300.
@@ -89,10 +111,6 @@
 /* #define MOUSEKEY_WHEEL_BASE_MOVEMENTS 300        // Maximum number of movements at which acceleration stops, default 32 */
 /* #define MOUSEKEY_WHEEL_DECELERATED_MOVEMENTS 1   //Decelerated wheel movements, default 8 */
 /* #define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 300 // Accelerated wheel movements, default 48 */
-
-
-// Minimize firmware - I am using less than 8 layers in total
-#define LAYER_STATE_8BIT
 
 // Custom tapdance advanced action. Pass keycode in user_data
 #define ACTION_TAP_DANCE_FN_KEY(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc) { \
