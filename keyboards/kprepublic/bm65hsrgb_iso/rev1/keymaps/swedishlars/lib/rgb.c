@@ -28,9 +28,7 @@ const uint8_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT][4] = {
 //),
 },
 
-    // FN LAYER
-//[_FUNC] = RGB_MATRIX_LAYOUT(
-[_FUNC] = {
+[_LOWR] = {
     //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL
         B__RED,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   S__RED,   S__RED,   S__RED,   S__RED,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   L__OFF,   L__OFF,
     //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER     INSERT
@@ -43,6 +41,22 @@ const uint8_t PROGMEM ledmaps[][RGB_MATRIX_LED_COUNT][4] = {
         L__OFF,   B__RED,   S_GREN,                                 S__RED,                       L__OFF,   L__OFF,             S_CYAN,   S_CYAN,   S_CYAN,
     //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64
         B__RED,             B__RED,                       B__RED,             B__RED,                       B__RED,             B__RED
+},
+
+    // FN LAYER
+[_FUNC] = {
+    //  ESC       1         2         3         4         5         6         7         8         9         0         -         =         BCKSPC    DEL
+        B__RED,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   S__RED,   S__RED,   S__RED,   S__RED,   S_ORAN,   S_ORAN,   S_ORAN,   S_ORAN,   L__OFF,   L__OFF,
+    //  TAB       Q         W         E         R         T         Y         U         I         O         P         [         ]         ENTER     INSERT
+        L__OFF,   S_VIOL,   L__OFF,   L__OFF,   L__OFF,   S_GREN,   L__OFF,   S_VIOL,   L__OFF,   L__OFF,   S_CYAN,   L__OFF,   L__OFF,   L__OFF,   S_ORAN,
+    //  CAPS      A         S         D         F         G         H         J         K         L         ;         '         #                   PG UP
+        L__OFF,   L__OFF,   S_CYAN,   S_GREN,   S_VIOL,   L__OFF,   S_ROSE,   S_ROSE,   S_ROSE,   S_ROSE,   L__OFF,   L__OFF,   L__OFF,             L__OFF,
+    //  SHIFT     \         Z         X         C         V         B         N         M         ,         .         ?         SHIFT     UP        PG DOWN
+        L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   L__OFF,   S__RED,   S_VIOL,   S_CYAN,   S_CYAN,   S_CYAN,   L__OFF,   L__OFF,   S_CYAN,   L__OFF,
+    //  CTRL      FN        ALT                                     SPACE                         ALTGR     FN                  LEFT      DOWN      RIGHT
+        L__OFF,   B__RED,   S_GREN,                                 S__RED,                       L__OFF,   L__OFF,             S_CYAN,   S_CYAN,   S_CYAN,
+    //  UGLW69              UGLW68                        UGLW67              UGLW66                        UGLW65              UGLW64
+        B_GREN,             B_GREN,                       B_GREN,             B_GREN,                       B_GREN,             B_GREN
 },
 
 [_MACRO] = {
@@ -114,7 +128,7 @@ void set_led_color( uint8_t index, HSVB hsvb, bool use_matrix_value) {
         uint8_t hsv_breathe_val = abs8(sin8(time) - 128) * 2;
         val = scale8(hsv_breathe_val, val);
     }
-    
+
     HSV _hsv = { .h=hsvb.h, .s=hsvb.s, .v = val};
     RGB rgb = hsv_to_rgb( _hsv );
     rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);

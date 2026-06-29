@@ -55,7 +55,7 @@ enum custom_keycodes {
 enum layers {
     _BASE = 0,
     // _GAME,
-    // _LOWER,
+    _LOWR,
     // _RAISE,
     _FUNC,
     // _MOUSE,

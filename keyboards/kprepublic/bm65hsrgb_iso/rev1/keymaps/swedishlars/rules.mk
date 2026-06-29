@@ -26,4 +26,4 @@ AUTO_SHIFT_ENABLE = yes
 
 # Using LIB_SRC as per docs
 LIB_SRC += lib/rgb.c
-#LIB_SRC += lib/tapdance.c
+LIB_SRC += lib/tapdance.c

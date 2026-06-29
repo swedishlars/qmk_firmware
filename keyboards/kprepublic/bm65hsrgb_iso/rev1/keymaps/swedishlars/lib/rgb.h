@@ -6,27 +6,6 @@
 #include "quantum.h"
 
 
-// Key to rgb matrix index conversion macro.
-// This enables per key rgb colour maps to be declared in the same fashion as keymaps
-/*
-#define RGB_MATRIX_LAYOUT( \
-    SW14, SW13, SW12, SW11, SW10, SW09, SW08, SW07, SW06, SW05, SW04, SW03, SW02, SW01, SW00, \
-    SW15, SW16, SW17, SW18, SW19, SW20, SW21, SW22, SW23, SW24, SW25, SW26, SW27, SW28, SW29, \
-    SW43, SW42, SW41, SW40, SW39, SW38, SW37, SW36, SW35, SW34, SW33, SW32, SW31,       SW30, \
-    SW44, SW45, SW46, SW47, SW48, SW49, SW50, SW51, SW52, SW53, SW54, SW55, SW56, SW57, SW58, \
-    SW67, SW66, SW65,                   SW64,             SW63, SW62,       SW61, SW60, SW59, \
-    SW68,             SW69,             SW70,       SW71,             SW72,             SW73  \
-) \
-{ \
-{SW00}, {SW01}, {SW02}, {SW03}, {SW04}, {SW05}, {SW06}, {SW07}, {SW08}, {SW09}, {SW10}, {SW11}, {SW12}, {SW13}, {SW14}, \
-{SW15}, {SW16}, {SW17}, {SW18}, {SW19}, {SW20}, {SW21}, {SW22}, {SW23}, {SW24}, {SW25}, {SW26}, {SW27}, {SW28}, {SW29}, \
-{SW30}, {SW31}, {SW32}, {SW33}, {SW34}, {SW35}, {SW36}, {SW37}, {SW38}, {SW39}, {SW40}, {SW41}, {SW42},         {SW43}, \
-{SW44}, {SW45}, {SW46}, {SW47}, {SW48}, {SW49}, {SW50}, {SW51}, {SW52}, {SW53}, {SW54}, {SW55}, {SW56}, {SW57}, {SW58}, \
-{SW59}, {SW60}, {SW61},                         {SW62},                 {SW63}, {SW64},         {SW65}, {SW66}, {SW67}, \
-{SW68},                 {SW69},                 {SW70},         {SW71},                 {SW72},                 {SW73}  \
-}
-*/
-
 // caps lock led index
 #define CAPS_LED_INDEX 30
 

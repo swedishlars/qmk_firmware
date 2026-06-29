@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
- #include "tapdance.h"
+#include "tapdance.h"
 #include "swedishlars.h"
 
 
@@ -33,12 +33,9 @@ td_state_t cur_dance(tap_dance_state_t *state) {
 }
 
 // Capslock: Tap to switch to MACRO layer for one keypress, OSL(_MACRO). Hold for _FUNC layer.
-// ---------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 // Instance of td_tap_t for this tapdance
-static td_tap_t td_caps = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
+static td_tap_t td_caps = { .is_press_action = true, .state = TD_NONE };
 
 void caps_finished(tap_dance_state_t *state, void *user_data) {
     td_caps.state = cur_dance(state);
@@ -47,10 +44,9 @@ void caps_finished(tap_dance_state_t *state, void *user_data) {
             set_oneshot_layer(_MACRO, ONESHOT_START);
             break;
         case TD_SINGLE_HOLD:
-            layer_on(_FUNC);
+            layer_on(_LOWR);
             break;
-        default:
-            break;
+        default: break;
     }
 }
 
@@ -60,143 +56,142 @@ void caps_reset(tap_dance_state_t *state, void *user_data) {
             clear_oneshot_layer_state(ONESHOT_PRESSED);
             break;
         case TD_SINGLE_HOLD:
-            layer_off(_FUNC);
+            layer_off(_LOWR);
             break;
-        default:
-            break;
+        default: break;
     }
 }
 
-// Right Shift: Tap turns on caps word. Hold outputs shift+ctrl
-// ---------------------------------------------------------------------
+// Right Shift: Tap turns on caps word. Hold outputs Right Shift
+// -------------------------------------------------------------
 // Instance of td_tap_t for this tapdance
-static td_tap_t td_rshift = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
+static td_tap_t td_rshift = { .is_press_action = true, .state = TD_NONE };
 
 void rshift_finished(tap_dance_state_t *state, void *user_data) {
     td_rshift.state = cur_dance(state);
     switch (td_rshift.state) {
         case TD_SINGLE_TAP: caps_word_on(); break;
-        case TD_SINGLE_HOLD:
-            register_mods(MOD_BIT(KC_LSFT));
-            break;
-        default:
-            break;
+        // TODO testing:
+        case TD_DOUBLE_TAP: caps_word_off(); break;
+        case TD_SINGLE_HOLD: register_mods(MOD_BIT(KC_RSFT)); break;
+        default: break;
     }
 }
 
 void rshift_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_rshift.state) {
         case TD_SINGLE_TAP: break;
-        case TD_SINGLE_HOLD:
-            unregister_mods(MOD_BIT(KC_LSFT));
-            break;
-        default:
-            break;
+        case TD_DOUBLE_TAP: break;
+        case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(KC_RSFT)); break;
+        default: break;
     }
 }
 
 
-// Swedish letter a tapdance
-// ---------------------------------------------------------------------
-// Instance of td_tap_t for swedish a tapdance
-// static td_tap_t td_swe_a = {
-//     .is_press_action = true,
-//     .state = TD_NONE
-// };
+// GENERIC: Tap to send KC_X, hold to momentarily enable layer
+// --------------------------------------------------------------------
+// Instance of td_tap_t for this tapdance
+static td_tap_t td_kc_layer = { .is_press_action = true, .state = TD_NONE };
 
-// void swe_a_finished(tap_dance_state_t *state, void *user_data) {
-//     td_swe_a.state = cur_dance(state);
-//     switch (td_swe_a.state) {
-//         case TD_SINGLE_TAP:  register_code(KC_A); break;
-//         case TD_SINGLE_HOLD: register_code16(S(KC_A)); break;
-//         // register unicode for swedish a with ring above
-//         case TD_DOUBLE_TAP:
-//             unicode_input_start();
-//             register_hex(0x00e5);
-//             unicode_input_finish();
-//             break;
-//         // register unicode for swedish capital A with ring above it.
-//         case TD_DOUBLE_HOLD:
-//             unicode_input_start();
-//             register_hex(0x00c5);
-//             unicode_input_finish();
-//             break;
-//         // When typing the word `buffer`, and you want to make sure that you send `ff`.
-//         // In other words, you are typing two single taps.
-//         case TD_DOUBLE_SINGLE_TAP: tap_code(KC_A); register_code(KC_A); break;
-//         // register unicode for swedish a with two dots above
-//         case TD_TRIPLE_TAP:
-//             unicode_input_start();
-//             register_hex(0x00e4);
-//             unicode_input_finish();
-//             break;
-//         // register unicode for swedish capital A with two dots above
-//         case TD_TRIPLE_HOLD:
-//             unicode_input_start();
-//             register_hex(0x00c4);
-//             unicode_input_finish();
-//             break;
-//         default: break;
-//     }
-// }
+void kc_layer_finished(tap_dance_state_t *state, void *user_data) {
+    td_kc_layer.state = cur_dance(state);
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
 
-// void swe_a_reset(tap_dance_state_t *state, void *user_data) {
-//     switch (td_swe_a.state) {
-//         case TD_SINGLE_TAP: unregister_code(KC_A); break;
-//         case TD_SINGLE_HOLD: unregister_code16(S(KC_A)); break;
-//         case TD_DOUBLE_TAP: break;
-//         case TD_DOUBLE_HOLD: break;
-//         case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_A); break;
-//         case TD_TRIPLE_TAP: break;
-//         case TD_TRIPLE_HOLD: break;
-//         default: break;
-//     }
-// }
+    switch (td_kc_layer.state) {
+        case TD_SINGLE_TAP:
+        case TD_DOUBLE_TAP:
+        case TD_TRIPLE_TAP: register_code(pair->kc1); break;
+        case TD_SINGLE_HOLD:
+        case TD_DOUBLE_HOLD:
+        case TD_TRIPLE_HOLD: layer_on(pair->kc2); break;
+        default: break;
+    }
+}
+
+void kc_layer_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+
+    switch (td_kc_layer.state) {
+        case TD_SINGLE_TAP:
+        case TD_DOUBLE_TAP:
+        case TD_TRIPLE_TAP: unregister_code(pair->kc1); break;
+        case TD_SINGLE_HOLD:
+        case TD_DOUBLE_HOLD:
+        case TD_TRIPLE_HOLD: layer_off(pair->kc2); break;
+        default: break;
+    }
+    td_kc_layer.state = TD_NONE;
+}
 
 
-// Swedish o tapdance
-// ---------------------------------------------------------------------
-// Instance of td_tap_t for swedish o tapdance
-// static td_tap_t td_swe_o = {
-//     .is_press_action = true,
-//     .state = TD_NONE
-// };
+// GENERIC - Tap to toggle a layer. Hold to momentarily activate a layer.
+// Tap and hold layer does not have to be the same. Desired layers are passed in user data:
+// [T_CAP] = ACTION_TAP_DANCE_DUAL_DATA(NULL, tg_mo_layer_finished, tg_mo_layer_reset, _MACRO, _LOWR),
+// -----------------------------------------------------------------------
+// Instance of td_tap_t for this tapdance
+static td_tap_t td_tg_mo_layer = {.is_press_action = true, .state = TD_NONE};
 
-// void swe_o_finished(tap_dance_state_t *state, void *user_data) {
-//     td_swe_o.state = cur_dance(state);
-//     switch (td_swe_o.state) {
-//         case TD_SINGLE_TAP:  register_code(KC_O); break;
-//         case TD_SINGLE_HOLD: register_code16(S(KC_O)); break;
-//         // register unicode for swedish o with dots above
-//         case TD_DOUBLE_TAP:
-//             unicode_input_start();
-//             register_hex(0x00f6);
-//             unicode_input_finish();
-//             break;
-//         // register unicode for swedish capital O with dots above it.
-//         case TD_DOUBLE_HOLD:
-//             unicode_input_start();
-//             register_hex(0x00d6);
-//             unicode_input_finish();
-//             break;
-//         // When typing the word `buffer`, and you want to make sure that you send `ff`.
-//         // In other words, you are typing two single taps.
-//         case TD_DOUBLE_SINGLE_TAP: tap_code(KC_O); register_code(KC_O); break;
-//         default: break;
-//     }
-// }
+void tg_mo_layer_finished(tap_dance_state_t *state, void *user_data) {
+    td_tg_mo_layer.state = cur_dance(state);
+    tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
 
-// void swe_o_reset(tap_dance_state_t *state, void *user_data) {
-//     switch (td_swe_o.state) {
-//         case TD_SINGLE_TAP: unregister_code(KC_O); break;
-//         case TD_SINGLE_HOLD: unregister_code16(S(KC_O)); break;
-//         case TD_DOUBLE_TAP: break;
-//         case TD_DOUBLE_HOLD: break;
-//         case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_O); break;
-//         default: break;
+    switch (td_tg_mo_layer.state) {
+        case TD_SINGLE_TAP:
+            if (layer_state_is(pair->kc1)) layer_off(pair->kc1);
+            else layer_on(pair->kc1);
+            break;
+        case TD_DOUBLE_TAP: break;
+        case TD_TRIPLE_TAP: break;
+        case TD_SINGLE_HOLD:
+        case TD_DOUBLE_HOLD:
+        case TD_TRIPLE_HOLD: layer_on(pair->kc2); break;
+        default: break;
+    }
+}
+
+void tg_mo_layer_reset(tap_dance_state_t *state, void *user_data) {
+    // If the key was held down and now is released then switch off the layer
+    if (td_tg_mo_layer.state == TD_SINGLE_HOLD) {
+        tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+        layer_off(pair->kc2);
+    }
+    td_tg_mo_layer.state = TD_NONE;
+}
+
+
+// TODO this can be made GENERIC to send tap: KC_X, hold: KC_Y
+// TAPDANCE - Tap for normal KC_X. Hold to send Alt+KC_X
+// -----------------------------------------------------
+// Instance of td_tap_t for this tapdance
+// static td_tap_t td_alt_tap_state = {.is_press_action = true, .state = TD_NONE};
+//
+// void td_alt_finished(tap_dance_state_t *state, void *user_data) {
+//     td_alt_tap_state.state = cur_dance(state);
+//     tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+//     uint16_t keycode = pair->kc1;
+//
+//     switch (td_alt_tap_state.state) {
+//         case TD_SINGLE_TAP: register_code(keycode); break;
+//         case TD_SINGLE_HOLD: register_code16(LALT(keycode)); break;
+//         case TD_DOUBLE_TAP: register_code(keycode); break;
+//         case TD_TRIPLE_TAP: register_code(keycode); break;
+//         case TD_UNKNOWN: break;
+//         case TD_NONE: break;
 //     }
 // }
 //
+// void td_alt_reset(tap_dance_state_t *state, void *user_data) {
+//     tap_dance_pair_t *pair = (tap_dance_pair_t *)user_data;
+//     uint16_t keycode = pair->kc1;
+//
+//     switch (td_alt_tap_state.state) {
+//         case TD_SINGLE_TAP: unregister_code(keycode); break;
+//         case TD_SINGLE_HOLD: unregister_code16(LALT(keycode)); break;
+//         case TD_DOUBLE_TAP: unregister_code(keycode); break;
+//         case TD_TRIPLE_TAP: unregister_code(keycode); break;
+//         case TD_UNKNOWN: break;
+//         case TD_NONE: break;
+//     }
+//     td_alt_tap_state.state = TD_NONE;
+// }
+

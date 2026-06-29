@@ -30,8 +30,10 @@
 // RGB
 // turn off effects when suspended
 #define RGB_MATRIX_SLEEP
+
 //  Diasble rgb after 5 minutes of inactivity. Configured in milliseconds
 #define RGB_MATRIX_TIMEOUT 300000
+
 // default rgb mode
 #define ENABLE_RGB_MATRIX_SOLID_COLOR
 #undef RGB_MATRIX_DEFAULT_MODE
@@ -112,14 +114,21 @@
 /* #define MOUSEKEY_WHEEL_DECELERATED_MOVEMENTS 1   //Decelerated wheel movements, default 8 */
 /* #define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 300 // Accelerated wheel movements, default 48 */
 
-// Custom tapdance advanced action. Pass keycode in user_data
-#define ACTION_TAP_DANCE_FN_KEY(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc) { \
+
+// TODO mv to td header file?
+// Custom tapdance action that allows two user args: kc1 and kc2 (uint16_t).
+// For example, pass a keycode and layer or two different keycodes or layers in user_data.
+#define ACTION_TAP_DANCE_FN_PAIR(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc1, kc2) { \
     .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
-    .user_data = (void *)&((tap_dance_pair_t) { kc, 0 }) \
+    .user_data = (void *)&((tap_dance_pair_t) { kc1, kc2 }) \
 }
 
-// Custom tapdance advanced action. Pass keycode and layer in user_data.
-#define ACTION_TAP_DANCE_FN_KEY_LAYER(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc, layer) { \
+
+// TODO rm:
+// Custom tapdance action that allows dual user args: kc and layer.
+/*
+#define ACTION_TAP_DANCE_DUAL_DATA(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, kc, layer) { \
     .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, \
     .user_data = (void *)&((tap_dance_dual_role_t) {kc, layer, NULL}) \
 }
+*/
